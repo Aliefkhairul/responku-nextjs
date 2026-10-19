@@ -1,8 +1,10 @@
-import { prisma } from "@/prisma/prisma";
+import Link from "next/link";
 
-export default async function Page() {
-    const u = await prisma.user.findFirst({ where: { id: 1 } });
-    if (!u) return <div>User not found</div>;
-
-    return <div>Page</div>;
+export default function Page() {
+    return (
+        <div>
+            <h1>Home</h1>
+            <Link href="/about">About</Link>
+        </div>
+    );
 }
