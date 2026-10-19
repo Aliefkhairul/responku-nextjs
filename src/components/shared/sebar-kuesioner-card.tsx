@@ -3,8 +3,8 @@ import * as Card from "@/components/ui/card";
 
 export default function SebarkanKuesionerCard() {
     return (
-        <div className="flex w-full items-center justify-center p-8">
-            <Card.Card className="flex w-full max-w-5xl flex-row items-center justify-between gap-6 p-6">
+        <div className="flex w-full items-center justify-center">
+            <Card.Card className="flex w-full flex-row items-center justify-between gap-6 p-6">
                 <Card.CardHeader className="flex-1 p-0">
                     <Card.CardTitle>
                         Punya Kuesioner? Sebarkan di Responku!

@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 export default function KerjakanSurveiCard() {
     return (
         <div className="flex w-full items-center justify-center">
-            <Card.Card className="w-full max-w-2xl">
+            <Card.Card className="w-full">
                 <Card.CardHeader className="flex flex-col gap-4">
                     <div className="flex items-start justify-between">
                         <h3 className="text-xl font-semibold leading-snug">

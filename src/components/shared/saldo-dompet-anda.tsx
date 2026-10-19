@@ -4,7 +4,7 @@ import * as Card from "@/components/ui/card";
 export default function SaldoDompetAnda() {
     return (
         <div className="flex w-full items-center justify-center">
-            <Card.Card className="w-full max-w-2xl">
+            <Card.Card className="w-full">
                 <Card.CardHeader>
                     <div className="flex flex-col gap-2">
                         <Card.CardTitle>Saldo Dompet Anda</Card.CardTitle>
