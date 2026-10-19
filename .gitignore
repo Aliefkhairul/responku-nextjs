@@ -40,7 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-src/prisma/generated/prisma
+# src/prisma/generated/prisma
 .agents
 .claude
 .windsurf
