@@ -42,7 +42,8 @@ const menus: MenuItem[] = [
     {
         label: "Profil & Verifikasi",
         icon: UserCheckIcon,
-        url: "dashboard/profil",
+        highlight: true,
+        url: "profil",
     },
     {
         label: "Saldo Dompet",
@@ -65,6 +66,7 @@ const menus2nd: MenuItem[] = [
     {
         label: "Pusat Bantuan",
         icon: CircleHelpIcon,
+        highlight: true,
         url: "pusat-bantuan",
     },
 ];
@@ -293,7 +295,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
                         {/* user */}
                         <Link
-                            href="/dashboard/profile"
+                            href="/profil"
                             title="Pengaturan profil"
                             aria-label="Pengaturan profil"
                             className="rounded-full"

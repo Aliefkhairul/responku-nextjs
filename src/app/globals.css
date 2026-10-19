@@ -43,7 +43,7 @@
     --font-sans: Plus Jakarta Sans, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Merriweather, serif;
     --font-mono: JetBrains Mono, monospace;
-    --radius: 1.4rem;
+    --radius: 0.7rem;
     --shadow-x: 0px;
     --shadow-y: 4px;
     --shadow-blur: 8px;
@@ -104,7 +104,7 @@
     --font-sans: Plus Jakarta Sans, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Merriweather, serif;
     --font-mono: JetBrains Mono, monospace;
-    --radius: 1.2rem;
+    --radius: 0.7rem;
     --shadow-x: 0px;
     --shadow-y: 4px;
     --shadow-blur: 8px;
@@ -193,5 +193,43 @@
     }
     html {
         @apply font-sans;
+    }
+}
+
+@layer utilities {
+    .container2nd {
+        width: 100%;
+        margin-inline: auto;
+        padding-inline: 1rem;
+    }
+
+    @media (width >= 40rem) {
+        .container2nd {
+            max-width: 40rem;
+        }
+    }
+
+    @media (width >= 48rem) {
+        .container2nd {
+            max-width: 44rem;
+        }
+    }
+
+    @media (width >= 64rem) {
+        .container2nd {
+            max-width: 56rem;
+        }
+    }
+
+    @media (width >= 80rem) {
+        .container2nd {
+            max-width: 64rem;
+        }
+    }
+
+    @media (width >= 96rem) {
+        .container2nd {
+            max-width: 64rem;
+        }
     }
 }
