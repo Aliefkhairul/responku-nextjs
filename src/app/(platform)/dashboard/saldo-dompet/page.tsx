@@ -1,3 +1,5 @@
-export default function Saldo() {
-    return <div>Saldo</div>;
+import SaldoDompet from "@/components/saldo-dompet/index-page";
+
+export default function SaldoDompetPage() {
+    return <SaldoDompet />;
 }

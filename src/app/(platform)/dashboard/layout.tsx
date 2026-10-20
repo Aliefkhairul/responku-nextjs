@@ -61,7 +61,8 @@ const menus2nd: MenuItem[] = [
     {
         label: "Pengaturan Akun",
         icon: SettingsIcon,
-        url: "dashboard/pengaturan-akun",
+        highlight: true,
+        url: "pengaturan-akun",
     },
     {
         label: "Pusat Bantuan",
