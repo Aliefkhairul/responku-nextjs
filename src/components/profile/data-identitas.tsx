@@ -1,7 +1,15 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { CheckCircle2 } from "lucide-react";
+import {
+    Camera,
+    CheckCircle2,
+    ClipboardList,
+    ShieldCheck,
+    Star,
+    Trash2,
+} from "lucide-react";
+import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +25,41 @@ const identitySchema = z.object({
 
 type IdentityFormValues = z.infer<typeof identitySchema>;
 
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+function FieldErrors({ errors }: { errors: unknown[] }) {
+    if (errors.length === 0) return null;
+
+    return (
+        <div className="space-y-1">
+            {errors.map((error, index) => (
+                <p key={index} className="text-sm text-destructive">
+                    {typeof error === "string"
+                        ? error
+                        : error &&
+                            typeof error === "object" &&
+                            "message" in error
+                          ? String(error.message)
+                          : "Input tidak valid."}
+                </p>
+            ))}
+        </div>
+    );
+}
+
 export default function IdentityForm() {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [photo, setPhoto] = useState<string | null>(null);
+    const [photoError, setPhotoError] = useState("");
+
+    // Contoh statistik; nantinya ganti dengan data dari API.
+    const stats = {
+        qualityScore: 98,
+        completedSurveys: 24,
+        verificationStatus: "Terverifikasi",
+    };
+
     const form = useForm({
         defaultValues: {
             name: "",
@@ -29,27 +71,192 @@ export default function IdentityForm() {
         },
         onSubmit: async ({ value }) => {
             console.log(value);
+            // Kirim data dan file foto ke backend di sini.
         },
     });
+
+    const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setPhotoError("");
+
+        if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+            setPhotoError("Gunakan foto berformat JPG, PNG, atau WebP.");
+            event.target.value = "";
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            setPhotoError("Ukuran foto maksimal 2 MB.");
+            event.target.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            if (typeof reader.result === "string") {
+                setPhoto(reader.result);
+            }
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    const handleRemovePhoto = () => {
+        setPhoto(null);
+        setPhotoError("");
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
 
     return (
         <div>
             <div>
                 <h2 className="text-lg font-semibold">Informasi Dasar</h2>
                 <p className="text-muted-foreground">
-                    Kelola nama, email, dan kontak akun Anda.
+                    Kelola foto, identitas, dan informasi akun Anda.
                 </p>
             </div>
 
             <Separator className="my-4" />
 
+            <div className="space-y-6">
+                {/* Foto profil */}
+                <section className="space-y-3">
+                    <h3 className="font-medium">Foto Profil</h3>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted">
+                            {photo ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={photo}
+                                    alt="Preview foto profil"
+                                    className="size-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-2xl font-semibold text-muted-foreground">
+                                    BS
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex flex-wrap gap-2">
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    className="hidden"
+                                    onChange={handlePhotoChange}
+                                />
+
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() =>
+                                        fileInputRef.current?.click()
+                                    }
+                                >
+                                    <Camera />
+                                    {photo ? "Ganti Foto" : "Upload Foto"}
+                                </Button>
+
+                                {photo && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        onClick={handleRemovePhoto}
+                                    >
+                                        <Trash2 />
+                                        Hapus
+                                    </Button>
+                                )}
+                            </div>
+
+                            <p className="text-xs text-muted-foreground">
+                                JPG, PNG, atau WebP. Maksimal 2 MB.
+                            </p>
+
+                            {photoError && (
+                                <p className="text-sm text-destructive">
+                                    {photoError}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </section>
+
+                <Separator />
+
+                {/* Statistik responden */}
+                <section className="space-y-3">
+                    <h3 className="font-medium">Statistik Responden</h3>
+
+                    <div className="grid gap-3 sm:grid-cols-3">
+                        <div className="space-y-2 rounded-lg border p-4">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <Star className="size-4" />
+                                <span className="text-sm">Skor Kualitas</span>
+                            </div>
+
+                            <p className="text-2xl font-semibold">
+                                {stats.qualityScore}%
+                            </p>
+
+                            <p className="text-xs text-muted-foreground">
+                                Sangat Baik
+                            </p>
+                        </div>
+
+                        <div className="space-y-2 rounded-lg border p-4">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <ClipboardList className="size-4" />
+                                <span className="text-sm">Survei Selesai</span>
+                            </div>
+
+                            <p className="text-2xl font-semibold">
+                                {stats.completedSurveys}
+                            </p>
+
+                            <p className="text-xs text-muted-foreground">
+                                Total survei
+                            </p>
+                        </div>
+
+                        <div className="space-y-2 rounded-lg border p-4">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <ShieldCheck className="size-4" />
+                                <span className="text-sm">Status Akun</span>
+                            </div>
+
+                            <p className="flex items-center gap-1.5 text-sm font-semibold">
+                                <CheckCircle2 className="size-4 text-green-600" />
+                                {stats.verificationStatus}
+                            </p>
+
+                            <p className="text-xs text-muted-foreground">
+                                Identitas telah diverifikasi
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <Separator className="my-4" />
+
+            {/* Form identitas */}
             <form
+                className="space-y-4"
                 onSubmit={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
                     form.handleSubmit();
                 }}
-                className="space-y-4"
             >
                 <form.Field name="name">
                     {(field) => (
@@ -64,13 +271,7 @@ export default function IdentityForm() {
                                     field.handleChange(event.target.value)
                                 }
                             />
-                            {field.state.meta.errors.map((error, index) => (
-                                <p className="text-sm text-red-500" key={index}>
-                                    {typeof error === "string"
-                                        ? error
-                                        : error?.message}
-                                </p>
-                            ))}
+                            <FieldErrors errors={field.state.meta.errors} />
                         </div>
                     )}
                 </form.Field>
@@ -89,20 +290,14 @@ export default function IdentityForm() {
                                     field.handleChange(event.target.value)
                                 }
                             />
-                            <p className="text-sm text-muted-foreground flex items-center space-x-1">
-                                <CheckCircle2 className="mr-1 inline size-4 w-3" />
-                                <span>
-                                    Email telah diverifikasi. Hubungi bantuan
-                                    jika perlu mengganti.
-                                </span>
+
+                            <p className="flex items-center gap-1 text-sm text-muted-foreground">
+                                <CheckCircle2 className="size-4 shrink-0" />
+                                Email telah diverifikasi. Hubungi bantuan jika
+                                perlu mengganti.
                             </p>
-                            {field.state.meta.errors.map((error, index) => (
-                                <p className="text-sm text-red-500" key={index}>
-                                    {typeof error === "string"
-                                        ? error
-                                        : error?.message}
-                                </p>
-                            ))}
+
+                            <FieldErrors errors={field.state.meta.errors} />
                         </div>
                     )}
                 </form.Field>
@@ -123,13 +318,7 @@ export default function IdentityForm() {
                                     field.handleChange(event.target.value)
                                 }
                             />
-                            {field.state.meta.errors.map((error, index) => (
-                                <p className="text-sm text-red-500" key={index}>
-                                    {typeof error === "string"
-                                        ? error
-                                        : error?.message}
-                                </p>
-                            ))}
+                            <FieldErrors errors={field.state.meta.errors} />
                         </div>
                     )}
                 </form.Field>
@@ -142,7 +331,7 @@ export default function IdentityForm() {
                             type="submit"
                             disabled={!canSubmit || isSubmitting}
                         >
-                            Simpan Perubahan
+                            {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
                         </Button>
                     )}
                 </form.Subscribe>
