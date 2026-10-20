@@ -25,7 +25,7 @@ export default function TntResponden() {
                             "Konsisten dan jujur dalam menjawab",
                         ].map((tip, index) => (
                             <li key={index} className="flex items-start gap-2">
-                                <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center text-green-600">
+                                <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center text-green-600">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="22"
@@ -42,7 +42,7 @@ export default function TntResponden() {
                                     </svg>
                                 </div>
 
-                                <span className="text-sm leading-relaxed text-slate-500">
+                                <span className="text-sm leading-relaxed text-muted-foreground">
                                     {tip}
                                 </span>
                             </li>
@@ -63,7 +63,7 @@ export default function TntResponden() {
                         </Card.CardTitle>
                     </div>
 
-                    <p className="text-sm text-slate-500 leading-relaxed">
+                    <p className="leading-relaxed text-muted-foreground">
                         Buka halaman Feed untuk filter lengkap dan rekomendasi
                         survei.
                     </p>

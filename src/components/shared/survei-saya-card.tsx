@@ -18,12 +18,7 @@ export default function SurveiSayaCard() {
                             Dibuat 2 Sep 2026
                         </p>
                     </div>
-                    <Badge
-                        variant="outline"
-                        className="shrink-0 border-green-200 bg-green-50 text-green-600"
-                    >
-                        Recruiting
-                    </Badge>
+                    <Badge>Recruiting</Badge>
                 </Card.CardHeader>
 
                 <Card.CardContent className="space-y-4">

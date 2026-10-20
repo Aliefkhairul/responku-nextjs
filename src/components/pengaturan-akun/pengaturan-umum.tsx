@@ -29,8 +29,10 @@ export default function PengaturanUmum() {
 
     return (
         <div>
-            <h2 className="text-lg font-semibold">Pengaturan Umum</h2>
-            <p className="text-muted-foreground">
+            <h3 className="text-xl font-semibold leading-snug">
+                Pengaturan Umum{" "}
+            </h3>
+            <p className="leading-relaxed text-muted-foreground">
                 Sesuaikan preferensi tampilan dan bahasa.
             </p>
 
@@ -39,7 +41,7 @@ export default function PengaturanUmum() {
             <div className="max-w-xl space-y-6">
                 <section className="space-y-2">
                     <Label htmlFor="language">Bahasa Aplikasi</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="leading-relaxed text-muted-foreground">
                         Pilih bahasa untuk antarmuka pengguna.
                     </p>
 
@@ -63,7 +65,7 @@ export default function PengaturanUmum() {
 
                 <section className="space-y-2">
                     <Label htmlFor="theme">Tema Tampilan</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="leading-relaxed text-muted-foreground">
                         Pilih mode tampilan yang nyaman di mata.
                     </p>
 
@@ -91,7 +93,7 @@ export default function PengaturanUmum() {
                 <section className="flex items-center justify-between gap-4">
                     <div className="space-y-1">
                         <Label htmlFor="compactMode">Mode Ringkas</Label>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="leading-relaxed text-muted-foreground">
                             Tampilkan lebih banyak konten dengan jarak antar
                             elemen lebih kecil.
                         </p>

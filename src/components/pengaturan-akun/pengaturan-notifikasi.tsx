@@ -72,8 +72,10 @@ export default function PengaturanNotifikasi() {
 
     return (
         <div>
-            <h2 className="text-lg font-semibold">Preferensi Notifikasi</h2>
-            <p className="text-muted-foreground">
+            <h3 className="text-xl font-semibold leading-snug">
+                Preferensi Notifikasi
+            </h3>
+            <p className="leading-relaxed text-muted-foreground">
                 Kontrol jenis notifikasi yang ingin Anda terima.
             </p>
 
@@ -81,7 +83,7 @@ export default function PengaturanNotifikasi() {
 
             <div className="max-w-xl space-y-6">
                 {notificationGroups.map((group, groupIndex) => (
-                    <section key={group.title} className="space-y-4">
+                    <section key={group.title} className="space-y-6">
                         <h3 className="font-medium">{group.title}</h3>
 
                         <div className="space-y-5">

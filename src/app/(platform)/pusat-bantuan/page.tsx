@@ -215,11 +215,11 @@ export default function Page() {
                 <section className="min-h-0 overflow-y-auto px-2 py-5 pb-16 md:pl-6">
                     {activeMenu === "new" && (
                         <div className="max-w-2xl">
-                            <h2 className="text-lg font-semibold">
+                            <h3 className="text-xl font-semibold leading-snug">
                                 Formulir Pengajuan Tiket
-                            </h2>
+                            </h3>
 
-                            <p className="mt-1 text-sm text-muted-foreground">
+                            <p className="leading-relaxed text-muted-foreground">
                                 Isi informasi berikut untuk mengajukan
                                 permohonan kepada tim kami.
                             </p>
@@ -373,7 +373,7 @@ export default function Page() {
                                     )}
                                 </form.Field>
 
-                                <div className="border-l-2 pl-4 text-sm text-muted-foreground">
+                                <div className="text-sm text-muted-foreground">
                                     <p className="font-medium text-foreground">
                                         Ketentuan Layanan Tiket
                                     </p>
@@ -423,20 +423,17 @@ export default function Page() {
                         <div>
                             <div className="flex flex-wrap items-start justify-between gap-3">
                                 <div>
-                                    <h2 className="text-lg font-semibold">
+                                    <h3 className="text-xl font-semibold leading-snug">
                                         Riwayat Tiket Saya
-                                    </h2>
+                                    </h3>
 
-                                    <p className="mt-1 text-sm text-muted-foreground">
+                                    <p className="leading-relaxed text-muted-foreground">
                                         Pantau status permohonan yang telah Anda
                                         kirim.
                                     </p>
                                 </div>
 
-                                <Button
-                                    size="sm"
-                                    onClick={() => setActiveMenu("new")}
-                                >
+                                <Button onClick={() => setActiveMenu("new")}>
                                     <PlusCircle className="size-4" />
                                     Buat Tiket Baru
                                 </Button>

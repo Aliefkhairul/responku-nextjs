@@ -38,14 +38,14 @@ const sessions = [
 export default function SesiAktif() {
     return (
         <div>
-            <h2 className="text-lg font-semibold">Sesi Aktif</h2>
-            <p className="text-muted-foreground">
+            <h3 className="text-xl font-semibold leading-snug">Sesi Aktif</h3>
+            <p className="leading-relaxed text-muted-foreground">
                 Tinjau perangkat yang digunakan untuk mengakses akun Anda.
             </p>
 
             <Separator className="my-4" />
 
-            <div className="max-w-2xl space-y-4">
+            <div className="max-w-2xl space-y-6">
                 {sessions.map((session, index) => {
                     const Icon = session.icon;
 

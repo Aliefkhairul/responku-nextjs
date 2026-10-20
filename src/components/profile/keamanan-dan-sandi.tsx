@@ -75,8 +75,10 @@ export default function KemananDanSandi() {
     return (
         <div>
             <div>
-                <h2 className="text-lg font-semibold">Ubah Kata Sandi</h2>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold leading-snug">
+                    Ubah Kata Sandi
+                </h3>
+                <p className="leading-relaxed text-muted-foreground">
                     Pastikan menggunakan kata sandi kuat dan unik untuk keamanan
                     akun.
                 </p>
@@ -90,7 +92,7 @@ export default function KemananDanSandi() {
                     event.stopPropagation();
                     form.handleSubmit();
                 }}
-                className="space-y-4"
+                className="space-y-6"
             >
                 <form.Field name="currentPassword">
                     {(field) => (

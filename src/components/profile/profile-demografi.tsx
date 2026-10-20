@@ -121,8 +121,10 @@ export default function ProfilDemografi() {
     return (
         <div>
             <div>
-                <h2 className="text-lg font-semibold">Profil Demografi</h2>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold leading-snug">
+                    Profil Demografi
+                </h3>
+                <p className="leading-relaxed text-muted-foreground">
                     Data digunakan untuk mencocokkan survei secara anonim tanpa
                     membuka identitas ke peneliti.
                 </p>
@@ -131,7 +133,7 @@ export default function ProfilDemografi() {
             <Separator className="my-4" />
 
             <form
-                className="space-y-4"
+                className="space-y-6"
                 onSubmit={(event) => {
                     event.preventDefault();
                     event.stopPropagation();

@@ -1,7 +1,7 @@
 "use client";
 
 import JelajahSurveiCard from "@/components/shared/jelajah-survei-card";
-import SaldoDompetAnda from "@/components/shared/saldo-dompet-anda";
+import SaldoDompetAndaCard from "@/components/shared/saldo-dompet-anda-card";
 import StatistikBasicCard from "@/components/shared/statistik-basic-card";
 import TntResponden from "@/components/shared/tnt-responden";
 import { Badge } from "@/components/ui/badge";
@@ -98,7 +98,7 @@ export default function DashboardMainColumnIndexRespondendPage() {
                 </div>
 
                 <div className="hidden lg:block sticky -top-3 self-start space-y-4">
-                    <SaldoDompetAnda />
+                    <SaldoDompetAndaCard />
                     <TntResponden />
                 </div>
             </div>

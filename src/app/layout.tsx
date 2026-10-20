@@ -22,6 +22,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <html
             lang="en"
             className={cn(
+                "dark",
                 "h-full",
                 "antialiased",
                 jakartaSans.variable,

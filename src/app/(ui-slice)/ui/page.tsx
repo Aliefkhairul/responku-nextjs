@@ -1,6 +1,6 @@
 import JelajahSurveiCard from "@/components/shared/jelajah-survei-card";
 import KerjakanSurveiCard from "@/components/shared/kerjakan-survei-card";
-import SaldoDompetAnda from "@/components/shared/saldo-dompet-anda";
+import SaldoDompetAnda from "@/components/shared/saldo-dompet-anda-card";
 import SebarKuesionerCard from "@/components/shared/sebar-kuesioner-card";
 import StatistikBasicCard from "@/components/shared/statistik-basic-card";
 import SurveiSayaCard from "@/components/shared/survei-saya-card";

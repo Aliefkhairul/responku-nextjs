@@ -1,15 +1,8 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import {
     DashboardStoreProvider,
@@ -18,12 +11,10 @@ import {
 import { cn } from "@/lib/utils";
 import {
     ArrowUpRightIcon,
-    CalendarIcon,
     CircleHelpIcon,
     LayoutDashboardIcon,
     MenuIcon,
     Microscope,
-    SearchIcon,
     SettingsIcon,
     UserCheckIcon,
     Wallet,
@@ -57,7 +48,7 @@ const menus: MenuItem[] = [
         label: "Buat Riset",
         icon: Microscope,
         highlight: true,
-        url: "dashboard/buat-riset",
+        url: "buat-riset",
     },
 ];
 const menus2nd: MenuItem[] = [
@@ -149,7 +140,6 @@ function LayoutChildren({
 }) {
     const [open, setOpen] = useState(true); // desktop: lebar / ciut
     const [mobileOpen, setMobileOpen] = useState(false); // mobile: turun / naik
-    const [date, setDate] = useState<Date | undefined>(undefined);
 
     // stores
     const userMode = useDashboardStore((s) => s.userMode);
@@ -165,7 +155,7 @@ function LayoutChildren({
                     mobileOpen ? "translate-y-0" : "-translate-y-full",
                     // desktop: kembali ke layout normal
                     "md:static md:z-auto md:h-full md:shrink-0 md:translate-y-0 md:overflow-hidden md:transition-all",
-                    open ? "md:w-64" : "md:w-16",
+                    open ? "md:w-64" : "md:w-15",
                 )}
             >
                 {/* title */}
@@ -173,7 +163,7 @@ function LayoutChildren({
                     <span
                         className={`text-lg font-bold whitespace-nowrap transition-opacity duration-200 ${open ? "opacity-100" : "md:opacity-0"}`}
                     >
-                        Responku
+                        {mobileOpen ? "R" : "Responku"}
                     </span>
 
                     <div className="flex items-center space-x-2">
@@ -275,17 +265,17 @@ function LayoutChildren({
                     </Button>
 
                     {/* search */}
-                    <div className="relative w-full min-w-0 max-w-sm">
+                    {/*<div className="relative w-full min-w-0 max-w-sm">
                         <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                         <Input
                             type="search"
                             placeholder="Cari..."
                             className="pl-9"
                         />
-                    </div>
+                    </div>*/}
 
                     {/* right actions */}
-                    <div className="ml-auto flex shrink-0 items-center gap-3">
+                    <div className="ml-auto flex shrink-0 items-center gap-6">
                         <div
                             className={`hidden lg:flex items-center space-x-2`}
                         >
@@ -300,7 +290,7 @@ function LayoutChildren({
                         </div>
 
                         {/* calendar */}
-                        <Popover>
+                        {/*<Popover>
                             <PopoverTrigger
                                 className={cn(
                                     buttonVariants({ variant: "outline" }),
@@ -325,7 +315,7 @@ function LayoutChildren({
                                     onSelect={setDate}
                                 />
                             </PopoverContent>
-                        </Popover>
+                        </Popover>*/}
 
                         {/* user */}
                         <Link

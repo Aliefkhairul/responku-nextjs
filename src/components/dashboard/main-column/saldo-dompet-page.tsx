@@ -29,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 const transactions = [
     {
@@ -185,7 +186,7 @@ export default function SaldoDompetPage() {
     const balance = 32;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div>
                 <h3 className="text-xl font-semibold leading-snug">
                     Dompet Akun
@@ -262,15 +263,18 @@ export default function SaldoDompetPage() {
 
                                     <div className="min-w-0 space-y-1">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <span
+                                            <Badge variant="secondary">
+                                                {transaction.category}
+                                            </Badge>
+                                            {/*<span
                                                 className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${
                                                     categoryStyles[
                                                         transaction.category
                                                     ]
                                                 }`}
                                             >
-                                                {transaction.category}
-                                            </span>
+
+                                            </span>*/}
                                             <p className="font-medium">
                                                 {transaction.description}
                                             </p>

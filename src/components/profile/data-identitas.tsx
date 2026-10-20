@@ -116,8 +116,10 @@ export default function IdentityForm() {
     return (
         <div>
             <div>
-                <h2 className="text-lg font-semibold">Informasi Dasar</h2>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold leading-snug">
+                    Informasi Dasar
+                </h3>
+                <p className="leading-relaxed text-muted-foreground">
                     Kelola foto, identitas, dan informasi akun Anda.
                 </p>
             </div>
@@ -127,7 +129,9 @@ export default function IdentityForm() {
             <div className="space-y-6">
                 {/* Foto profil */}
                 <section className="space-y-3">
-                    <h3 className="font-medium">Foto Profil</h3>
+                    <p className="leading-relaxed text-muted-foreground">
+                        Foto Profil
+                    </p>
 
                     <div className="flex flex-wrap items-center gap-4">
                         <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted">
@@ -195,7 +199,9 @@ export default function IdentityForm() {
 
                 {/* Statistik responden */}
                 <section className="space-y-3">
-                    <h3 className="font-medium">Statistik Responden</h3>
+                    <p className="leading-relaxed text-muted-foreground">
+                        Statistik Responden
+                    </p>
 
                     <div className="grid gap-3 sm:grid-cols-3">
                         <div className="space-y-2 rounded-lg border p-4">
@@ -251,7 +257,7 @@ export default function IdentityForm() {
 
             {/* Form identitas */}
             <form
-                className="space-y-4"
+                className="space-y-6"
                 onSubmit={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
