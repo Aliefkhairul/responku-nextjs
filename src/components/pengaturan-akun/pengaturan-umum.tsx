@@ -1,37 +1,35 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 
 export default function PengaturanUmum() {
-    const [language, setLanguage] = useState("id");
-    const [theme, setTheme] = useState("light");
-    const [compactMode, setCompactMode] = useState(false);
+    const [language, setLanguage] = useState('id')
+    const [theme, setTheme] = useState('light')
+    const [compactMode, setCompactMode] = useState(false)
 
     const handleSave = () => {
         console.log({
             language,
             theme,
             compactMode,
-        });
-    };
+        })
+    }
 
     return (
         <div>
-            <h3 className="text-xl font-semibold leading-snug">
-                Pengaturan Umum{" "}
-            </h3>
+            <h3 className="text-xl font-semibold leading-snug">Pengaturan Umum </h3>
             <p className="leading-relaxed text-muted-foreground">
                 Sesuaikan preferensi tampilan dan bahasa.
             </p>
@@ -48,7 +46,7 @@ export default function PengaturanUmum() {
                     <Select
                         value={language}
                         onValueChange={(value) => {
-                            if (value !== null) setLanguage(value);
+                            if (value !== null) setLanguage(value)
                         }}
                     >
                         <SelectTrigger id="language" className="w-full">
@@ -72,7 +70,7 @@ export default function PengaturanUmum() {
                     <Select
                         value={theme}
                         onValueChange={(value) => {
-                            if (value !== null) setTheme(value);
+                            if (value !== null) setTheme(value)
                         }}
                     >
                         <SelectTrigger id="theme" className="w-full">
@@ -94,8 +92,7 @@ export default function PengaturanUmum() {
                     <div className="space-y-1">
                         <Label htmlFor="compactMode">Mode Ringkas</Label>
                         <p className="leading-relaxed text-muted-foreground">
-                            Tampilkan lebih banyak konten dengan jarak antar
-                            elemen lebih kecil.
+                            Tampilkan lebih banyak konten dengan jarak antar elemen lebih kecil.
                         </p>
                     </div>
 
@@ -111,5 +108,5 @@ export default function PengaturanUmum() {
                 <Button onClick={handleSave}>Simpan Preferensi</Button>
             </div>
         </div>
-    );
+    )
 }

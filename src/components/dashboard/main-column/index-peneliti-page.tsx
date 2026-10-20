@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import StatistikBasicCard from "@/components/shared/statistik-basic-card";
-import SurveiSayaCard from "@/components/shared/survei-saya-card";
-import TntPeneliti from "@/components/shared/tnt-peneliti";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ArrowRightIcon } from "lucide-react";
-import Link from "next/link";
+import { ArrowRightIcon } from 'lucide-react'
+import Link from 'next/link'
+import StatistikBasicCard from '@/components/shared/statistik-basic-card'
+import SurveiSayaCard from '@/components/shared/survei-saya-card'
+import TntPeneliti from '@/components/shared/tnt-peneliti'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
 export default function DashboardMainColumnIndexPenelitiPage() {
     return (
@@ -14,12 +14,9 @@ export default function DashboardMainColumnIndexPenelitiPage() {
             {/*hello*/}
             <div className="space-y-4">
                 <div>
-                    <h3 className="text-xl font-semibold leading-snug">
-                        Selamat Malam Bulan
-                    </h3>
+                    <h3 className="text-xl font-semibold leading-snug">Selamat Malam Bulan</h3>
                     <p className="leading-relaxed text-muted-foreground">
-                        Pantau progres riset, kelola kuesioner, dan lihat
-                        insight dari responden.
+                        Pantau progres riset, kelola kuesioner, dan lihat insight dari responden.
                     </p>
                 </div>
 
@@ -54,9 +51,7 @@ export default function DashboardMainColumnIndexPenelitiPage() {
                 <div className="space-y-4">
                     <div className="flex justify-between">
                         <div>
-                            <h3 className="text-xl font-semibold leading-snug">
-                                Riset Saya
-                            </h3>
+                            <h3 className="text-xl font-semibold leading-snug">Riset Saya</h3>
                             <p className="leading-relaxed text-muted-foreground">
                                 4 Reset Ditemukan
                             </p>
@@ -103,5 +98,5 @@ export default function DashboardMainColumnIndexPenelitiPage() {
                 </div>
             </div>
         </div>
-    );
+    )
 }

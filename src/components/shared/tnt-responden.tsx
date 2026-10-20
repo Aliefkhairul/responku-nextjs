@@ -1,5 +1,5 @@
-import * as Card from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
+import * as Card from '@/components/ui/card'
 
 export default function TntResponden() {
     return (
@@ -19,10 +19,10 @@ export default function TntResponden() {
                     {/* List Tips */}
                     <ul className="space-y-3">
                         {[
-                            "Baca setiap pertanyaan dengan teliti",
-                            "Hindari pola jawaban seragam",
-                            "Jangan terlalu cepat (speeding)",
-                            "Konsisten dan jujur dalam menjawab",
+                            'Baca setiap pertanyaan dengan teliti',
+                            'Hindari pola jawaban seragam',
+                            'Jangan terlalu cepat (speeding)',
+                            'Konsisten dan jujur dalam menjawab',
                         ].map((tip, index) => (
                             <li key={index} className="flex items-start gap-2">
                                 <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center text-green-600">
@@ -64,8 +64,7 @@ export default function TntResponden() {
                     </div>
 
                     <p className="leading-relaxed text-muted-foreground">
-                        Buka halaman Feed untuk filter lengkap dan rekomendasi
-                        survei.
+                        Buka halaman Feed untuk filter lengkap dan rekomendasi survei.
                     </p>
 
                     <Button className="w-full">
@@ -88,5 +87,5 @@ export default function TntResponden() {
                 </Card.CardHeader>
             </Card.Card>
         </div>
-    );
+    )
 }

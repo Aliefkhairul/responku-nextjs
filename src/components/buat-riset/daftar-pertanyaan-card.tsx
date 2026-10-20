@@ -1,35 +1,16 @@
 "use client";
 
 import { useForm, useStore } from "@tanstack/react-form";
-import { useEffect, useRef } from "react";
 import { ArrowDown, ArrowUp, Copy, Plus, Trash2, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Field,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-    FieldLegend,
-    FieldSet,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 /* ========== Konstanta & tipe ========== */
@@ -53,34 +34,24 @@ type QuestionValue = {
     required: boolean;
 };
 
-const LIKERT_LABELS = [
-    "Sangat Tidak Setuju",
-    "Tidak Setuju",
-    "Netral",
-    "Setuju",
-    "Sangat Setuju",
-] as const;
+const LIKERT_LABELS = ["Sangat Tidak Setuju", "Tidak Setuju", "Netral", "Setuju", "Sangat Setuju"] as const;
 
 const MAX_QUESTIONS = 50;
 
 /* ========== Helper tipe pertanyaan ========== */
 
 /** Pilihan boleh ditambah/dihapus/diedit teksnya. */
-const isEditableOptions = (type: QuestionType) =>
-    type === "single" || type === "multiple";
+const isEditableOptions = (type: QuestionType) => type === "single" || type === "multiple";
 
 /** Pilihan tampil sebagai input read-only (tidak bisa diubah user). */
-const isFixedOptions = (type: QuestionType) =>
-    type === "likert" || type === "short";
+const isFixedOptions = (type: QuestionType) => type === "likert" || type === "short";
 
 /** Tampilkan indikator bulat/kotak di sebelah pilihan. */
-const hasIndicator = (type: QuestionType) =>
-    type === "single" || type === "multiple";
+const hasIndicator = (type: QuestionType) => type === "single" || type === "multiple";
 
 const isRoundIndicator = (type: QuestionType) => type === "single";
 
-const getTypeLabel = (type: QuestionType) =>
-    QUESTION_TYPES.find((t) => t.value === type)?.label ?? type;
+const getTypeLabel = (type: QuestionType) => QUESTION_TYPES.find((t) => t.value === type)?.label ?? type;
 
 const getOptionsLegend = (type: QuestionType) => {
     if (type === "short") return "Jawaban";
@@ -164,8 +135,7 @@ const questionSchema = z
         if (q.type === "short" && q.options.length !== 1) {
             ctx.addIssue({
                 code: "custom",
-                message:
-                    "Jawaban singkat hanya boleh memiliki 1 pilihan jawaban.",
+                message: "Jawaban singkat hanya boleh memiliki 1 pilihan jawaban.",
                 path: ["options"],
             });
         }
@@ -185,10 +155,7 @@ const questionSchema = z
     });
 
 const formSchema = z.object({
-    questions: z
-        .array(questionSchema)
-        .min(1, "Minimal 1 pertanyaan.")
-        .max(MAX_QUESTIONS, `Maksimal ${MAX_QUESTIONS} pertanyaan.`),
+    questions: z.array(questionSchema).min(1, "Minimal 1 pertanyaan.").max(MAX_QUESTIONS, `Maksimal ${MAX_QUESTIONS} pertanyaan.`),
 });
 
 /* ========== Form hook ========== */
@@ -209,9 +176,8 @@ function useQuestionnaireForm() {
 
 type QuestionnaireForm = ReturnType<typeof useQuestionnaireForm>;
 
-const isFieldInvalid = (field: {
-    state: { meta: { isTouched: boolean; isValid: boolean } };
-}) => field.state.meta.isTouched && !field.state.meta.isValid;
+const isFieldInvalid = (field: { state: { meta: { isTouched: boolean; isValid: boolean } } }) =>
+    field.state.meta.isTouched && !field.state.meta.isValid;
 
 /* ========== Komponen: editor pilihan jawaban ========== */
 
@@ -235,79 +201,37 @@ function OptionsEditor({ form, index, type }: OptionsEditorProps) {
 
                 return (
                     <FieldSet data-invalid={isInvalid}>
-                        <FieldLegend variant="label">
-                            {getOptionsLegend(type)}
-                        </FieldLegend>
+                        <FieldLegend variant="label">{getOptionsLegend(type)}</FieldLegend>
 
                         <div className="space-y-2">
                             {options.map((option, optionIndex) => (
-                                <div
-                                    key={option.id}
-                                    className="flex items-start space-x-2"
-                                >
+                                <div key={option.id} className="flex items-start space-x-2">
                                     {showIndicator && (
                                         <span
                                             aria-hidden
-                                            className={cn(
-                                                "mt-2.5 size-4 shrink-0 border border-input",
-                                                round
-                                                    ? "rounded-full"
-                                                    : "rounded-lg",
-                                            )}
+                                            className={cn("mt-2.5 size-4 shrink-0 border border-input", round ? "rounded-full" : "rounded-lg")}
                                         />
                                     )}
 
-                                    <form.Field
-                                        name={`questions[${index}].options[${optionIndex}].text`}
-                                    >
+                                    <form.Field name={`questions[${index}].options[${optionIndex}].text`}>
                                         {(field) => {
-                                            const isOptionInvalid =
-                                                isFieldInvalid(field);
+                                            const isOptionInvalid = isFieldInvalid(field);
                                             return (
-                                                <Field
-                                                    data-invalid={
-                                                        isOptionInvalid
-                                                    }
-                                                >
+                                                <Field data-invalid={isOptionInvalid}>
                                                     <Input
                                                         name={field.name}
                                                         aria-label={`Pilihan ${optionIndex + 1}`}
-                                                        value={
-                                                            field.state.value ??
-                                                            ""
-                                                        }
-                                                        onBlur={
-                                                            field.handleBlur
-                                                        }
-                                                        onChange={(e) =>
-                                                            field.handleChange(
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        aria-invalid={
-                                                            isOptionInvalid
-                                                        }
+                                                        value={field.state.value ?? ""}
+                                                        onBlur={field.handleBlur}
+                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                        aria-invalid={isOptionInvalid}
                                                         readOnly={fixed}
-                                                        className={cn(
-                                                            fixed &&
-                                                                "cursor-not-allowed bg-muted/50 text-muted-foreground",
-                                                        )}
+                                                        className={cn(fixed && "cursor-not-allowed bg-muted/50 text-muted-foreground")}
                                                         placeholder={
-                                                            type === "short"
-                                                                ? "Pengguna akan mengetikkan jawabannya"
-                                                                : `Pilihan ${optionIndex + 1}`
+                                                            type === "short" ? "Pengguna akan mengetikkan jawabannya" : `Pilihan ${optionIndex + 1}`
                                                         }
                                                     />
-                                                    {isOptionInvalid &&
-                                                        type !== "short" && (
-                                                            <FieldError
-                                                                errors={
-                                                                    field.state
-                                                                        .meta
-                                                                        .errors
-                                                                }
-                                                            />
-                                                        )}
+                                                    {isOptionInvalid && type !== "short" && <FieldError errors={field.state.meta.errors} />}
                                                 </Field>
                                             );
                                         }}
@@ -320,11 +244,7 @@ function OptionsEditor({ form, index, type }: OptionsEditorProps) {
                                             size="icon"
                                             aria-label={`Hapus pilihan ${optionIndex + 1}`}
                                             disabled={options.length <= 2}
-                                            onClick={() =>
-                                                optionsField.removeValue(
-                                                    optionIndex,
-                                                )
-                                            }
+                                            onClick={() => optionsField.removeValue(optionIndex)}
                                         >
                                             <X />
                                         </Button>
@@ -334,22 +254,12 @@ function OptionsEditor({ form, index, type }: OptionsEditorProps) {
                         </div>
 
                         {editable && (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() =>
-                                    optionsField.pushValue(createOption())
-                                }
-                            >
+                            <Button type="button" variant="outline" onClick={() => optionsField.pushValue(createOption())}>
                                 <Plus />
                                 Tambah Pilihan Jawaban
                             </Button>
                         )}
-                        {isInvalid && (
-                            <FieldError
-                                errors={optionsField.state.meta.errors}
-                            />
-                        )}
+                        {isInvalid && <FieldError errors={optionsField.state.meta.errors} />}
                     </FieldSet>
                 );
             }}
@@ -370,16 +280,7 @@ type QuestionCardProps = {
     onRemove: () => void;
 };
 
-function QuestionCard({
-    form,
-    question,
-    index,
-    total,
-    onMoveUp,
-    onMoveDown,
-    onCopy,
-    onRemove,
-}: QuestionCardProps) {
+function QuestionCard({ form, question, index, total, onMoveUp, onMoveDown, onCopy, onRemove }: QuestionCardProps) {
     const canCopy = total < MAX_QUESTIONS;
 
     // Sinkronkan pilihan jawaban setiap kali TIPE pertanyaan berubah.
@@ -394,20 +295,14 @@ function QuestionCard({
         const current = form.getFieldValue(path);
 
         // Pertahankan pilihan yang sudah diisi bila berpindah single <-> multiple.
-        const keepOptions =
-            isEditableOptions(question.type) &&
-            isEditableOptions(previous) &&
-            current.length >= 2;
+        const keepOptions = isEditableOptions(question.type) && isEditableOptions(previous) && current.length >= 2;
 
         if (!keepOptions) {
             form.setFieldValue(path, createOptionsFor(question.type));
         }
     }, [question.type, index, form]);
 
-    const handleTypeChange = (
-        value: string | null,
-        onChange: (type: QuestionType) => void,
-    ) => {
+    const handleTypeChange = (value: string | null, onChange: (type: QuestionType) => void) => {
         if (!value || value === question.type) return;
         onChange(value as QuestionType);
     };
@@ -427,29 +322,17 @@ function QuestionCard({
                                 const isInvalid = isFieldInvalid(field);
                                 return (
                                     <Field data-invalid={isInvalid}>
-                                        <FieldLabel
-                                            htmlFor={`question-${index}-text`}
-                                        >
-                                            Teks Pertanyaan
-                                        </FieldLabel>
+                                        <FieldLabel htmlFor={`question-${index}-text`}>Teks Pertanyaan</FieldLabel>
                                         <Input
                                             id={`question-${index}-text`}
                                             name={field.name}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
-                                            onChange={(e) =>
-                                                field.handleChange(
-                                                    e.target.value,
-                                                )
-                                            }
+                                            onChange={(e) => field.handleChange(e.target.value)}
                                             aria-invalid={isInvalid}
                                             placeholder="Tulis pertanyaan Anda di sini"
                                         />
-                                        {isInvalid && (
-                                            <FieldError
-                                                errors={field.state.meta.errors}
-                                            />
-                                        )}
+                                        {isInvalid && <FieldError errors={field.state.meta.errors} />}
                                     </Field>
                                 );
                             }}
@@ -459,38 +342,19 @@ function QuestionCard({
                         <form.Field name={`questions[${index}].type`}>
                             {(field) => (
                                 <Field>
-                                    <FieldLabel
-                                        htmlFor={`question-${index}-type`}
-                                    >
-                                        Tipe Pertanyaan
-                                    </FieldLabel>
+                                    <FieldLabel htmlFor={`question-${index}-type`}>Tipe Pertanyaan</FieldLabel>
                                     <Select
                                         name={field.name}
                                         value={field.state.value}
-                                        onValueChange={(value) =>
-                                            handleTypeChange(
-                                                value as string | null,
-                                                field.handleChange,
-                                            )
-                                        }
+                                        onValueChange={(value) => handleTypeChange(value as string | null, field.handleChange)}
                                     >
-                                        <SelectTrigger
-                                            id={`question-${index}-type`}
-                                            className="w-full"
-                                        >
+                                        <SelectTrigger id={`question-${index}-type`} className="w-full">
                                             {/* Tampilkan label, bukan value mentah ("short") */}
-                                            <SelectValue>
-                                                {getTypeLabel(
-                                                    field.state.value,
-                                                )}
-                                            </SelectValue>
+                                            <SelectValue>{getTypeLabel(field.state.value)}</SelectValue>
                                         </SelectTrigger>
                                         <SelectContent>
                                             {QUESTION_TYPES.map((type) => (
-                                                <SelectItem
-                                                    key={type.value}
-                                                    value={type.value}
-                                                >
+                                                <SelectItem key={type.value} value={type.value}>
                                                     {type.label}
                                                 </SelectItem>
                                             ))}
@@ -501,53 +365,28 @@ function QuestionCard({
                         </form.Field>
                     </div>
 
-                    <OptionsEditor
-                        key={`${question.id}-${question.type}`}
-                        form={form}
-                        index={index}
-                        type={question.type}
-                    />
+                    <OptionsEditor key={`${question.id}-${question.type}`} form={form} index={index} type={question.type} />
                 </FieldGroup>
             </CardContent>
 
             <CardFooter className="flex-wrap justify-between gap-2">
                 <div className="flex gap-2">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        disabled={index === 0}
-                        onClick={onMoveUp}
-                    >
+                    <Button type="button" variant="outline" disabled={index === 0} onClick={onMoveUp}>
                         <ArrowUp />
                         Atas
                     </Button>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        disabled={index === total - 1}
-                        onClick={onMoveDown}
-                    >
+                    <Button type="button" variant="outline" disabled={index === total - 1} onClick={onMoveDown}>
                         <ArrowDown />
                         Bawah
                     </Button>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        disabled={!canCopy}
-                        onClick={onCopy}
-                    >
+                    <Button type="button" variant="outline" disabled={!canCopy} onClick={onCopy}>
                         <Copy />
                         Salin
                     </Button>
-                    <Button
-                        type="button"
-                        variant="destructive"
-                        disabled={total === 1}
-                        onClick={onRemove}
-                    >
+                    <Button type="button" variant="destructive" disabled={total === 1} onClick={onRemove}>
                         <Trash2 />
                         Hapus
                     </Button>
@@ -559,15 +398,9 @@ function QuestionCard({
                                     id={`question-${index}-required`}
                                     name={field.name}
                                     checked={field.state.value}
-                                    onCheckedChange={(checked) =>
-                                        field.handleChange(checked === true)
-                                    }
+                                    onCheckedChange={(checked) => field.handleChange(checked === true)}
                                 />
-                                <FieldLabel
-                                    htmlFor={`question-${index}-required`}
-                                >
-                                    Wajib Dijawab
-                                </FieldLabel>
+                                <FieldLabel htmlFor={`question-${index}-required`}>Wajib Dijawab</FieldLabel>
                             </Field>
                         )}
                     </form.Field>
@@ -607,36 +440,20 @@ export default function DaftarPertanyaanCard() {
                                     question={question}
                                     index={index}
                                     total={total}
-                                    onMoveUp={() =>
-                                        questionsField.moveValue(
-                                            index,
-                                            index - 1,
-                                        )
-                                    }
-                                    onMoveDown={() =>
-                                        questionsField.moveValue(
-                                            index,
-                                            index + 1,
-                                        )
-                                    }
+                                    onMoveUp={() => questionsField.moveValue(index, index - 1)}
+                                    onMoveDown={() => questionsField.moveValue(index, index + 1)}
                                     onCopy={() => {
-                                        const current = form.getFieldValue(
-                                            `questions[${index}]`,
-                                        );
+                                        const current = form.getFieldValue(`questions[${index}]`);
                                         questionsField.insertValue(index + 1, {
                                             ...current,
                                             id: createId(),
-                                            options: current.options.map(
-                                                (o) => ({
-                                                    ...o,
-                                                    id: createId(),
-                                                }),
-                                            ),
+                                            options: current.options.map((o) => ({
+                                                ...o,
+                                                id: createId(),
+                                            })),
                                         });
                                     }}
-                                    onRemove={() =>
-                                        questionsField.removeValue(index)
-                                    }
+                                    onRemove={() => questionsField.removeValue(index)}
                                 />
                             ))}
 
@@ -644,26 +461,16 @@ export default function DaftarPertanyaanCard() {
                                 type="button"
                                 variant="outline"
                                 disabled={total >= MAX_QUESTIONS}
-                                onClick={() =>
-                                    questionsField.pushValue(createQuestion())
-                                }
+                                onClick={() => questionsField.pushValue(createQuestion())}
                             >
                                 <Plus />
                                 Tambah Pertanyaan ({total}/{MAX_QUESTIONS})
                             </Button>
 
-                            {questionsField.state.meta.errors.length > 0 && (
-                                <FieldError
-                                    errors={questionsField.state.meta.errors}
-                                />
-                            )}
+                            {questionsField.state.meta.errors.length > 0 && <FieldError errors={questionsField.state.meta.errors} />}
 
                             <Field orientation="horizontal">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => form.reset()}
-                                >
+                                <Button type="button" variant="outline" onClick={() => form.reset()}>
                                     Reset
                                 </Button>
                                 <Button type="submit">Simpan</Button>

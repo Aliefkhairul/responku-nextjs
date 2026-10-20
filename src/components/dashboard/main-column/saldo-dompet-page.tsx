@@ -1,62 +1,70 @@
-"use client";
+'use client'
 
-import { ArrowDownLeft, ArrowUpRight, Coins, History, Wallet } from "lucide-react";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { ArrowDownLeft, ArrowUpRight, Coins, History, Wallet } from 'lucide-react'
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 
 const transactions = [
     {
         id: 1,
-        category: "Reward Cair",
-        description: "Reward Jawaban Survei",
-        date: "20 Okt 2026, 09.06",
-        amount: "+0,8",
-        type: "income",
+        category: 'Reward Cair',
+        description: 'Reward Jawaban Survei',
+        date: '20 Okt 2026, 09.06',
+        amount: '+0,8',
+        type: 'income',
     },
     {
         id: 2,
-        category: "Reward Cair",
-        description: "Reward Jawaban Survei",
-        date: "19 Okt 2026, 09.06",
-        amount: "+1,6",
-        type: "income",
+        category: 'Reward Cair',
+        description: 'Reward Jawaban Survei',
+        date: '19 Okt 2026, 09.06',
+        amount: '+1,6',
+        type: 'income',
     },
     {
         id: 3,
-        category: "Top-up Saldo",
-        description: "Top-up Kuota Token",
-        date: "17 Okt 2026, 11.06",
-        amount: "+50",
-        type: "income",
+        category: 'Top-up Saldo',
+        description: 'Top-up Kuota Token',
+        date: '17 Okt 2026, 11.06',
+        amount: '+50',
+        type: 'income',
     },
     {
         id: 4,
-        category: "Cadangan Riset",
-        description: "Alokasi Cadangan Riset",
-        date: "17 Okt 2026, 11.06",
-        amount: "-50",
-        type: "expense",
+        category: 'Cadangan Riset',
+        description: 'Alokasi Cadangan Riset',
+        date: '17 Okt 2026, 11.06',
+        amount: '-50',
+        type: 'expense',
     },
-] as const;
+] as const
 
-function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
-    const [open, setOpen] = useState(false);
-    const [amount, setAmount] = useState("");
-    const isTopup = type === "topup";
+function TokenDialog({ type }: { type: 'topup' | 'withdraw' }) {
+    const [open, setOpen] = useState(false)
+    const [amount, setAmount] = useState('')
+    const isTopup = type === 'topup'
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        console.log({ type, amount: Number(amount) });
+        event.preventDefault()
+        console.log({ type, amount: Number(amount) })
 
-        setOpen(false);
-        setAmount("");
-    };
+        setOpen(false)
+        setAmount('')
+    }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -76,9 +84,11 @@ function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
 
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{isTopup ? "Top Up Token" : "Tarik Tunai"}</DialogTitle>
+                    <DialogTitle>{isTopup ? 'Top Up Token' : 'Tarik Tunai'}</DialogTitle>
                     <DialogDescription>
-                        {isTopup ? "Masukkan jumlah token yang ingin dibeli." : "Masukkan jumlah token yang ingin ditarik menjadi uang tunai."}
+                        {isTopup
+                            ? 'Masukkan jumlah token yang ingin dibeli.'
+                            : 'Masukkan jumlah token yang ingin ditarik menjadi uang tunai.'}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -100,11 +110,13 @@ function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
 
                     {amount && Number(amount) > 0 && (
                         <div className="rounded-lg bg-muted p-3">
-                            <p className="text-sm text-muted-foreground">{isTopup ? "Total pembayaran" : "Estimasi penarikan"}</p>
+                            <p className="text-sm text-muted-foreground">
+                                {isTopup ? 'Total pembayaran' : 'Estimasi penarikan'}
+                            </p>
                             <p className="text-lg font-semibold">
-                                {new Intl.NumberFormat("id-ID", {
-                                    style: "currency",
-                                    currency: "IDR",
+                                {new Intl.NumberFormat('id-ID', {
+                                    style: 'currency',
+                                    currency: 'IDR',
                                     maximumFractionDigits: 0,
                                 }).format(Number(amount) * 1000)}
                             </p>
@@ -116,23 +128,25 @@ function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
                             Batal
                         </Button>
                         <Button type="submit" disabled={!amount || Number(amount) <= 0}>
-                            {isTopup ? "Lanjutkan Top Up" : "Ajukan Penarikan"}
+                            {isTopup ? 'Lanjutkan Top Up' : 'Ajukan Penarikan'}
                         </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
         </Dialog>
-    );
+    )
 }
 
 export default function SaldoDompetPage() {
-    const balance = 32;
+    const balance = 32
 
     return (
         <div className="space-y-4">
             <div>
                 <h3 className="text-xl font-semibold leading-snug">Dompet Akun</h3>
-                <p className="text-muted-foreground">Kelola saldo token riset, top-up kuota, dan penarikan reward responden.</p>
+                <p className="text-muted-foreground">
+                    Kelola saldo token riset, top-up kuota, dan penarikan reward responden.
+                </p>
             </div>
 
             <Card>
@@ -144,17 +158,19 @@ export default function SaldoDompetPage() {
                         </div>
 
                         <div className="flex items-baseline gap-2">
-                            <span className="text-5xl font-bold tracking-tight text-emerald-600">{balance}</span>
+                            <span className="text-5xl font-bold tracking-tight text-emerald-600">
+                                {balance}
+                            </span>
                             <span className="text-xl font-semibold">Token</span>
                         </div>
 
                         <p className="text-muted-foreground">
-                            ≈{" "}
-                            {new Intl.NumberFormat("id-ID", {
-                                style: "currency",
-                                currency: "IDR",
+                            ≈{' '}
+                            {new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
                                 maximumFractionDigits: 0,
-                            }).format(balance * 1000)}{" "}
+                            }).format(balance * 1000)}{' '}
                             (1 Token = Rp1.000)
                         </p>
                     </div>
@@ -175,7 +191,9 @@ export default function SaldoDompetPage() {
                         </CardTitle>
                         <CardDescription>Catatan pergerakan saldo token akun Anda.</CardDescription>
                     </div>
-                    <span className="hidden text-sm text-muted-foreground sm:inline">Ledger Transparan</span>
+                    <span className="hidden text-sm text-muted-foreground sm:inline">
+                        Ledger Transparan
+                    </span>
                 </CardHeader>
 
                 <Separator />
@@ -186,7 +204,7 @@ export default function SaldoDompetPage() {
                             <div className="flex flex-col gap-3 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                                 <div className="flex min-w-0 items-start gap-2">
                                     <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
-                                        {transaction.type === "income" ? (
+                                        {transaction.type === 'income' ? (
                                             <ArrowDownLeft className="size-4 text-emerald-600" />
                                         ) : (
                                             <Coins className="size-4 text-amber-600" />
@@ -195,16 +213,22 @@ export default function SaldoDompetPage() {
 
                                     <div className="min-w-0 space-y-1">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <Badge variant="secondary">{transaction.category}</Badge>
+                                            <Badge variant="secondary">
+                                                {transaction.category}
+                                            </Badge>
                                             <p className="font-medium">{transaction.description}</p>
                                         </div>
-                                        <p className="text-sm text-muted-foreground">{transaction.date}</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {transaction.date}
+                                        </p>
                                     </div>
                                 </div>
 
                                 <p
                                     className={`shrink-0 pl-12 font-semibold tabular-nums sm:pl-0 ${
-                                        transaction.type === "income" ? "text-emerald-600" : "text-foreground"
+                                        transaction.type === 'income'
+                                            ? 'text-emerald-600'
+                                            : 'text-foreground'
                                     }`}
                                 >
                                     {transaction.amount} Token
@@ -217,5 +241,5 @@ export default function SaldoDompetPage() {
                 </CardContent>
             </Card>
         </div>
-    );
+    )
 }

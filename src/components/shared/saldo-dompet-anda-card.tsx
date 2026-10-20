@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import * as Card from "@/components/ui/card";
+import { Button } from '@/components/ui/button'
+import * as Card from '@/components/ui/card'
 
 export default function SaldoDompetAndaCard() {
     return (
@@ -8,12 +8,8 @@ export default function SaldoDompetAndaCard() {
                 <div className="flex flex-col gap-2">
                     <Card.CardTitle>Saldo Dompet Anda</Card.CardTitle>
                     <div className="flex flex-wrap items-baseline gap-2">
-                        <p className="text-3xl font-bold tracking-tight">
-                            Rp100.000
-                        </p>
-                        <span className="text-muted-foreground">
-                            (100,0 Token)
-                        </span>
+                        <p className="text-3xl font-bold tracking-tight">Rp100.000</p>
+                        <span className="text-muted-foreground">(100,0 Token)</span>
                     </div>
                 </div>
             </Card.CardHeader>
@@ -25,5 +21,5 @@ export default function SaldoDompetAndaCard() {
                 </Button>
             </Card.CardFooter>
         </Card.Card>
-    );
+    )
 }

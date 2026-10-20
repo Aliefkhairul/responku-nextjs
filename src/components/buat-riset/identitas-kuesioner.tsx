@@ -1,9 +1,9 @@
-"use client";
+'use client'
 
-import { useForm } from "@tanstack/react-form";
-import * as z from "zod";
+import { useForm } from '@tanstack/react-form'
+import * as z from 'zod'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
     Card,
     CardContent,
@@ -11,53 +11,47 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import {
-    Field,
-    FieldDescription,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/card'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "../ui/badge";
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '../ui/badge'
 
 const TOPIC_CATEGORIES = [
-    "Fintech & Perbankan",
-    "Konsumen & Retail",
-    "Pendidikan & Akademik",
-    "Kesehatan & Gaya Hidup",
-    "Teknologi & Internet",
-] as const;
+    'Fintech & Perbankan',
+    'Konsumen & Retail',
+    'Pendidikan & Akademik',
+    'Kesehatan & Gaya Hidup',
+    'Teknologi & Internet',
+] as const
 
 const formSchema = z.object({
     title: z
         .string()
-        .min(1, "Judul kuesioner wajib diisi.")
-        .max(120, "Judul maksimal 120 karakter."),
-    description: z.string().max(1000, "Deskripsi maksimal 1000 karakter."),
-    category: z.enum(TOPIC_CATEGORIES, "Pilih kategori topik."),
+        .min(1, 'Judul kuesioner wajib diisi.')
+        .max(120, 'Judul maksimal 120 karakter.'),
+    description: z.string().max(1000, 'Deskripsi maksimal 1000 karakter.'),
+    category: z.enum(TOPIC_CATEGORIES, 'Pilih kategori topik.'),
     estimatedMinutes: z
-        .number("Durasi harus berupa angka.")
-        .int("Durasi harus bilangan bulat.")
-        .min(1, "Minimal 1 menit.")
-        .max(180, "Maksimal 180 menit."),
-});
+        .number('Durasi harus berupa angka.')
+        .int('Durasi harus bilangan bulat.')
+        .min(1, 'Minimal 1 menit.')
+        .max(180, 'Maksimal 180 menit.'),
+})
 
 export default function IdentitasKuesioner() {
     const form = useForm({
         defaultValues: {
-            title: "",
-            description: "",
-            category: "" as (typeof TOPIC_CATEGORIES)[number],
+            title: '',
+            description: '',
+            category: '' as (typeof TOPIC_CATEGORIES)[number],
             estimatedMinutes: 10,
         },
         validators: {
@@ -65,9 +59,9 @@ export default function IdentitasKuesioner() {
         },
         onSubmit: async ({ value }) => {
             // TODO: kirim ke API
-            console.log(value);
+            console.log(value)
         },
-    });
+    })
 
     return (
         <Card className="w-full">
@@ -77,8 +71,7 @@ export default function IdentitasKuesioner() {
                         Identitas &amp; Konsep Kuesioner
                     </h3>
                     <p className="leading-relaxed text-muted-foreground">
-                        Informasi ini akan muncul di kartu feed calon responden
-                        Anda.
+                        Informasi ini akan muncul di kartu feed calon responden Anda.
                     </p>
                 </div>
 
@@ -88,8 +81,8 @@ export default function IdentitasKuesioner() {
                 <form
                     id="form-questionnaire-identity"
                     onSubmit={(e) => {
-                        e.preventDefault();
-                        form.handleSubmit();
+                        e.preventDefault()
+                        form.handleSubmit()
                     }}
                     className="space-y-4"
                 >
@@ -97,8 +90,7 @@ export default function IdentitasKuesioner() {
                     <form.Field name="title">
                         {(field) => {
                             const isInvalid =
-                                field.state.meta.isTouched &&
-                                !field.state.meta.isValid;
+                                field.state.meta.isTouched && !field.state.meta.isValid
                             return (
                                 <Field data-invalid={isInvalid}>
                                     <FieldLabel htmlFor="questionnaire-title">
@@ -109,19 +101,13 @@ export default function IdentitasKuesioner() {
                                         name={field.name}
                                         value={field.state.value}
                                         onBlur={field.handleBlur}
-                                        onChange={(e) =>
-                                            field.handleChange(e.target.value)
-                                        }
+                                        onChange={(e) => field.handleChange(e.target.value)}
                                         aria-invalid={isInvalid}
                                         placeholder="Contoh: Pengaruh QRIS terhadap perilaku belanja mahasiswa"
                                     />
-                                    {isInvalid && (
-                                        <FieldError
-                                            errors={field.state.meta.errors}
-                                        />
-                                    )}
+                                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                                 </Field>
-                            );
+                            )
                         }}
                     </form.Field>
 
@@ -129,8 +115,7 @@ export default function IdentitasKuesioner() {
                     <form.Field name="description">
                         {(field) => {
                             const isInvalid =
-                                field.state.meta.isTouched &&
-                                !field.state.meta.isValid;
+                                field.state.meta.isTouched && !field.state.meta.isValid
                             return (
                                 <Field data-invalid={isInvalid}>
                                     <FieldLabel htmlFor="questionnaire-description">
@@ -141,20 +126,14 @@ export default function IdentitasKuesioner() {
                                         name={field.name}
                                         value={field.state.value}
                                         onBlur={field.handleBlur}
-                                        onChange={(e) =>
-                                            field.handleChange(e.target.value)
-                                        }
+                                        onChange={(e) => field.handleChange(e.target.value)}
                                         aria-invalid={isInvalid}
                                         rows={5}
                                         placeholder="Jelaskan tujuan riset, institusi, dan bagaimana data responden akan digunakan."
                                     />
-                                    {isInvalid && (
-                                        <FieldError
-                                            errors={field.state.meta.errors}
-                                        />
-                                    )}
+                                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                                 </Field>
-                            );
+                            )
                         }}
                     </form.Field>
 
@@ -163,8 +142,7 @@ export default function IdentitasKuesioner() {
                         <form.Field name="category">
                             {(field) => {
                                 const isInvalid =
-                                    field.state.meta.isTouched &&
-                                    !field.state.meta.isValid;
+                                    field.state.meta.isTouched && !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
                                         <FieldLabel htmlFor="questionnaire-category">
@@ -188,25 +166,18 @@ export default function IdentitasKuesioner() {
                                                 <SelectValue placeholder="Pilih kategori topik" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {TOPIC_CATEGORIES.map(
-                                                    (category) => (
-                                                        <SelectItem
-                                                            key={category}
-                                                            value={category}
-                                                        >
-                                                            {category}
-                                                        </SelectItem>
-                                                    ),
-                                                )}
+                                                {TOPIC_CATEGORIES.map((category) => (
+                                                    <SelectItem key={category} value={category}>
+                                                        {category}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         {isInvalid && (
-                                            <FieldError
-                                                errors={field.state.meta.errors}
-                                            />
+                                            <FieldError errors={field.state.meta.errors} />
                                         )}
                                     </Field>
-                                );
+                                )
                             }}
                         </form.Field>
 
@@ -214,8 +185,7 @@ export default function IdentitasKuesioner() {
                         <form.Field name="estimatedMinutes">
                             {(field) => {
                                 const isInvalid =
-                                    field.state.meta.isTouched &&
-                                    !field.state.meta.isValid;
+                                    field.state.meta.isTouched && !field.state.meta.isValid
                                 return (
                                     <Field data-invalid={isInvalid}>
                                         <FieldLabel htmlFor="questionnaire-duration">
@@ -230,22 +200,16 @@ export default function IdentitasKuesioner() {
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
                                             onChange={(e) =>
-                                                field.handleChange(
-                                                    e.target.valueAsNumber,
-                                                )
+                                                field.handleChange(e.target.valueAsNumber)
                                             }
                                             aria-invalid={isInvalid}
                                         />
-                                        <FieldDescription>
-                                            Menit per responden.
-                                        </FieldDescription>
+                                        <FieldDescription>Menit per responden.</FieldDescription>
                                         {isInvalid && (
-                                            <FieldError
-                                                errors={field.state.meta.errors}
-                                            />
+                                            <FieldError errors={field.state.meta.errors} />
                                         )}
                                     </Field>
-                                );
+                                )
                             }}
                         </form.Field>
                     </div>
@@ -253,11 +217,7 @@ export default function IdentitasKuesioner() {
             </CardContent>
             <CardFooter>
                 <Field orientation="horizontal">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => form.reset()}
-                    >
+                    <Button type="button" variant="outline" onClick={() => form.reset()}>
                         Reset
                     </Button>
                     <Button type="submit" form="form-questionnaire-identity">
@@ -266,5 +226,5 @@ export default function IdentitasKuesioner() {
                 </Field>
             </CardFooter>
         </Card>
-    );
+    )
 }
