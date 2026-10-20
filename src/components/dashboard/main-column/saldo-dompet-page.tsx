@@ -1,35 +1,14 @@
 "use client";
 
+import { ArrowDownLeft, ArrowUpRight, Coins, History, Wallet } from "lucide-react";
 import { useState } from "react";
-import {
-    ArrowDownLeft,
-    ArrowUpRight,
-    Coins,
-    History,
-    Wallet,
-} from "lucide-react";
-
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 
 const transactions = [
     {
@@ -66,25 +45,14 @@ const transactions = [
     },
 ] as const;
 
-const categoryStyles = {
-    "Reward Cair": "border-emerald-200 bg-emerald-50 text-emerald-700",
-    "Top-up Saldo": "border-emerald-200 bg-emerald-50 text-emerald-700",
-    "Cadangan Riset": "border-amber-200 bg-amber-50 text-amber-700",
-};
-
 function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
     const [open, setOpen] = useState(false);
     const [amount, setAmount] = useState("");
-
     const isTopup = type === "topup";
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        console.log({
-            type,
-            amount: Number(amount),
-        });
+        console.log({ type, amount: Number(amount) });
 
         setOpen(false);
         setAmount("");
@@ -93,36 +61,24 @@ function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>
-                <Button
-                    className={
-                        isTopup
-                            ? "bg-blue-600 text-white hover:bg-blue-700"
-                            : "bg-emerald-600 text-white hover:bg-emerald-700"
-                    }
-                >
-                    {isTopup ? (
-                        <>
-                            <ArrowDownLeft />
-                            Top Up Token
-                        </>
-                    ) : (
-                        <>
-                            <ArrowUpRight />
-                            Tarik Tunai
-                        </>
-                    )}
-                </Button>
+                {isTopup ? (
+                    <Button nativeButton={false} variant="outline" render={<div />}>
+                        <ArrowDownLeft />
+                        <span>Top Up Token</span>
+                    </Button>
+                ) : (
+                    <Button nativeButton={false} render={<div />}>
+                        <ArrowUpRight />
+                        <span>Tarik Tunai</span>
+                    </Button>
+                )}
             </DialogTrigger>
 
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>
-                        {isTopup ? "Top Up Token" : "Tarik Tunai"}
-                    </DialogTitle>
+                    <DialogTitle>{isTopup ? "Top Up Token" : "Tarik Tunai"}</DialogTitle>
                     <DialogDescription>
-                        {isTopup
-                            ? "Masukkan jumlah token yang ingin dibeli."
-                            : "Masukkan jumlah token yang ingin ditarik menjadi uang tunai."}
+                        {isTopup ? "Masukkan jumlah token yang ingin dibeli." : "Masukkan jumlah token yang ingin ditarik menjadi uang tunai."}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -139,18 +95,12 @@ function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
                             onChange={(event) => setAmount(event.target.value)}
                             required
                         />
-                        <p className="text-sm text-muted-foreground">
-                            1 Token = Rp1.000
-                        </p>
+                        <p className="text-sm text-muted-foreground">1 Token = Rp1.000</p>
                     </div>
 
                     {amount && Number(amount) > 0 && (
                         <div className="rounded-lg bg-muted p-3">
-                            <p className="text-sm text-muted-foreground">
-                                {isTopup
-                                    ? "Total pembayaran"
-                                    : "Estimasi penarikan"}
-                            </p>
+                            <p className="text-sm text-muted-foreground">{isTopup ? "Total pembayaran" : "Estimasi penarikan"}</p>
                             <p className="text-lg font-semibold">
                                 {new Intl.NumberFormat("id-ID", {
                                     style: "currency",
@@ -162,17 +112,10 @@ function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
                     )}
 
                     <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setOpen(false)}
-                        >
+                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                             Batal
                         </Button>
-                        <Button
-                            type="submit"
-                            disabled={!amount || Number(amount) <= 0}
-                        >
+                        <Button type="submit" disabled={!amount || Number(amount) <= 0}>
                             {isTopup ? "Lanjutkan Top Up" : "Ajukan Penarikan"}
                         </Button>
                     </DialogFooter>
@@ -188,13 +131,8 @@ export default function SaldoDompetPage() {
     return (
         <div className="space-y-4">
             <div>
-                <h3 className="text-xl font-semibold leading-snug">
-                    Dompet Akun
-                </h3>
-                <p className="text-muted-foreground">
-                    Kelola saldo token riset, top-up kuota, dan penarikan reward
-                    responden.
-                </p>
+                <h3 className="text-xl font-semibold leading-snug">Dompet Akun</h3>
+                <p className="text-muted-foreground">Kelola saldo token riset, top-up kuota, dan penarikan reward responden.</p>
             </div>
 
             <Card>
@@ -206,9 +144,7 @@ export default function SaldoDompetPage() {
                         </div>
 
                         <div className="flex items-baseline gap-2">
-                            <span className="text-5xl font-bold tracking-tight text-emerald-600">
-                                {balance}
-                            </span>
+                            <span className="text-5xl font-bold tracking-tight text-emerald-600">{balance}</span>
                             <span className="text-xl font-semibold">Token</span>
                         </div>
 
@@ -237,23 +173,19 @@ export default function SaldoDompetPage() {
                             <History className="size-5" />
                             Riwayat Transaksi
                         </CardTitle>
-                        <CardDescription>
-                            Catatan pergerakan saldo token akun Anda.
-                        </CardDescription>
+                        <CardDescription>Catatan pergerakan saldo token akun Anda.</CardDescription>
                     </div>
-                    <span className="hidden text-sm text-muted-foreground sm:inline">
-                        Ledger Transparan
-                    </span>
+                    <span className="hidden text-sm text-muted-foreground sm:inline">Ledger Transparan</span>
                 </CardHeader>
 
                 <Separator />
 
-                <CardContent className="p-0">
+                <CardContent className="p-4">
                     {transactions.map((transaction, index) => (
                         <div key={transaction.id}>
                             <div className="flex flex-col gap-3 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                                <div className="flex min-w-0 items-start gap-3">
-                                    <div className="mt-1 flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
+                                <div className="flex min-w-0 items-start gap-2">
+                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
                                         {transaction.type === "income" ? (
                                             <ArrowDownLeft className="size-4 text-emerald-600" />
                                         ) : (
@@ -263,34 +195,16 @@ export default function SaldoDompetPage() {
 
                                     <div className="min-w-0 space-y-1">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <Badge variant="secondary">
-                                                {transaction.category}
-                                            </Badge>
-                                            {/*<span
-                                                className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${
-                                                    categoryStyles[
-                                                        transaction.category
-                                                    ]
-                                                }`}
-                                            >
-
-                                            </span>*/}
-                                            <p className="font-medium">
-                                                {transaction.description}
-                                            </p>
+                                            <Badge variant="secondary">{transaction.category}</Badge>
+                                            <p className="font-medium">{transaction.description}</p>
                                         </div>
-
-                                        <p className="text-sm text-muted-foreground">
-                                            {transaction.date}
-                                        </p>
+                                        <p className="text-sm text-muted-foreground">{transaction.date}</p>
                                     </div>
                                 </div>
 
                                 <p
                                     className={`shrink-0 pl-12 font-semibold tabular-nums sm:pl-0 ${
-                                        transaction.type === "income"
-                                            ? "text-emerald-600"
-                                            : "text-foreground"
+                                        transaction.type === "income" ? "text-emerald-600" : "text-foreground"
                                     }`}
                                 >
                                     {transaction.amount} Token

@@ -252,7 +252,7 @@ function OptionsEditor({ form, index, type }: OptionsEditorProps) {
                                                 "mt-2.5 size-4 shrink-0 border border-input",
                                                 round
                                                     ? "rounded-full"
-                                                    : "rounded-[4px]",
+                                                    : "rounded-lg",
                                             )}
                                         />
                                     )}

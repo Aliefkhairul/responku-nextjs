@@ -90,11 +90,8 @@ export default function Page() {
 
                 <section className="min-h-0 overflow-y-auto px-2 py-4 pb-16 md:pl-6">
                     {activeMenu === "Umum" && <PengaturanUmum />}
-
                     {activeMenu === "Notifikasi" && <PengaturanNotifikasi />}
-
                     {activeMenu === "Privasi & Keamanan" && <PrivasiKeamanan />}
-
                     {activeMenu === "Sesi Aktif" && <SesiAktif />}
                 </section>
             </main>

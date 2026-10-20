@@ -31,6 +31,7 @@ type MenuItem = {
     highlight?: boolean;
     url: string;
 };
+
 const menus: MenuItem[] = [
     { label: "Dashboard", icon: LayoutDashboardIcon, url: "dashboard" },
     {
@@ -51,6 +52,7 @@ const menus: MenuItem[] = [
         url: "buat-riset",
     },
 ];
+
 const menus2nd: MenuItem[] = [
     {
         label: "Pengaturan Akun",
@@ -65,6 +67,7 @@ const menus2nd: MenuItem[] = [
         url: "pusat-bantuan",
     },
 ];
+
 const user = {
     name: "John Doe",
     image: "",
@@ -138,8 +141,8 @@ function LayoutChildren({
     pathname: string;
     children: ReactNode;
 }) {
-    const [open, setOpen] = useState(true); // desktop: lebar / ciut
-    const [mobileOpen, setMobileOpen] = useState(false); // mobile: turun / naik
+    const [open, setOpen] = useState(true);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
     // stores
     const userMode = useDashboardStore((s) => s.userMode);
@@ -150,10 +153,8 @@ function LayoutChildren({
             {/* aside */}
             <aside
                 className={cn(
-                    // mobile: panel fixed dari atas
                     "fixed inset-x-0 top-0 z-50 h-dvh bg-background flex flex-col transition-transform duration-200 ease-in-out",
                     mobileOpen ? "translate-y-0" : "-translate-y-full",
-                    // desktop: kembali ke layout normal
                     "md:static md:z-auto md:h-full md:shrink-0 md:translate-y-0 md:overflow-hidden md:transition-all",
                     open ? "md:w-64" : "md:w-15",
                 )}

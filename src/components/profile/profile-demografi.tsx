@@ -3,7 +3,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Info } from "lucide-react";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -112,7 +111,6 @@ export default function ProfilDemografi() {
             onSubmit: demographicSchema,
         },
         onSubmit: async ({ value }) => {
-            // value bertipe DemographicFormInput, bukan hasil parse schema
             const parsed = demographicSchema.parse(value);
             console.log(parsed);
         },

@@ -1,11 +1,8 @@
 "use client";
 
-import JelajahSurveiCard from "@/components/shared/jelajah-survei-card";
-import SaldoDompetAnda from "@/components/shared/saldo-dompet-anda-card";
 import StatistikBasicCard from "@/components/shared/statistik-basic-card";
 import SurveiSayaCard from "@/components/shared/survei-saya-card";
 import TntPeneliti from "@/components/shared/tnt-peneliti";
-import TntResponden from "@/components/shared/tnt-responden";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRightIcon } from "lucide-react";

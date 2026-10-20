@@ -1,7 +1,6 @@
 import DaftarPertanyaanCard from "@/components/buat-riset/daftar-pertanyaan-card";
 import IdentitasKuesioner from "@/components/buat-riset/identitas-kuesioner";
 import KriteriaResponden from "@/components/buat-riset/kriteria-responden";
-import React from "react";
 
 export default function Page() {
     return (

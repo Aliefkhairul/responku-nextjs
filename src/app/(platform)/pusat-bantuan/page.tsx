@@ -44,7 +44,6 @@ type TicketFormValues = z.infer<typeof ticketSchema>;
 type TicketCategory = TicketFormValues["category"];
 type TicketStatus = "review" | "resolved" | "rejected";
 type ActiveMenu = "new" | "history";
-
 type Ticket = {
     id: string;
     category: string;
@@ -124,7 +123,6 @@ function MenuList({
 
 function FieldErrors({ errors }: { errors: unknown[] }) {
     if (!errors.length) return null;
-
     return (
         <p className="text-sm text-destructive">
             {errors
