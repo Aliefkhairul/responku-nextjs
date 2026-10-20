@@ -1,7 +1,7 @@
 import * as Card from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-export default function Tnt1() {
+export default function TntResponden() {
     return (
         <div className="flex w-full flex-col gap-4 items-center justify-center">
             {/* Card 1: Tips Quality Score */}
@@ -25,22 +25,24 @@ export default function Tnt1() {
                             "Konsisten dan jujur dalam menjawab",
                         ].map((tip, index) => (
                             <li key={index} className="flex items-start gap-2">
-                                <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-green-500 text-green-500">
+                                <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center text-green-600">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        width="14"
-                                        height="14"
+                                        width="22"
+                                        height="22"
                                         viewBox="0 0 24 24"
                                         fill="none"
                                         stroke="currentColor"
-                                        strokeWidth="2"
+                                        strokeWidth="1.8"
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                     >
-                                        <polyline points="20 6 9 17 4 12" />
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="m8 12 3 3 5-6" />
                                     </svg>
                                 </div>
-                                <span className="text-sm text-slate-500 leading-snug">
+
+                                <span className="text-sm leading-relaxed text-slate-500">
                                     {tip}
                                 </span>
                             </li>

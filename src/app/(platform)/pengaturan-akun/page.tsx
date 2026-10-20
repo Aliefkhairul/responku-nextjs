@@ -54,7 +54,7 @@ function MenuList({
     );
 }
 
-export default function PengaturanAkunPage() {
+export default function Page() {
     const [activeMenu, setActiveMenu] = useState("Umum");
 
     return (

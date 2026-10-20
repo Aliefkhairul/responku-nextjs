@@ -52,7 +52,7 @@ function MenuList({
     );
 }
 
-export default function Profile() {
+export default function Page() {
     const [activeMenu, setActiveMenu] = useState("Data Identitas");
 
     return (

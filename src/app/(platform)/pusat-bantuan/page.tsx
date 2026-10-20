@@ -141,7 +141,7 @@ function FieldErrors({ errors }: { errors: unknown[] }) {
     );
 }
 
-export default function PusatBantuanPage() {
+export default function Page() {
     const [activeMenu, setActiveMenu] = useState<ActiveMenu>("new");
     const [tickets, setTickets] = useState(initialTickets);
     const ticketIdPrefix = useId();

@@ -3,13 +3,15 @@
 import JelajahSurveiCard from "@/components/shared/jelajah-survei-card";
 import SaldoDompetAnda from "@/components/shared/saldo-dompet-anda";
 import StatistikBasicCard from "@/components/shared/statistik-basic-card";
-import Tnt1 from "@/components/shared/tnt1";
+import SurveiSayaCard from "@/components/shared/survei-saya-card";
+import TntPeneliti from "@/components/shared/tnt-peneliti";
+import TntResponden from "@/components/shared/tnt-responden";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 
-export default function DashboardIndexPage() {
+export default function DashboardMainColumnIndexPenelitiPage() {
     return (
         <div className="space-y-6">
             {/*hello*/}
@@ -19,16 +21,32 @@ export default function DashboardIndexPage() {
                         Selamat Malam Bulan
                     </h3>
                     <p className="leading-relaxed text-muted-foreground">
-                        Yuk lihat survei yang bisa kamu kerjakan hari ini dan
-                        dapatkan reward!
+                        Pantau progres riset, kelola kuesioner, dan lihat
+                        insight dari responden.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4">
-                    <StatistikBasicCard />
-                    <StatistikBasicCard />
-                    <StatistikBasicCard />
-                    <StatistikBasicCard />
+                    <StatistikBasicCard
+                        title="Saldo Token"
+                        statsNumber={250}
+                        footerTextContent="token tersedia"
+                    />
+                    <StatistikBasicCard
+                        title="Riset Aktif"
+                        statsNumber={2}
+                        footerTextContent="sedang berjalan"
+                    />
+                    <StatistikBasicCard
+                        title="Total Responden"
+                        statsNumber={130}
+                        footerTextContent="terkumpul"
+                    />
+                    <StatistikBasicCard
+                        title="Completion Rate"
+                        statsNumber={`85%`}
+                        footerTextContent="rata-rata"
+                    />
                 </div>
             </div>
 
@@ -40,10 +58,10 @@ export default function DashboardIndexPage() {
                     <div className="flex justify-between">
                         <div>
                             <h3 className="text-xl font-semibold leading-snug">
-                                Survei Tersedia
+                                Riset Saya
                             </h3>
                             <p className="leading-relaxed text-muted-foreground">
-                                4 Survei cocok dengan profilmu
+                                4 Reset Ditemukan
                             </p>
                         </div>
 
@@ -74,16 +92,17 @@ export default function DashboardIndexPage() {
                     </div>
 
                     <div className="space-y-4">
-                        <JelajahSurveiCard />
-                        <JelajahSurveiCard />
-                        <JelajahSurveiCard />
-                        <JelajahSurveiCard />
+                        <SurveiSayaCard />
+                        <SurveiSayaCard />
+                        <SurveiSayaCard />
+                        <SurveiSayaCard />
                     </div>
                 </div>
 
                 <div className="hidden lg:block sticky -top-3 self-start space-y-4">
-                    <SaldoDompetAnda />
-                    <Tnt1 />
+                    {/*<SaldoDompetAnda />*/}
+                    {/*<TntResponden />*/}
+                    <TntPeneliti />
                 </div>
             </div>
         </div>

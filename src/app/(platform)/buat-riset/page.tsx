@@ -1,3 +1,3 @@
-export default function BuatReset() {
-    return <div>BuatReset</div>;
+export default function Page() {
+    return <div>Page</div>;
 }

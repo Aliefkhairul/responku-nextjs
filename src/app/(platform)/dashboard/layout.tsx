@@ -11,6 +11,10 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
+import {
+    DashboardStoreProvider,
+    useDashboardStore,
+} from "@/lib/stores/dashboard-store-provider";
 import { cn } from "@/lib/utils";
 import {
     ArrowUpRightIcon,
@@ -36,7 +40,6 @@ type MenuItem = {
     highlight?: boolean;
     url: string;
 };
-
 const menus: MenuItem[] = [
     { label: "Dashboard", icon: LayoutDashboardIcon, url: "dashboard" },
     {
@@ -125,14 +128,32 @@ function MenuList({
     );
 }
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
-    const pathnames = pathname.split("/").filter((c) => c !== "");
 
+    return (
+        <DashboardStoreProvider>
+            <LayoutChildren pathname={pathname}>
+                <div className="w-full p-6 overflow-auto">{children}</div>
+            </LayoutChildren>
+        </DashboardStoreProvider>
+    );
+}
+
+function LayoutChildren({
+    pathname,
+    children,
+}: {
+    pathname: string;
+    children: ReactNode;
+}) {
     const [open, setOpen] = useState(true); // desktop: lebar / ciut
     const [mobileOpen, setMobileOpen] = useState(false); // mobile: turun / naik
     const [date, setDate] = useState<Date | undefined>(undefined);
-    const hideOnCollapse = open ? "opacity-100" : "md:opacity-0";
+
+    // stores
+    const userMode = useDashboardStore((s) => s.userMode);
+    const setMode = useDashboardStore((s) => s.setMode);
 
     return (
         <div className="w-full h-dvh flex md:divide-x overflow-hidden">
@@ -150,7 +171,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 {/* title */}
                 <div className="h-15 shrink-0 flex items-center justify-between px-6">
                     <span
-                        className={`text-lg font-bold whitespace-nowrap transition-opacity duration-200 ${hideOnCollapse}`}
+                        className={`text-lg font-bold whitespace-nowrap transition-opacity duration-200 ${open ? "opacity-100" : "md:opacity-0"}`}
                     >
                         Responku
                     </span>
@@ -159,8 +180,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                         <div
                             className={`items-center space-x-2 ${mobileOpen ? "flex" : "hidden"}`}
                         >
-                            <Switch id="airplane-mode" />
-                            <Label htmlFor="airplane-mode">Mode Peneliti</Label>
+                            <Switch
+                                id="user-mode"
+                                checked={userMode === "peneliti"}
+                                onCheckedChange={(checked) =>
+                                    setMode(checked ? "peneliti" : "responden")
+                                }
+                            />
+                            <Label htmlFor="user-mode">Mode Peneliti</Label>
                         </div>
 
                         <Button
@@ -186,7 +213,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                         items={menus}
                         open={open}
                         onItemClick={() => setMobileOpen(false)}
-                        pathnames={pathnames}
+                        pathnames={pathname.split("/").filter((c) => c !== "")}
                     />
 
                     {/* separator */}
@@ -196,7 +223,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                         items={menus2nd}
                         open={open}
                         onItemClick={() => setMobileOpen(false)}
-                        pathnames={pathnames}
+                        pathnames={pathname.split("/").filter((c) => c !== "")}
                     />
                 </nav>
 
@@ -213,7 +240,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                             </AvatarFallback>
                         </Avatar>
                         <span
-                            className={`text-sm font-medium whitespace-nowrap transition-opacity duration-200 ${hideOnCollapse}`}
+                            className={`text-sm font-medium whitespace-nowrap transition-opacity duration-200 ${open ? "opacity-100" : "md:opacity-0"}`}
                         >
                             {user.name}
                         </span>
@@ -262,8 +289,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                         <div
                             className={`hidden lg:flex items-center space-x-2`}
                         >
-                            <Switch id="airplane-mode" />
-                            <Label htmlFor="airplane-mode">Mode Peneliti</Label>
+                            <Switch
+                                id="user-mode"
+                                checked={userMode === "peneliti"}
+                                onCheckedChange={(checked) =>
+                                    setMode(checked ? "peneliti" : "responden")
+                                }
+                            />
+                            <Label htmlFor="user-mode">Mode Peneliti</Label>
                         </div>
 
                         {/* calendar */}
@@ -312,7 +345,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </div>
 
                 {/* main */}
-                <div className="w-full p-6 overflow-auto">{children}</div>
+                {children}
             </div>
         </div>
     );

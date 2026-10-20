@@ -181,7 +181,7 @@ function TokenDialog({ type }: { type: "topup" | "withdraw" }) {
     );
 }
 
-export default function SaldoDompet() {
+export default function SaldoDompetPage() {
     const balance = 32;
 
     return (

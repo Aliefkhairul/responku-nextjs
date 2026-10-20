@@ -1,5 +1,5 @@
-import SaldoDompet from "@/components/saldo-dompet/index-page";
+import SaldoDompetPage from "@/components/dashboard/main-column/saldo-dompet-page";
 
-export default function SaldoDompetPage() {
-    return <SaldoDompet />;
+export default function Page() {
+    return <SaldoDompetPage />;
 }
