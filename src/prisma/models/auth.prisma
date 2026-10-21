@@ -4,11 +4,16 @@ model User {
   email      String    @unique
   verifiedAt DateTime? @map("verified_at")
   image      String?
-  roles      String    @default("RESPONDENT")
+  roles      Json      @default("[\"user\"]")
 
-  profile  UserProfile?
-  account  Account?
-  sessions Session[]
+  profile       UserProfile?
+  account       Account?
+  sessions      Session[]
+  verifications Verification[]
+
+  deletedAt  DateTime? @map("deleted_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -17,19 +22,23 @@ model UserProfile {
   id     String @id @default(cuid())
   userId String @unique @map("user_id")
 
-  gender                 String?
-  religion               String?
-  religionConsentAt      DateTime? @map("religion_consent_at")
-  domicileProvince       String?   @map("domicile_province")
-  domicileCity           String?   @map("domicile_city")
-  domicileLat            Decimal?  @map("domicile_lat") @db.Decimal(9, 6)
-  domicileLng            Decimal?  @map("domicile_lng") @db.Decimal(9, 6)
-  domicileVerifiedAt     DateTime? @map("domicile_verified_at")
-  education              String?
-  occupation             String?
-  dataShareConsentAt     DateTime? @map("data_share_consent_at")
+  gender             String?
+  religion           String?
+  religionConsentAt  DateTime? @map("religion_consent_at")
+  domicileProvince   String?   @map("domicile_province")
+  domicileCity       String?   @map("domicile_city")
+  domicileLat        Decimal?  @map("domicile_lat") @db.Decimal(9, 6)
+  domicileLng        Decimal?  @map("domicile_lng") @db.Decimal(9, 6)
+  domicileVerifiedAt DateTime? @map("domicile_verified_at")
+  education          String?
+  occupation         String?
+  dataShareConsentAt DateTime? @map("data_share_consent_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@map("user_profiles")
 }
@@ -42,6 +51,10 @@ model Account {
   password   String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@unique([providerId, accountId])
   @@map("accounts")
@@ -57,6 +70,35 @@ model Session {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
   @@index([userId])
   @@map("sessions")
+}
+
+enum VerificationType {
+  ACCOUNT_VERIFICATION
+  PASSWORD_RESET
+  ORDER_CONFIRMATION
+}
+
+model Verification {
+  id        String                  @id @default(uuid())
+  userId    String                  @map("user_id")
+  type      VerificationType
+  tokenHash String                  @map("token_hash")
+  code      String?
+  expiredAt DateTime                @map("expired_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId, type])
+  @@index([expiredAt])
+  @@map("verifications")
 }
