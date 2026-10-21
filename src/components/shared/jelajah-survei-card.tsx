@@ -1,10 +1,20 @@
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import * as Card from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { Separator } from '@/components/ui/separator'
+"use client";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import * as Card from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 export default function JelajahSurveiCard() {
+    const researchName = "Survei Preferensi Penggunaan Aplikasi Finansial & Dompet Digital 2026"
+        .toLowerCase()
+        .trim()
+        .replace(/&/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
     return (
         <div className="flex w-full items-center justify-center">
             <Card.Card className="w-full">
@@ -20,12 +30,10 @@ export default function JelajahSurveiCard() {
 
                 <Card.CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <h3 className="text-xl font-semibold leading-snug">
-                            Survei Preferensi Penggunaan Aplikasi Finansial & Dompet Digital 2026
-                        </h3>
+                        <h3 className="text-xl font-semibold leading-snug">Survei Preferensi Penggunaan Aplikasi Finansial & Dompet Digital 2026</h3>
                         <p className="leading-relaxed text-muted-foreground">
-                            Riset pola transaksi nontunai, fitur transfer instan, dan kebiasaan
-                            menabung generasi muda Indonesia untuk keperluan skripsi ekonomi.
+                            Riset pola transaksi nontunai, fitur transfer instan, dan kebiasaan menabung generasi muda Indonesia untuk keperluan
+                            skripsi ekonomi.
                         </p>
                     </div>
 
@@ -49,9 +57,11 @@ export default function JelajahSurveiCard() {
                         <Progress value={82} className="w-full" />
                     </div>
 
-                    <Button className="w-full">Mulai Isi Kuesioner</Button>
+                    <Link href={`/riset/${researchName}`} className="w-full">
+                        <Button className="w-full">Mulai Isi Kuesioner</Button>
+                    </Link>
                 </Card.CardFooter>
             </Card.Card>
         </div>
-    )
+    );
 }
