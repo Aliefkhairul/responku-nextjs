@@ -1,15 +1,62 @@
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id         String    @id @default(cuid())
+  name       String
+  email      String    @unique
+  verifiedAt DateTime? @map("verified_at")
+  image      String?
+  roles      String    @default("RESPONDENT")
+
+  profile  UserProfile?
+  account  Account?
+  sessions Session[]
+
+  @@map("users")
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String? @db.Text
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model UserProfile {
+  id     String @id @default(cuid())
+  userId String @unique @map("user_id")
+
+  gender                 String?
+  religion               String?
+  religionConsentAt      DateTime? @map("religion_consent_at")
+  domicileProvince       String?   @map("domicile_province")
+  domicileCity           String?   @map("domicile_city")
+  domicileLat            Decimal?  @map("domicile_lat") @db.Decimal(9, 6)
+  domicileLng            Decimal?  @map("domicile_lng") @db.Decimal(9, 6)
+  domicileVerifiedAt     DateTime? @map("domicile_verified_at")
+  education              String?
+  occupation             String?
+  dataShareConsentAt     DateTime? @map("data_share_consent_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model Account {
+  id         String  @id @default(cuid())
+  userId     String  @unique @map("user_id")
+  accountId  String  @map("account_id")
+  providerId String  @map("provider_id")
+  password   String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("accounts")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
 }
