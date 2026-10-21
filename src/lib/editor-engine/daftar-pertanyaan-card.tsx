@@ -11,110 +11,18 @@ import { useForm } from "@tanstack/react-form";
 import { ArrowDown, ArrowUp, Coins, Eye, Pencil, Plus, Trash, X } from "lucide-react";
 import { useState } from "react";
 import z from "zod";
+import {
+    createAnswer,
+    createDefaultQuestion,
+    CriteriaSchema,
+    IdentitySchema,
+    MAX_AGE,
+    MIN_AGE,
+    QuestionSchema,
+    questionTypeItems,
+    useRisetEditorForm,
+} from "./riset-editor-schema";
 
-// IDENTITY SCHEMA
-const identitySchema = z.object({
-    title: z.string().min(1, "Judul kuesioner wajib diisi.").max(120, "Judul maksimal 120 karakter."),
-    description: z.string().max(1000, "Deskripsi maksimal 1000 karakter."),
-    category: z.enum(
-        ["Fintech & Perbankan", "Konsumen & Retail", "Pendidikan & Akademik", "Kesehatan & Gaya Hidup", "Teknologi & Internet"],
-        "Pilih kategori topik.",
-    ),
-    estimatedMinutes: z
-        .number("Durasi harus berupa angka.")
-        .int("Durasi harus bilangan bulat.")
-        .min(1, "Minimal 1 menit.")
-        .max(180, "Maksimal 180 menit."),
-});
-
-// CRITERIA SCHEMA
-const MIN_AGE = 18;
-const MAX_AGE = 80;
-const ageSchema = (label: string) =>
-    z
-        .number(`${label} harus berupa angka.`)
-        .int(`${label} harus bilangan bulat.`)
-        .min(MIN_AGE, `${label} minimal ${MIN_AGE} tahun.`)
-        .max(MAX_AGE, `${label} maksimal ${MAX_AGE} tahun.`);
-const criteriaSchema = z
-    .object({
-        ageMin: ageSchema("Usia minimum"),
-        ageMax: ageSchema("Usia maksimum"),
-        gender: z.enum(["all", "male", "female"]),
-        region: z.enum(["all", "jabodetabek", "jawa-lainnya", "luar-jawa"]),
-    })
-    .refine((data) => data.ageMin <= data.ageMax, {
-        message: "Usia maksimum tidak boleh lebih kecil dari usia minimum.",
-        path: ["ageMax"],
-    });
-
-// QUESTIONS SCHEMA
-const choiceSchema = z.object({
-    id: z.string().min(1),
-    pos: z.number().min(1),
-    n: z.string().min(1),
-    choiceText: z.string().min(1, "Jawaban wajib diisi"),
-});
-const baseQuestionSchema = z.object({
-    id: z.string().min(1),
-    pos: z.number().min(1),
-    question: z.string().min(1, "Pertanyaan wajib diisi"),
-    mustFill: z.boolean(),
-});
-const itemPilihan = [
-    { label: "Pilihan Tunggal", value: "single-answer" },
-    { label: "Pilihan Jamak", value: "multi-answer" },
-    { label: "Skala", value: "scale-answer" },
-    { label: "Jawaban Singkat", value: "essay-answer" },
-];
-const questionSchema = z
-    .array(
-        z.discriminatedUnion("questionType", [
-            baseQuestionSchema.extend({
-                questionType: z.literal("single-answer"),
-                choices: z.array(choiceSchema).min(2, "Pilihan ganda minimal 2 item"),
-            }),
-            baseQuestionSchema.extend({
-                questionType: z.literal("multi-answer"),
-                choices: z.array(choiceSchema).min(2, "Pilihan ganda minimal 2 item"),
-            }),
-            baseQuestionSchema.extend({
-                questionType: z.literal("scale-answer"),
-                choices: z.array(choiceSchema).min(2, "Skala minimal 2 item"),
-            }),
-            baseQuestionSchema.extend({
-                questionType: z.literal("essay-answer"),
-                choices: z.array(choiceSchema).max(1, "Essay maksimal 1 jawaban"),
-            }),
-        ]),
-    )
-    .min(1, "Pertanyaan minimal 1 item");
-type QuestionValues = z.infer<typeof questionSchema>;
-
-const createAnswer = (pos: number): QuestionValues[number]["choices"][number] => ({
-    id: crypto.randomUUID(),
-    pos,
-    n: String.fromCharCode(64 + pos), // 1 -> A, 2 -> B, ...
-    choiceText: "",
-});
-const createDefaultQuestion = (pos: number): QuestionValues[number] => ({
-    id: crypto.randomUUID(),
-    pos,
-    questionType: "single-answer",
-    question: "",
-    mustFill: false,
-    choices: [createAnswer(1), createAnswer(2)],
-});
-const normalize = (questions: QuestionValues): QuestionValues =>
-    questions.map((q, qi) => ({
-        ...q,
-        pos: qi + 1,
-        choices: q.choices.map((a, ai) => ({
-            ...a,
-            pos: ai + 1,
-            n: String.fromCharCode(65 + ai),
-        })),
-    }));
 const errorText = (errors: unknown[]) =>
     errors
         .map((e) => (e as { message?: string } | undefined)?.message)
@@ -152,38 +60,7 @@ function MenuList({ activeMenu, onMenuChange }: { activeMenu: string; onMenuChan
 // COMPONENTS
 export default function DaftarPertanyaanCard() {
     const [activeMenu, setActiveMenu] = useState("Alokasi Token"); // ← default ke menu baru
-    const [defaultValues] = useState(() => ({
-        identity: {
-            title: "",
-            description: "",
-            category: "Fintech & Perbankan" as z.infer<typeof identitySchema>["category"],
-            estimatedMinutes: 1,
-        },
-        criteria: {
-            ageMin: MIN_AGE,
-            ageMax: MAX_AGE,
-            gender: "all" as z.infer<typeof criteriaSchema>["gender"],
-            region: "all" as z.infer<typeof criteriaSchema>["region"],
-        },
-        questions: [createDefaultQuestion(1)],
-    }));
-    const form = useForm({
-        defaultValues,
-        validators: {
-            onChange: z.object({
-                identity: identitySchema,
-                criteria: criteriaSchema,
-                questions: questionSchema,
-            }),
-        },
-        onSubmit: async ({ value }) => {
-            console.log({
-                identity: value.identity,
-                criteria: value.criteria,
-                questions: normalize(value.questions),
-            });
-        },
-    });
+    const { form } = useRisetEditorForm();
 
     return (
         <main className="container2nd mx-auto mt-15 grid h-[calc(100dvh-60px)] grid-rows-[auto_1fr] md:grid-cols-[220px_minmax(0,1fr)] md:grid-rows-1">
@@ -454,7 +331,7 @@ export default function DaftarPertanyaanCard() {
                                                 <form.Field name={`questions[${i}].questionType`}>
                                                     {(f) => (
                                                         <Select
-                                                            items={itemPilihan}
+                                                            items={questionTypeItems}
                                                             value={f.state.value}
                                                             onValueChange={(val) => {
                                                                 if (!val) return;
@@ -477,7 +354,7 @@ export default function DaftarPertanyaanCard() {
                                                             <SelectContent>
                                                                 <SelectGroup>
                                                                     <SelectLabel>Tipe pertanyaan</SelectLabel>
-                                                                    {itemPilihan.map((item) => (
+                                                                    {questionTypeItems.map((item) => (
                                                                         <SelectItem key={item.value} value={item.value}>
                                                                             {item.label}
                                                                         </SelectItem>
@@ -680,9 +557,9 @@ function PreviewPanel({
     value,
 }: {
     value: {
-        identity: z.infer<typeof identitySchema>;
-        criteria: z.infer<typeof criteriaSchema>;
-        questions: QuestionValues;
+        identity: IdentitySchema;
+        criteria: CriteriaSchema;
+        questions: QuestionSchema;
     };
 }) {
     const categoryLabels: Record<string, string> = {
@@ -733,7 +610,9 @@ function PreviewPanel({
                             {qi + 1}. {q.question || "(Pertanyaan belum diisi)"}
                             {q.mustFill && <span className="ml-1 text-destructive">*</span>}
                         </Card.CardTitle>
-                        <Card.CardDescription>{itemPilihan.find((p) => p.value === q.questionType)?.label ?? q.questionType}</Card.CardDescription>
+                        <Card.CardDescription>
+                            {questionTypeItems.find((p) => p.value === q.questionType)?.label ?? q.questionType}
+                        </Card.CardDescription>
                     </Card.CardHeader>
 
                     <Card.CardContent className="space-y-2">
