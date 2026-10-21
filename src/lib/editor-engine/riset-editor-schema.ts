@@ -95,11 +95,11 @@ const questionSchema = z
 const questionSchemaDefaultValue: z.infer<typeof questionSchema> = [
     {
         id: crypto.randomUUID(),
-        pos: 0,
+        pos: 1,
         question: "seberapa sering anda berolahraga kardio, di hari libur?",
         mustFill: true,
         questionType: "single-answer",
-        choices: [{ id: crypto.randomUUID(), pos: 0, n: "a", choiceText: "sangat sering" }],
+        choices: [{ id: crypto.randomUUID(), pos: 1, n: "a", choiceText: "sangat sering" }],
     },
 ];
 
@@ -160,6 +160,7 @@ function useRisetEditorForm() {
             }),
         },
         onSubmit: async ({ value }) => {
+            console.log({ value });
             return { value };
         },
     });
@@ -182,3 +183,22 @@ export {
     questionSchemaDefaultValue,
 };
 export type { AlocationTokenSchema, CriteriaSchema, IdentitySchema, QuestionSchema, UseRisetEditorForm };
+
+export const genderItems = [
+    { value: "all", label: "Semua" },
+    { value: "male", label: "Laki-laki" },
+    { value: "female", label: "Perempuan" },
+];
+export const regionItems = [
+    { value: "all", label: "Seluruh Indonesia" },
+    { value: "jabodetabek", label: "Jabodetabek" },
+    { value: "jawa-lainnya", label: "Jawa (selain Jabodetabek)" },
+    { value: "luar-jawa", label: "Luar Jawa" },
+];
+export const categoryItems = [
+    "Fintech & Perbankan",
+    "Konsumen & Retail",
+    "Pendidikan & Akademik",
+    "Kesehatan & Gaya Hidup",
+    "Teknologi & Internet",
+].map((c) => ({ value: c, label: c }));
