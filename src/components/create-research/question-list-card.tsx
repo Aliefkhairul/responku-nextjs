@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import { useForm, useStore } from "@tanstack/react-form";
-import { ArrowDown, ArrowUp, Copy, Plus, Trash2, X } from "lucide-react";
-import { useEffect, useRef } from "react";
-import * as z from "zod";
+import { useForm, useStore } from "@tanstack/react-form"
+import { ArrowDown, ArrowUp, Copy, Plus, Trash2, X } from "lucide-react"
+import { useEffect, useRef } from "react"
+import * as z from "zod"
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { cn } from "@/lib/cn"
 
 /* ========== Konstanta & tipe ========== */
 
@@ -20,65 +20,65 @@ const QUESTION_TYPES = [
     { value: "multiple", label: "Kotak Centang (Multiple Choice)" },
     { value: "likert", label: "Skala Likert (Tingkat Persetujuan 1-5)" },
     { value: "short", label: "Jawaban Singkat (Esai Singkat)" },
-] as const;
+] as const
 
-type QuestionType = (typeof QUESTION_TYPES)[number]["value"];
+type QuestionType = (typeof QUESTION_TYPES)[number]["value"]
 
-type OptionValue = { id: string; text: string };
+type OptionValue = { id: string; text: string }
 
 type QuestionValue = {
-    id: string;
-    text: string;
-    type: QuestionType;
-    options: OptionValue[];
-    required: boolean;
-};
+    id: string
+    text: string
+    type: QuestionType
+    options: OptionValue[]
+    required: boolean
+}
 
-const LIKERT_LABELS = ["Sangat Tidak Setuju", "Tidak Setuju", "Netral", "Setuju", "Sangat Setuju"] as const;
+const LIKERT_LABELS = ["Sangat Tidak Setuju", "Tidak Setuju", "Netral", "Setuju", "Sangat Setuju"] as const
 
-const MAX_QUESTIONS = 50;
+const MAX_QUESTIONS = 50
 
 /* ========== Helper tipe pertanyaan ========== */
 
 /** Pilihan boleh ditambah/dihapus/diedit teksnya. */
-const isEditableOptions = (type: QuestionType) => type === "single" || type === "multiple";
+const isEditableOptions = (type: QuestionType) => type === "single" || type === "multiple"
 
 /** Pilihan tampil sebagai input read-only (tidak bisa diubah user). */
-const isFixedOptions = (type: QuestionType) => type === "likert" || type === "short";
+const isFixedOptions = (type: QuestionType) => type === "likert" || type === "short"
 
 /** Tampilkan indikator bulat/kotak di sebelah pilihan. */
-const hasIndicator = (type: QuestionType) => type === "single" || type === "multiple";
+const hasIndicator = (type: QuestionType) => type === "single" || type === "multiple"
 
-const isRoundIndicator = (type: QuestionType) => type === "single";
+const isRoundIndicator = (type: QuestionType) => type === "single"
 
-const getTypeLabel = (type: QuestionType) => QUESTION_TYPES.find((t) => t.value === type)?.label ?? type;
+const getTypeLabel = (type: QuestionType) => QUESTION_TYPES.find((t) => t.value === type)?.label ?? type
 
 const getOptionsLegend = (type: QuestionType) => {
-    if (type === "short") return "Jawaban";
-    if (type === "likert") return "Label Skala (1-5)";
-    return "Pilihan Jawaban";
-};
+    if (type === "short") return "Jawaban"
+    if (type === "likert") return "Label Skala (1-5)"
+    return "Pilihan Jawaban"
+}
 
 /* ========== Factory ========== */
 
 const createId = () => {
     if (typeof crypto !== "undefined" && crypto.randomUUID) {
-        return crypto.randomUUID();
+        return crypto.randomUUID()
     }
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-};
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+}
 
-const createOption = (text = ""): OptionValue => ({ id: createId(), text });
+const createOption = (text = ""): OptionValue => ({ id: createId(), text })
 
 const createOptionsFor = (type: QuestionType): OptionValue[] => {
     if (type === "likert") {
-        return LIKERT_LABELS.map((label) => createOption(label));
+        return LIKERT_LABELS.map((label) => createOption(label))
     }
     if (type === "short") {
-        return [createOption()];
+        return [createOption()]
     }
-    return [createOption(), createOption()];
-};
+    return [createOption(), createOption()]
+}
 
 const createQuestion = (type: QuestionType = "single"): QuestionValue => ({
     id: createId(),
@@ -86,7 +86,7 @@ const createQuestion = (type: QuestionType = "single"): QuestionValue => ({
     type,
     options: createOptionsFor(type),
     required: true,
-});
+})
 
 // ID statis agar render awal di server dan client sama (hindari hydration mismatch).
 const getInitialQuestions = (): QuestionValue[] => [
@@ -100,14 +100,14 @@ const getInitialQuestions = (): QuestionValue[] => [
         ],
         required: true,
     },
-];
+]
 
 /* ========== Schema ========== */
 
 const optionSchema = z.object({
     id: z.string(),
     text: z.string(),
-});
+})
 
 const questionSchema = z
     .object({
@@ -123,21 +123,21 @@ const questionSchema = z
                 code: "custom",
                 message: "Minimal 2 pilihan jawaban.",
                 path: ["options"],
-            });
+            })
         }
         if (q.type === "likert" && q.options.length !== 5) {
             ctx.addIssue({
                 code: "custom",
                 message: "Skala Likert harus memiliki 5 pilihan jawaban.",
                 path: ["options"],
-            });
+            })
         }
         if (q.type === "short" && q.options.length !== 1) {
             ctx.addIssue({
                 code: "custom",
                 message: "Jawaban singkat hanya boleh memiliki 1 pilihan jawaban.",
                 path: ["options"],
-            });
+            })
         }
 
         // Jawaban singkat memang kosong (diisi user saat menjawab).
@@ -148,15 +148,15 @@ const questionSchema = z
                         code: "custom",
                         message: "Pilihan jawaban tidak boleh kosong.",
                         path: ["options", i, "text"],
-                    });
+                    })
                 }
-            });
+            })
         }
-    });
+    })
 
 const formSchema = z.object({
     questions: z.array(questionSchema).min(1, "Minimal 1 pertanyaan.").max(MAX_QUESTIONS, `Maksimal ${MAX_QUESTIONS} pertanyaan.`),
-});
+})
 
 /* ========== Form hook ========== */
 
@@ -169,35 +169,35 @@ function useQuestionnaireForm() {
             onSubmit: formSchema,
         },
         onSubmit: async ({ value }) => {
-            console.log(value);
+            console.log(value)
         },
-    });
+    })
 }
 
-type QuestionnaireForm = ReturnType<typeof useQuestionnaireForm>;
+type QuestionnaireForm = ReturnType<typeof useQuestionnaireForm>
 
 const isFieldInvalid = (field: { state: { meta: { isTouched: boolean; isValid: boolean } } }) =>
-    field.state.meta.isTouched && !field.state.meta.isValid;
+    field.state.meta.isTouched && !field.state.meta.isValid
 
 /* ========== Komponen: editor pilihan jawaban ========== */
 
 type OptionsEditorProps = {
-    form: QuestionnaireForm;
-    index: number;
-    type: QuestionType;
-};
+    form: QuestionnaireForm
+    index: number
+    type: QuestionType
+}
 
 function OptionsEditor({ form, index, type }: OptionsEditorProps) {
-    const editable = isEditableOptions(type);
-    const fixed = isFixedOptions(type);
-    const showIndicator = hasIndicator(type);
-    const round = isRoundIndicator(type);
+    const editable = isEditableOptions(type)
+    const fixed = isFixedOptions(type)
+    const showIndicator = hasIndicator(type)
+    const round = isRoundIndicator(type)
 
     return (
         <form.Field name={`questions[${index}].options`} mode="array">
             {(optionsField) => {
-                const options = optionsField.state.value;
-                const isInvalid = isFieldInvalid(optionsField);
+                const options = optionsField.state.value
+                const isInvalid = isFieldInvalid(optionsField)
 
                 return (
                     <FieldSet data-invalid={isInvalid}>
@@ -215,7 +215,7 @@ function OptionsEditor({ form, index, type }: OptionsEditorProps) {
 
                                     <form.Field name={`questions[${index}].options[${optionIndex}].text`}>
                                         {(field) => {
-                                            const isOptionInvalid = isFieldInvalid(field);
+                                            const isOptionInvalid = isFieldInvalid(field)
                                             return (
                                                 <Field data-invalid={isOptionInvalid}>
                                                     <Input
@@ -233,7 +233,7 @@ function OptionsEditor({ form, index, type }: OptionsEditorProps) {
                                                     />
                                                     {isOptionInvalid && type !== "short" && <FieldError errors={field.state.meta.errors} />}
                                                 </Field>
-                                            );
+                                            )
                                         }}
                                     </form.Field>
 
@@ -261,51 +261,51 @@ function OptionsEditor({ form, index, type }: OptionsEditorProps) {
                         )}
                         {isInvalid && <FieldError errors={optionsField.state.meta.errors} />}
                     </FieldSet>
-                );
+                )
             }}
         </form.Field>
-    );
+    )
 }
 
 /* ========== Komponen: kartu satu pertanyaan ========== */
 
 type QuestionCardProps = {
-    form: QuestionnaireForm;
-    question: QuestionValue;
-    index: number;
-    total: number;
-    onMoveUp: () => void;
-    onMoveDown: () => void;
-    onCopy: () => void;
-    onRemove: () => void;
-};
+    form: QuestionnaireForm
+    question: QuestionValue
+    index: number
+    total: number
+    onMoveUp: () => void
+    onMoveDown: () => void
+    onCopy: () => void
+    onRemove: () => void
+}
 
 function QuestionCard({ form, question, index, total, onMoveUp, onMoveDown, onCopy, onRemove }: QuestionCardProps) {
-    const canCopy = total < MAX_QUESTIONS;
+    const canCopy = total < MAX_QUESTIONS
 
     // Sinkronkan pilihan jawaban setiap kali TIPE pertanyaan berubah.
     // prevType dipakai supaya efek tidak jalan saat render pertama.
-    const prevType = useRef<QuestionType>(question.type);
+    const prevType = useRef<QuestionType>(question.type)
     useEffect(() => {
-        const previous = prevType.current;
-        if (previous === question.type) return;
-        prevType.current = question.type;
+        const previous = prevType.current
+        if (previous === question.type) return
+        prevType.current = question.type
 
-        const path = `questions[${index}].options` as const;
-        const current = form.getFieldValue(path);
+        const path = `questions[${index}].options` as const
+        const current = form.getFieldValue(path)
 
         // Pertahankan pilihan yang sudah diisi bila berpindah single <-> multiple.
-        const keepOptions = isEditableOptions(question.type) && isEditableOptions(previous) && current.length >= 2;
+        const keepOptions = isEditableOptions(question.type) && isEditableOptions(previous) && current.length >= 2
 
         if (!keepOptions) {
-            form.setFieldValue(path, createOptionsFor(question.type));
+            form.setFieldValue(path, createOptionsFor(question.type))
         }
-    }, [question.type, index, form]);
+    }, [question.type, index, form])
 
     const handleTypeChange = (value: string | null, onChange: (type: QuestionType) => void) => {
-        if (!value || value === question.type) return;
-        onChange(value as QuestionType);
-    };
+        if (!value || value === question.type) return
+        onChange(value as QuestionType)
+    }
 
     return (
         <Card className="w-full">
@@ -319,7 +319,7 @@ function QuestionCard({ form, question, index, total, onMoveUp, onMoveDown, onCo
                         {/* Teks pertanyaan */}
                         <form.Field name={`questions[${index}].text`}>
                             {(field) => {
-                                const isInvalid = isFieldInvalid(field);
+                                const isInvalid = isFieldInvalid(field)
                                 return (
                                     <Field data-invalid={isInvalid}>
                                         <FieldLabel htmlFor={`question-${index}-text`}>Teks Pertanyaan</FieldLabel>
@@ -334,7 +334,7 @@ function QuestionCard({ form, question, index, total, onMoveUp, onMoveDown, onCo
                                         />
                                         {isInvalid && <FieldError errors={field.state.meta.errors} />}
                                     </Field>
-                                );
+                                )
                             }}
                         </form.Field>
 
@@ -407,26 +407,26 @@ function QuestionCard({ form, question, index, total, onMoveUp, onMoveDown, onCo
                 </div>
             </CardFooter>
         </Card>
-    );
+    )
 }
 
 /* ========== Komponen utama ========== */
 
 export default function QuestionListCard() {
-    const form = useQuestionnaireForm();
+    const form = useQuestionnaireForm()
 
     // Subscribe ke seluruh data pertanyaan supaya semua kartu ikut re-render
     // saat tipe/isi pertanyaan lain berubah.
-    const questions = useStore(form.store, (state) => state.values.questions);
-    const total = questions.length;
+    const questions = useStore(form.store, (state) => state.values.questions)
+    const total = questions.length
 
     return (
         <form
             id="form-questionnaire-builder"
             onSubmit={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                form.handleSubmit();
+                e.preventDefault()
+                e.stopPropagation()
+                form.handleSubmit()
             }}
         >
             <form.Field name="questions" mode="array">
@@ -443,7 +443,7 @@ export default function QuestionListCard() {
                                     onMoveUp={() => questionsField.moveValue(index, index - 1)}
                                     onMoveDown={() => questionsField.moveValue(index, index + 1)}
                                     onCopy={() => {
-                                        const current = form.getFieldValue(`questions[${index}]`);
+                                        const current = form.getFieldValue(`questions[${index}]`)
                                         questionsField.insertValue(index + 1, {
                                             ...current,
                                             id: createId(),
@@ -451,7 +451,7 @@ export default function QuestionListCard() {
                                                 ...o,
                                                 id: createId(),
                                             })),
-                                        });
+                                        })
                                     }}
                                     onRemove={() => questionsField.removeValue(index)}
                                 />
@@ -476,9 +476,9 @@ export default function QuestionListCard() {
                                 <Button type="submit">Simpan</Button>
                             </Field>
                         </FieldGroup>
-                    );
+                    )
                 }}
             </form.Field>
         </form>
-    );
+    )
 }
