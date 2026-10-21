@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 /** use service folder */
 /** by default user have a roles -> ["user"] */
 /** see lib/utils folders for helper function, example: otp verification */
+/** see lib/http-exeptions for helper */
 
 /** login */
 async function loginHandler(req: NextRequest) {
