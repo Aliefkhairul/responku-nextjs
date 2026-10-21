@@ -1,16 +1,15 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
-import { History, LayoutDashboard, PlusCircle } from "lucide-react";
-import Link from "next/link";
-import { useId, useState } from "react";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "@tanstack/react-form";
+import { History, PlusCircle } from "lucide-react";
+import { useId, useState } from "react";
+import { z } from "zod";
 
 const ticketSchema = z.object({
     category: z.enum(["dispute", "research", "transaction", "account", "other"]),
@@ -138,232 +137,205 @@ export default function Page() {
     });
 
     return (
-        <div className="h-dvh w-full overflow-hidden">
-            <header className="fixed inset-x-0 top-0 z-10 h-15 border-b bg-background px-2 md:px-0">
-                <nav className="container2nd mx-auto flex h-full items-center justify-between">
-                    <div className="flex h-4 items-center space-x-2">
-                        <Link href="/dashboard" className="whitespace-nowrap text-lg font-bold">
-                            Responku
-                        </Link>
+        <main className="container2nd mx-auto mt-15 grid h-[calc(100dvh-60px)] grid-rows-[auto_1fr] md:grid-cols-[240px_minmax(0,1fr)] md:grid-rows-1">
+            <aside className="min-h-0 border-b py-4 md:border-r md:border-b-0 md:py-4 md:pr-4">
+                <MenuList activeMenu={activeMenu} onMenuChange={setActiveMenu} />
+            </aside>
 
-                        <Separator orientation="vertical" />
+            <section className="min-h-0 overflow-y-auto px-2 py-5 pb-16 md:pl-4">
+                {activeMenu === "new" && (
+                    <div className="max-w-2xl">
+                        <h3 className="text-xl font-semibold leading-snug">Formulir Pengajuan Tiket</h3>
 
-                        <span className="leading-relaxed text-muted-foreground">Pusat Bantuan</span>
-                    </div>
+                        <p className="leading-relaxed text-muted-foreground">Isi informasi berikut untuk mengajukan permohonan kepada tim kami.</p>
 
-                    <Link href="/dashboard">
-                        <Button variant="outline">
-                            <LayoutDashboard className="size-4" />
-                            <span>Dashboard</span>
-                        </Button>
-                    </Link>
-                </nav>
-            </header>
+                        <form
+                            className="mt-6 space-y-6"
+                            noValidate
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                void form.handleSubmit();
+                            }}
+                        >
+                            <form.Field name="category">
+                                {(field) => (
+                                    <div className="space-y-2">
+                                        <Label htmlFor={field.name}>Kategori Permasalahan</Label>
 
-            <main className="container2nd mx-auto mt-15 grid h-[calc(100dvh-60px)] grid-rows-[auto_1fr] md:grid-cols-[240px_minmax(0,1fr)] md:grid-rows-1">
-                <aside className="min-h-0 border-b py-4 md:border-r md:border-b-0 md:py-4 md:pr-4">
-                    <MenuList activeMenu={activeMenu} onMenuChange={setActiveMenu} />
-                </aside>
+                                        <Select
+                                            value={field.state.value}
+                                            onValueChange={(value) => {
+                                                if (value !== null) {
+                                                    field.handleChange(value as TicketCategory);
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger id={field.name} className="w-full">
+                                                <SelectValue placeholder="Pilih kategori" />
+                                            </SelectTrigger>
 
-                <section className="min-h-0 overflow-y-auto px-2 py-5 pb-16 md:pl-4">
-                    {activeMenu === "new" && (
-                        <div className="max-w-2xl">
-                            <h3 className="text-xl font-semibold leading-snug">Formulir Pengajuan Tiket</h3>
+                                            <SelectContent>
+                                                <SelectItem value="dispute">Banding Penolakan Jawaban Survei (Dispute)</SelectItem>
+                                                <SelectItem value="research">Klarifikasi Riset</SelectItem>
+                                                <SelectItem value="transaction">Kendala Transaksi</SelectItem>
+                                                <SelectItem value="account">Kendala Akun</SelectItem>
+                                                <SelectItem value="other">Permasalahan Lainnya</SelectItem>
+                                            </SelectContent>
+                                        </Select>
 
-                            <p className="leading-relaxed text-muted-foreground">
-                                Isi informasi berikut untuk mengajukan permohonan kepada tim kami.
-                            </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Pilih kategori yang paling sesuai agar permohonan dapat diteruskan ke tim terkait.
+                                        </p>
 
-                            <form
-                                className="mt-6 space-y-6"
-                                noValidate
-                                onSubmit={(event) => {
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                    void form.handleSubmit();
-                                }}
-                            >
-                                <form.Field name="category">
-                                    {(field) => (
-                                        <div className="space-y-2">
-                                            <Label htmlFor={field.name}>Kategori Permasalahan</Label>
+                                        <FieldErrors errors={field.state.meta.errors} />
+                                    </div>
+                                )}
+                            </form.Field>
 
-                                            <Select
-                                                value={field.state.value}
-                                                onValueChange={(value) => {
-                                                    if (value !== null) {
-                                                        field.handleChange(value as TicketCategory);
-                                                    }
-                                                }}
-                                            >
-                                                <SelectTrigger id={field.name} className="w-full">
-                                                    <SelectValue placeholder="Pilih kategori" />
-                                                </SelectTrigger>
+                            <form.Field name="subject">
+                                {(field) => (
+                                    <div className="space-y-2">
+                                        <Label htmlFor={field.name}>Subjek Permohonan</Label>
 
-                                                <SelectContent>
-                                                    <SelectItem value="dispute">Banding Penolakan Jawaban Survei (Dispute)</SelectItem>
-                                                    <SelectItem value="research">Klarifikasi Riset</SelectItem>
-                                                    <SelectItem value="transaction">Kendala Transaksi</SelectItem>
-                                                    <SelectItem value="account">Kendala Akun</SelectItem>
-                                                    <SelectItem value="other">Permasalahan Lainnya</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                        <Input
+                                            id={field.name}
+                                            name={field.name}
+                                            value={field.state.value}
+                                            onBlur={field.handleBlur}
+                                            onChange={(event) => field.handleChange(event.target.value)}
+                                            placeholder="Contoh: Permohonan review manual respon survei"
+                                            maxLength={150}
+                                            aria-invalid={field.state.meta.errors.length > 0}
+                                        />
 
-                                            <p className="text-sm text-muted-foreground">
-                                                Pilih kategori yang paling sesuai agar permohonan dapat diteruskan ke tim terkait.
-                                            </p>
-
+                                        <div className="flex items-start justify-between gap-3">
                                             <FieldErrors errors={field.state.meta.errors} />
+
+                                            <span className="shrink-0 text-xs text-muted-foreground">
+                                                {field.state.value.length}
+                                                /150
+                                            </span>
                                         </div>
-                                    )}
-                                </form.Field>
+                                    </div>
+                                )}
+                            </form.Field>
 
-                                <form.Field name="subject">
-                                    {(field) => (
-                                        <div className="space-y-2">
-                                            <Label htmlFor={field.name}>Subjek Permohonan</Label>
+                            <form.Field name="description">
+                                {(field) => (
+                                    <div className="space-y-2">
+                                        <Label htmlFor={field.name}>Penjelasan Detail Permasalahan</Label>
 
-                                            <Input
-                                                id={field.name}
-                                                name={field.name}
-                                                value={field.state.value}
-                                                onBlur={field.handleBlur}
-                                                onChange={(event) => field.handleChange(event.target.value)}
-                                                placeholder="Contoh: Permohonan review manual respon survei"
-                                                maxLength={150}
-                                                aria-invalid={field.state.meta.errors.length > 0}
-                                            />
+                                        <Textarea
+                                            id={field.name}
+                                            name={field.name}
+                                            value={field.state.value}
+                                            onBlur={field.handleBlur}
+                                            onChange={(event) => field.handleChange(event.target.value)}
+                                            placeholder="Jelaskan alasan permohonan banding atau kendala yang dialami secara rinci..."
+                                            className="min-h-40 resize-y"
+                                            maxLength={5000}
+                                            aria-invalid={field.state.meta.errors.length > 0}
+                                        />
 
-                                            <div className="flex items-start justify-between gap-3">
-                                                <FieldErrors errors={field.state.meta.errors} />
+                                        <div className="flex items-start justify-between gap-3">
+                                            <FieldErrors errors={field.state.meta.errors} />
 
-                                                <span className="shrink-0 text-xs text-muted-foreground">
-                                                    {field.state.value.length}
-                                                    /150
-                                                </span>
-                                            </div>
+                                            <span className="shrink-0 text-xs text-muted-foreground">
+                                                {field.state.value.length}
+                                                /5000
+                                            </span>
                                         </div>
+                                    </div>
+                                )}
+                            </form.Field>
+
+                            <div className="text-sm text-muted-foreground">
+                                <p className="font-medium text-foreground">Ketentuan Layanan Tiket</p>
+
+                                <ul className="mt-2 list-disc space-y-1 pl-5">
+                                    <li>Permohonan diproses dengan estimasi maksimal 48 jam kerja.</li>
+                                    <li>Keputusan peninjauan mengikuti pedoman kualitas data dan log pengisian kuesioner.</li>
+                                </ul>
+                            </div>
+
+                            <Separator />
+
+                            <div className="flex justify-end">
+                                <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                                    {([canSubmit, isSubmitting]) => (
+                                        <Button type="submit" disabled={!canSubmit || isSubmitting}>
+                                            <PlusCircle className="size-4" />
+                                            {isSubmitting ? "Mengirim..." : "Kirim Permohonan Tiket"}
+                                        </Button>
                                     )}
-                                </form.Field>
+                                </form.Subscribe>
+                            </div>
+                        </form>
+                    </div>
+                )}
 
-                                <form.Field name="description">
-                                    {(field) => (
-                                        <div className="space-y-2">
-                                            <Label htmlFor={field.name}>Penjelasan Detail Permasalahan</Label>
+                {activeMenu === "history" && (
+                    <div>
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <h3 className="text-xl font-semibold leading-snug">Riwayat Tiket Saya</h3>
 
-                                            <Textarea
-                                                id={field.name}
-                                                name={field.name}
-                                                value={field.state.value}
-                                                onBlur={field.handleBlur}
-                                                onChange={(event) => field.handleChange(event.target.value)}
-                                                placeholder="Jelaskan alasan permohonan banding atau kendala yang dialami secara rinci..."
-                                                className="min-h-40 resize-y"
-                                                maxLength={5000}
-                                                aria-invalid={field.state.meta.errors.length > 0}
-                                            />
+                                <p className="leading-relaxed text-muted-foreground">Pantau status permohonan yang telah Anda kirim.</p>
+                            </div>
 
-                                            <div className="flex items-start justify-between gap-3">
-                                                <FieldErrors errors={field.state.meta.errors} />
-
-                                                <span className="shrink-0 text-xs text-muted-foreground">
-                                                    {field.state.value.length}
-                                                    /5000
-                                                </span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </form.Field>
-
-                                <div className="text-sm text-muted-foreground">
-                                    <p className="font-medium text-foreground">Ketentuan Layanan Tiket</p>
-
-                                    <ul className="mt-2 list-disc space-y-1 pl-5">
-                                        <li>Permohonan diproses dengan estimasi maksimal 48 jam kerja.</li>
-                                        <li>Keputusan peninjauan mengikuti pedoman kualitas data dan log pengisian kuesioner.</li>
-                                    </ul>
-                                </div>
-
-                                <Separator />
-
-                                <div className="flex justify-end">
-                                    <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-                                        {([canSubmit, isSubmitting]) => (
-                                            <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                                                <PlusCircle className="size-4" />
-                                                {isSubmitting ? "Mengirim..." : "Kirim Permohonan Tiket"}
-                                            </Button>
-                                        )}
-                                    </form.Subscribe>
-                                </div>
-                            </form>
+                            <Button onClick={() => setActiveMenu("new")}>
+                                <PlusCircle className="size-4" />
+                                Buat Tiket Baru
+                            </Button>
                         </div>
-                    )}
 
-                    {activeMenu === "history" && (
-                        <div>
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                                <div>
-                                    <h3 className="text-xl font-semibold leading-snug">Riwayat Tiket Saya</h3>
+                        <Separator className="my-5" />
 
-                                    <p className="leading-relaxed text-muted-foreground">Pantau status permohonan yang telah Anda kirim.</p>
-                                </div>
+                        {tickets.length > 0 ? (
+                            <div className="divide-y">
+                                {tickets.map((ticket) => (
+                                    <article key={ticket.id} className="py-5 first:pt-0">
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                            <div className="min-w-0">
+                                                <p className="text-xs text-muted-foreground">
+                                                    Tiket #{ticket.id}
+                                                    {" · "}
+                                                    {ticket.date}
+                                                </p>
 
-                                <Button onClick={() => setActiveMenu("new")}>
-                                    <PlusCircle className="size-4" />
+                                                <h3 className="mt-2 font-semibold">{ticket.subject}</h3>
+
+                                                <p className="mt-1 text-sm text-muted-foreground">{ticket.category}</p>
+                                            </div>
+
+                                            <span
+                                                className={`w-fit shrink-0 rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[ticket.status]}`}
+                                            >
+                                                {statusLabels[ticket.status]}
+                                            </span>
+                                        </div>
+
+                                        <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{ticket.description}</p>
+                                    </article>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="py-12 text-center">
+                                <History className="mx-auto size-8 text-muted-foreground" />
+
+                                <p className="mt-3 font-medium">Belum ada tiket</p>
+
+                                <p className="mt-1 text-sm text-muted-foreground">Tiket yang Anda kirim akan muncul di sini.</p>
+
+                                <Button className="mt-4" variant="outline" onClick={() => setActiveMenu("new")}>
                                     Buat Tiket Baru
                                 </Button>
                             </div>
-
-                            <Separator className="my-5" />
-
-                            {tickets.length > 0 ? (
-                                <div className="divide-y">
-                                    {tickets.map((ticket) => (
-                                        <article key={ticket.id} className="py-5 first:pt-0">
-                                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                                <div className="min-w-0">
-                                                    <p className="text-xs text-muted-foreground">
-                                                        Tiket #{ticket.id}
-                                                        {" · "}
-                                                        {ticket.date}
-                                                    </p>
-
-                                                    <h3 className="mt-2 font-semibold">{ticket.subject}</h3>
-
-                                                    <p className="mt-1 text-sm text-muted-foreground">{ticket.category}</p>
-                                                </div>
-
-                                                <span
-                                                    className={`w-fit shrink-0 rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[ticket.status]}`}
-                                                >
-                                                    {statusLabels[ticket.status]}
-                                                </span>
-                                            </div>
-
-                                            <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                                                {ticket.description}
-                                            </p>
-                                        </article>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-12 text-center">
-                                    <History className="mx-auto size-8 text-muted-foreground" />
-
-                                    <p className="mt-3 font-medium">Belum ada tiket</p>
-
-                                    <p className="mt-1 text-sm text-muted-foreground">Tiket yang Anda kirim akan muncul di sini.</p>
-
-                                    <Button className="mt-4" variant="outline" onClick={() => setActiveMenu("new")}>
-                                        Buat Tiket Baru
-                                    </Button>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </section>
-            </main>
-        </div>
+                        )}
+                    </div>
+                )}
+            </section>
+        </main>
     );
 }

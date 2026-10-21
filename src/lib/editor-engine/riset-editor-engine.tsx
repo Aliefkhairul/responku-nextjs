@@ -579,7 +579,7 @@ export default function RisetEditorEngine({ risetEditorForm: { form } }: RisetEd
             <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting, s.isDirty] as const}>
                 {([canSubmit, isSubmitting, isDirty]) => (
                     <Button type="submit" disabled={!canSubmit || isSubmitting || !isDirty}>
-                        {isSubmitting ? "Menyimpan..." : "Simpan Kuesioner"}
+                        {isSubmitting ? "Menyimpan..." : "Simpan Kuesioner Sebagai Draft"}
                     </Button>
                 )}
             </form.Subscribe>

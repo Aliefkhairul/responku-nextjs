@@ -88,7 +88,6 @@ export default function Page() {
 
                 <section className="overflow-y-auto p-4">
                     {activeMenu === "Editor Kuesioner" && <RisetEditorEngine risetEditorForm={form} />}
-
                     {activeMenu === "Preview Kuesioner" && <RisetEditorPreview risetEditorForm={form} />}
                 </section>
             </main>
