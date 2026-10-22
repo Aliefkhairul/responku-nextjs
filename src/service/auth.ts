@@ -351,6 +351,10 @@ export async function changeEmailService({ userId, email, password }: { userId: 
  *
  * The session survives, because it is keyed by user id rather than by email. The
  * new address counts as verified — the code proved it.
+ *
+ * The credentials account moves with it: login looks the account up by
+ * `accountId`, which holds the email, so leaving it behind would lock the user out
+ * of the new address.
  */
 export async function confirmEmailChangeService({ userId, code }: { userId: string; code: string }) {
     const verification = await consumeVerification({ userId, type: VerificationType.EMAIL_CHANGE, code })
@@ -368,6 +372,10 @@ export async function confirmEmailChangeService({ userId, code }: { userId: stri
             where: { id: userId },
             data: { email: verification.target, verifiedAt },
             select: { id: true, name: true, email: true, verifiedAt: true },
+        }),
+        prisma.account.updateMany({
+            where: { userId, providerId: CREDENTIALS_PROVIDER_ID },
+            data: { accountId: verification.target },
         }),
         prisma.verification.deleteMany({ where: { userId, type: VerificationType.EMAIL_CHANGE } }),
     ])

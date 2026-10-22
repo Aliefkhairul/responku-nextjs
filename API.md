@@ -693,3 +693,18 @@ UU PDP), draft riset + detail + update + criteria + kuesioner + publish + delete
 - Key body yang tidak dikenal dibuang tanpa error.
 - Untuk semua endpoint research, guard session + role jalan **sebelum** routing, jadi request tanpa
   login ke path yang tidak dikenal tetap `401` (bukan `404`) — supaya nama route tidak bocor.
+
+---
+
+## Smoke test
+
+`scripts/api-smoke.sh` menjalankan semua endpoint di atas dengan curl terhadap dev server
+(`bun run dev`) dan mencetak satu baris per request: method, path, status HTTP, dan cuplikan response.
+
+```sh
+bun run dev                 # di terminal lain
+sh scripts/api-smoke.sh     # dari root project
+```
+
+Skrip ini mendaftarkan akun sekali pakai, membuat riset, dan membaca kode OTP langsung dari database
+(`scripts/db-peek.ts`) — jadi **hanya untuk database development**.
