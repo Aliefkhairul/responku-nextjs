@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/cn"
+import { type QuestionType } from "@/lib/research-question"
 import { MailCheck } from "lucide-react"
 import Link from "next/link"
 
@@ -20,7 +21,7 @@ type Question = {
     pos: number
     question: string
     mustFill: boolean
-    questionType: "single-answer" | "multi-answer" | "scale-answer" | "essay-answer"
+    questionType: QuestionType
     choices: Choice[]
 }
 type Answer = { questionId: string; selected: string[]; text: string }
@@ -31,7 +32,7 @@ const questions: Question[] = [
         pos: 1,
         question: "seberapa sering anda berolahraga kardio, di hari libur?",
         mustFill: true,
-        questionType: "multi-answer",
+        questionType: "MULTIPLE_CHOICE",
         choices: [
             { id: "36668a42-fd01-4b35-9bab-cc162deda4cd", pos: 1, n: "a", choiceText: "sering" },
             { id: "8429d30b-4965-4ce7-9c96-3c8934020ca5", pos: 2, n: "b", choiceText: "sangat sering" },
@@ -42,7 +43,7 @@ const questions: Question[] = [
         pos: 1,
         question: "seberapa sering anda berolahraga kardio, di hari libur?",
         mustFill: true,
-        questionType: "scale-answer",
+        questionType: "SCALE",
         choices: [
             { id: "bc8f4482-842e-4101-a494-ed759b942867", pos: 1, n: "a", choiceText: "Sangat Tidak Setuju" },
             { id: "489ddde1-27e5-42af-9b8c-da7dfad47061", pos: 2, n: "b", choiceText: "Tidak Setuju" },
@@ -56,7 +57,7 @@ const questions: Question[] = [
         pos: 1,
         question: "seberapa sering anda berolahraga kardio, di hari libur?",
         mustFill: true,
-        questionType: "essay-answer",
+        questionType: "TEXT",
         choices: [],
     },
     {
@@ -64,7 +65,7 @@ const questions: Question[] = [
         pos: 1,
         question: "seberapa sering anda berolahraga kardio, di hari libur?",
         mustFill: true,
-        questionType: "single-answer",
+        questionType: "SINGLE_CHOICE",
         choices: [
             { id: "79246de6-6b7a-4772-a60b-be520f1b75a6", pos: 1, n: "a", choiceText: "sering" },
             { id: "a6cb67d9-df36-415f-be08-1685b4a62657", pos: 2, n: "b", choiceText: "sangat sering" },
@@ -73,7 +74,7 @@ const questions: Question[] = [
 ]
 
 function getFieldSchema(q: Question) {
-    if (q.questionType === "essay-answer") return q.mustFill ? z.string().trim().min(1, "Pertanyaan ini wajib dijawab.") : z.string()
+    if (q.questionType === "TEXT") return q.mustFill ? z.string().trim().min(1, "Pertanyaan ini wajib dijawab.") : z.string()
     return q.mustFill ? z.array(z.string()).min(1, "Pertanyaan ini wajib dijawab.") : z.array(z.string())
 }
 
@@ -106,7 +107,7 @@ export default function Page() {
         let valid = true
         for (let i = 0; i < pageQuestions.length; i++) {
             const idx = start + i
-            const name = pageQuestions[i].questionType === "essay-answer" ? `answers[${idx}].text` : `answers[${idx}].selected`
+            const name = pageQuestions[i].questionType === "TEXT" ? `answers[${idx}].text` : `answers[${idx}].selected`
             await form.validateField(name as `answers[${number}].text`, "submit")
             const errors = form.getFieldMeta(name as `answers[${number}].text`)?.errors ?? []
             if (errors.length > 0) valid = false
@@ -176,7 +177,7 @@ export default function Page() {
 
                         <Card.CardContent className="flex flex-col gap-3">
                             {/* SINGLE */}
-                            {q.questionType === "single-answer" && (
+                            {q.questionType === "SINGLE_CHOICE" && (
                                 <form.Field name={`answers[${idx}].selected`} validators={{ onChange: schema as never, onSubmit: schema as never }}>
                                     {(field) => (
                                         <>
@@ -201,7 +202,7 @@ export default function Page() {
                             )}
 
                             {/* MULTI */}
-                            {q.questionType === "multi-answer" && (
+                            {q.questionType === "MULTIPLE_CHOICE" && (
                                 <form.Field name={`answers[${idx}].selected`} validators={{ onChange: schema as never, onSubmit: schema as never }}>
                                     {(field) => (
                                         <>
@@ -230,7 +231,7 @@ export default function Page() {
                             )}
 
                             {/* SCALE */}
-                            {q.questionType === "scale-answer" && (
+                            {q.questionType === "SCALE" && (
                                 <form.Field name={`answers[${idx}].selected`} validators={{ onChange: schema as never, onSubmit: schema as never }}>
                                     {(field) => (
                                         <div className="flex flex-col gap-2">
@@ -260,7 +261,7 @@ export default function Page() {
                             )}
 
                             {/* ESSAY */}
-                            {q.questionType === "essay-answer" && (
+                            {q.questionType === "TEXT" && (
                                 <form.Field name={`answers[${idx}].text`} validators={{ onChange: schema as never, onSubmit: schema as never }}>
                                     {(field) => (
                                         <>

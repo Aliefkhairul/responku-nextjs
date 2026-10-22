@@ -1,7 +1,8 @@
 import { cookies } from "next/headers"
 import { generateOTP, generateTokenWithHash, hashPassword, hashToken, verifyPassword } from "@/lib/server/crypto"
-import { BadRequestException, ConflictException, UnauthorizedException } from "@/lib/server/http-exception"
-import { sendAccountVerificationEmail } from "@/lib/server/mail"
+import { BadRequestException, ConflictException, TooManyRequestsException, UnauthorizedException } from "@/lib/server/http-exception"
+import { sendVerificationCodeEmail } from "@/lib/server/mail"
+import { DEFAULT_ROLES, toRoleList } from "@/lib/server/roles"
 import { clearSessionCookie, SESSION_COOKIE_NAME, setSessionCookie } from "@/lib/server/session"
 import { VerificationType } from "@/prisma/generated/prisma/enums"
 import { prisma } from "@/prisma/prisma"
@@ -14,11 +15,14 @@ const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30
 /** Verification codes stay valid for 15 minutes. */
 const VERIFICATION_TTL_MS = 15 * 60 * 1000
 
+/** Minimum gap between two codes for the same purpose, so nobody can spray mail. */
+const RESEND_COOLDOWN_MS = 60 * 1000
+
+/** Wrong codes a verification tolerates before it is thrown away. */
+const MAX_VERIFICATION_ATTEMPTS = 5
+
 /** Provider id used for email + password accounts. */
 const CREDENTIALS_PROVIDER_ID = "credentials"
-
-/** Roles every newly registered user starts with. */
-const DEFAULT_ROLES = ["user"]
 
 /* ========== Tipe ========== */
 
@@ -41,6 +45,106 @@ function normalizeEmail(email: string): string {
     return email.trim().toLowerCase()
 }
 
+/** Values a fresh code needs: the row to store, plus the code to send. */
+function buildVerification(type: VerificationType, target: string | null = null) {
+    const { hashedToken } = generateTokenWithHash()
+    const code = generateOTP()
+    const expiredAt = new Date(Date.now() + VERIFICATION_TTL_MS)
+
+    return { code, expiredAt, data: { type, target, tokenHash: hashedToken, code, expiredAt } }
+}
+
+/**
+ * Sends a verification code, reporting a delivery failure instead of throwing.
+ *
+ * The account (or the pending change) exists either way, so callers surface the
+ * failure rather than rolling anything back.
+ */
+async function sendVerificationCodeQuietly({
+    to,
+    name,
+    code,
+    purpose,
+}: {
+    to: string
+    name: string
+    code: string
+    purpose: "signup" | "email-change"
+}) {
+    try {
+        await sendVerificationCodeEmail({ to, name, code, expiresInMinutes: VERIFICATION_TTL_MS / 60_000, purpose })
+
+        return true
+    } catch (error) {
+        console.error("[auth] failed to send verification email", error)
+
+        return false
+    }
+}
+
+/**
+ * Issues a fresh code for `type`, refusing when one was just sent.
+ *
+ * Older codes of the same type are dropped, so only the newest one ever works.
+ */
+async function issueVerification({ userId, type, target = null }: { userId: string; type: VerificationType; target?: string | null }) {
+    const latest = await prisma.verification.findFirst({
+        where: { userId, type, deletedAt: null },
+        orderBy: { createdAt: "desc" },
+        select: { createdAt: true },
+    })
+
+    if (latest !== null && Date.now() - latest.createdAt.getTime() < RESEND_COOLDOWN_MS) {
+        throw new TooManyRequestsException("A code was just sent — please wait before asking for another one.")
+    }
+
+    const verification = buildVerification(type, target)
+
+    await prisma.$transaction([
+        prisma.verification.deleteMany({ where: { userId, type } }),
+        prisma.verification.create({ data: { userId, ...verification.data } }),
+    ])
+
+    return verification
+}
+
+/**
+ * Checks a submitted code against the newest verification of `type`.
+ *
+ * A wrong code is counted, and once `MAX_VERIFICATION_ATTEMPTS` are spent the
+ * verification is thrown away — a 6-digit code must not be brute forceable.
+ */
+async function consumeVerification({ userId, type, code }: { userId: string; type: VerificationType; code: string }) {
+    const invalid = new BadRequestException("Invalid or expired verification code", {
+        code: "The verification code is invalid or has expired.",
+    })
+
+    const verification = await prisma.verification.findFirst({
+        where: { userId, type, deletedAt: null },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, code: true, attempts: true, target: true, expiredAt: true },
+    })
+
+    if (!verification || verification.code === null) throw invalid
+    if (verification.expiredAt.getTime() <= Date.now()) throw invalid
+
+    if (verification.code !== code) {
+        const attempts = verification.attempts + 1
+
+        if (attempts >= MAX_VERIFICATION_ATTEMPTS) {
+            await prisma.verification.deleteMany({ where: { id: verification.id } })
+
+            throw new TooManyRequestsException("Too many incorrect codes — ask for a new one.")
+        }
+
+        await prisma.verification.update({ where: { id: verification.id }, data: { attempts } })
+
+        throw invalid
+    }
+
+    return verification
+}
+
 /* ========== Register ========== */
 
 /**
@@ -60,48 +164,31 @@ export async function registerService({ name, email, password }: RegisterInput) 
     if (existingUser) throw new ConflictException("Email is already registered")
 
     const passwordHash = await hashPassword(password)
-    const { hashedToken } = generateTokenWithHash()
-    const code = generateOTP()
-    const expiredAt = new Date(Date.now() + VERIFICATION_TTL_MS)
+    const verification = buildVerification(VerificationType.EMAIL_VERIFICATION)
 
     const user = await prisma.user.create({
         data: {
             name,
             email: normalizedEmail,
             roles: DEFAULT_ROLES,
-            account: {
+            accounts: {
                 create: {
                     accountId: normalizedEmail,
                     providerId: CREDENTIALS_PROVIDER_ID,
                     password: passwordHash,
                 },
             },
-            verifications: {
-                create: {
-                    type: VerificationType.ACCOUNT_VERIFICATION,
-                    tokenHash: hashedToken,
-                    code,
-                    expiredAt,
-                },
-            },
+            verifications: { create: verification.data },
         },
         select: { id: true, name: true, email: true, verifiedAt: true },
     })
 
-    let verificationSent = true
-    try {
-        await sendAccountVerificationEmail({
-            to: user.email,
-            name: user.name,
-            code,
-            expiresInMinutes: VERIFICATION_TTL_MS / 60_000,
-        })
-    } catch (error) {
-        // The account exists regardless, so a delivery failure is surfaced to the
-        // caller rather than rolling the registration back.
-        verificationSent = false
-        console.error("[auth] failed to send account verification email", error)
-    }
+    const verificationSent = await sendVerificationCodeQuietly({
+        to: user.email,
+        name: user.name,
+        code: verification.code,
+        purpose: "signup",
+    })
 
     return { user, verificationSent }
 }
@@ -145,15 +232,8 @@ export async function confirmVerificationService({ email, code }: ConfirmVerific
         }
     }
 
-    const verification = await prisma.verification.findFirst({
-        where: { userId: user.id, type: VerificationType.ACCOUNT_VERIFICATION, deletedAt: null },
-        orderBy: { createdAt: "desc" },
-        select: { code: true, expiredAt: true },
-    })
-
-    if (!verification || verification.code === null) throw invalidCode
-    if (verification.expiredAt.getTime() <= Date.now()) throw invalidCode
-    if (verification.code !== code) throw invalidCode
+    // Wrong codes are counted in here, so a 6-digit code cannot be brute forced.
+    await consumeVerification({ userId: user.id, type: VerificationType.EMAIL_VERIFICATION, code })
 
     const verifiedAt = new Date()
 
@@ -161,13 +241,138 @@ export async function confirmVerificationService({ email, code }: ConfirmVerific
     // than flagged, so the same OTP can never be replayed.
     await prisma.$transaction([
         prisma.user.update({ where: { id: user.id }, data: { verifiedAt } }),
-        prisma.verification.deleteMany({ where: { userId: user.id, type: VerificationType.ACCOUNT_VERIFICATION } }),
+        prisma.verification.deleteMany({ where: { userId: user.id, type: VerificationType.EMAIL_VERIFICATION } }),
     ])
 
     return {
         user: { id: user.id, name: user.name, email: user.email, verifiedAt },
         alreadyVerified: false,
     }
+}
+
+/* ========== Resend verification ========== */
+
+/**
+ * Sends a fresh account-verification code.
+ *
+ * This is what makes the 15-minute expiry survivable — without it, a code that
+ * lapsed would lock the account out for good. Previous codes stop working the
+ * moment a new one is issued, and `issueVerification` enforces the cooldown so the
+ * endpoint cannot be turned into an inbox sprayer.
+ */
+export async function resendVerificationService({ email }: { email: string }) {
+    const normalizedEmail = normalizeEmail(email)
+
+    const user = await prisma.user.findUnique({
+        where: { email: normalizedEmail },
+        select: { id: true, name: true, email: true, verifiedAt: true, deletedAt: true },
+    })
+
+    // Registration already reveals whether an email is taken, so being explicit
+    // here costs nothing and is far more usable than a silent success.
+    if (!user || user.deletedAt !== null) {
+        throw new BadRequestException("Account not found", { email: "No account is registered with this email." })
+    }
+
+    if (user.verifiedAt !== null) {
+        return { verificationSent: false, alreadyVerified: true, expiresAt: null }
+    }
+
+    const verification = await issueVerification({ userId: user.id, type: VerificationType.EMAIL_VERIFICATION })
+
+    const verificationSent = await sendVerificationCodeQuietly({
+        to: user.email,
+        name: user.name,
+        code: verification.code,
+        purpose: "signup",
+    })
+
+    return { verificationSent, alreadyVerified: false, expiresAt: verification.expiredAt }
+}
+
+/* ========== Email change ========== */
+
+/**
+ * Starts an email change by sending a code to the *new* address.
+ *
+ * The password is required again: changing the email is enough to take the account
+ * over. Only the new address receives the code, so only whoever controls that
+ * inbox can finish the change — the target is kept on the verification row until
+ * then.
+ */
+export async function changeEmailService({ userId, email, password }: { userId: string; email: string; password: string }) {
+    const normalizedEmail = normalizeEmail(email)
+
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            deletedAt: true,
+            accounts: {
+                where: { providerId: CREDENTIALS_PROVIDER_ID, deletedAt: null },
+                select: { password: true },
+                orderBy: { createdAt: "asc" },
+                take: 1,
+            },
+        },
+    })
+
+    const invalidCredentials = new UnauthorizedException("Invalid credentials")
+
+    if (!user || user.deletedAt !== null) throw invalidCredentials
+
+    const account = user.accounts.at(0)
+    if (!account?.password) throw invalidCredentials
+    if (!(await verifyPassword(password, account.password))) throw invalidCredentials
+
+    if (normalizedEmail === user.email) {
+        throw new BadRequestException("That is already your email", { email: "Enter a different email address." })
+    }
+
+    const taken = await prisma.user.findUnique({ where: { email: normalizedEmail }, select: { id: true } })
+    if (taken) throw new ConflictException("Email is already registered")
+
+    const verification = await issueVerification({ userId, type: VerificationType.EMAIL_CHANGE, target: normalizedEmail })
+
+    const verificationSent = await sendVerificationCodeQuietly({
+        to: normalizedEmail,
+        name: user.name,
+        code: verification.code,
+        purpose: "email-change",
+    })
+
+    return { email: normalizedEmail, verificationSent, expiresAt: verification.expiredAt }
+}
+
+/**
+ * Finishes an email change with the code that was sent to the new address.
+ *
+ * The session survives, because it is keyed by user id rather than by email. The
+ * new address counts as verified — the code proved it.
+ */
+export async function confirmEmailChangeService({ userId, code }: { userId: string; code: string }) {
+    const verification = await consumeVerification({ userId, type: VerificationType.EMAIL_CHANGE, code })
+
+    if (verification.target === null) {
+        throw new BadRequestException("Invalid or expired verification code", {
+            code: "The verification code is invalid or has expired.",
+        })
+    }
+
+    const verifiedAt = new Date()
+
+    const [user] = await prisma.$transaction([
+        prisma.user.update({
+            where: { id: userId },
+            data: { email: verification.target, verifiedAt },
+            select: { id: true, name: true, email: true, verifiedAt: true },
+        }),
+        prisma.verification.deleteMany({ where: { userId, type: VerificationType.EMAIL_CHANGE } }),
+    ])
+
+    return { user }
 }
 
 /* ========== Login ========== */
@@ -190,7 +395,18 @@ export async function loginService({ email, password, ipAddress, userAgent }: Lo
             roles: true,
             verifiedAt: true,
             deletedAt: true,
-            account: { select: { password: true } },
+            // A user can hold several accounts, so match the credentials account
+            // registered for this email rather than "the" account.
+            accounts: {
+                where: {
+                    providerId: CREDENTIALS_PROVIDER_ID,
+                    accountId: normalizedEmail,
+                    deletedAt: null,
+                },
+                select: { password: true },
+                orderBy: { createdAt: "asc" },
+                take: 1,
+            },
         },
     })
 
@@ -199,8 +415,10 @@ export async function loginService({ email, password, ipAddress, userAgent }: Lo
     const invalidCredentials = new UnauthorizedException("Invalid email or password")
 
     if (!user || user.deletedAt !== null) throw invalidCredentials
-    if (!user.account?.password) throw invalidCredentials
-    if (!(await verifyPassword(password, user.account.password))) throw invalidCredentials
+
+    const account = user.accounts.at(0)
+    if (!account?.password) throw invalidCredentials
+    if (!(await verifyPassword(password, account.password))) throw invalidCredentials
 
     const { rawToken, hashedToken } = generateTokenWithHash()
     const expiresAt = new Date(Date.now() + SESSION_TTL_SECONDS * 1000)
@@ -226,7 +444,7 @@ export async function loginService({ email, password, ipAddress, userAgent }: Lo
             id: user.id,
             name: user.name,
             email: user.email,
-            roles: user.roles,
+            roles: toRoleList(user.roles),
             verifiedAt: user.verifiedAt,
         },
         expiresAt,
@@ -308,7 +526,7 @@ function toCurrentUser({ user }: Session) {
         name: user.name,
         email: user.email,
         image: user.image,
-        roles: user.roles,
+        roles: toRoleList(user.roles),
         verifiedAt: user.verifiedAt,
         createdAt: user.createdAt,
     }

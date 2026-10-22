@@ -1,31 +1,40 @@
 import { Body, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "@react-email/components"
 import type { CSSProperties } from "react"
 
-type AccountVerificationEmailProps = {
+type VerificationCodeEmailProps = {
     name: string
     code: string
     expiresInMinutes: number
+    /** Which flow the code belongs to; only changes the wording. */
+    purpose: "signup" | "email-change"
 }
 
 /**
- * Sent after registration. Carries the 6-digit OTP the user must submit to
- * activate the account.
+ * Carries the 6-digit OTP: either to activate a new account, or to confirm a new
+ * email address on an existing one.
  */
-export function AccountVerificationEmail({ name, code, expiresInMinutes }: AccountVerificationEmailProps) {
+export function VerificationCodeEmail({ name, code, expiresInMinutes, purpose }: VerificationCodeEmailProps) {
+    const isEmailChange = purpose === "email-change"
+
     return (
         <Html lang="en">
             <Head />
-            <Preview>Verify your Responku email address</Preview>
+            <Preview>{isEmailChange ? "Confirm your new Responku email address" : "Verify your Responku email address"}</Preview>
             <Body style={body}>
                 <Container style={container}>
-                    <Heading style={heading}>Verify your email</Heading>
+                    <Heading style={heading}>{isEmailChange ? "Confirm your new email" : "Verify your email"}</Heading>
                     <Text style={paragraph}>Hi {name},</Text>
-                    <Text style={paragraph}>Thanks for signing up to Responku. Enter the verification code below to activate your account.</Text>
+                    <Text style={paragraph}>
+                        {isEmailChange
+                            ? "Enter the verification code below to confirm this address as the new email for your Responku account."
+                            : "Thanks for signing up to Responku. Enter the verification code below to activate your account."}
+                    </Text>
                     <Section style={codeBox}>
                         <Text style={codeText}>{code}</Text>
                     </Section>
                     <Text style={paragraph}>
-                        This code expires in {expiresInMinutes} minutes. If you did not create a Responku account, you can safely ignore this email.
+                        This code expires in {expiresInMinutes} minutes. If you did not request it, you can safely ignore this email. You can also ask
+                        for a new code if this one expires.
                     </Text>
                     <Hr style={divider} />
                     <Text style={footer}>Responku</Text>
@@ -35,7 +44,7 @@ export function AccountVerificationEmail({ name, code, expiresInMinutes }: Accou
     )
 }
 
-export default AccountVerificationEmail
+export default VerificationCodeEmail
 
 /* ========== Styles ========== */
 

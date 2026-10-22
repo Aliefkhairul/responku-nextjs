@@ -66,3 +66,58 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model QualityCheck
+ * 
+ */
+export type QualityCheck = Prisma.QualityCheckModel
+/**
+ * Model ContentReport
+ * 
+ */
+export type ContentReport = Prisma.ContentReportModel
+/**
+ * Model RespondentParticipation
+ * 
+ */
+export type RespondentParticipation = Prisma.RespondentParticipationModel
+/**
+ * Model ParticipationAnswer
+ * 
+ */
+export type ParticipationAnswer = Prisma.ParticipationAnswerModel
+/**
+ * Model Research
+ * 
+ */
+export type Research = Prisma.ResearchModel
+/**
+ * Model ResearchCriteria
+ * 
+ */
+export type ResearchCriteria = Prisma.ResearchCriteriaModel
+/**
+ * Model ResearchQuestion
+ * 
+ */
+export type ResearchQuestion = Prisma.ResearchQuestionModel
+/**
+ * Model ResearchQuestionChoice
+ * 
+ */
+export type ResearchQuestionChoice = Prisma.ResearchQuestionChoiceModel
+/**
+ * Model Reward
+ * 
+ */
+export type Reward = Prisma.RewardModel
+/**
+ * Model TokenWallet
+ * 
+ */
+export type TokenWallet = Prisma.TokenWalletModel
+/**
+ * Model TokenTransaction
+ * 
+ */
+export type TokenTransaction = Prisma.TokenTransactionModel

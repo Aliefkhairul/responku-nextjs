@@ -30,9 +30,9 @@ export type UserMinAggregateOutputType = {
   email: string | null
   verifiedAt: Date | null
   image: string | null
-  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -41,9 +41,9 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   verifiedAt: Date | null
   image: string | null
-  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -53,9 +53,9 @@ export type UserCountAggregateOutputType = {
   verifiedAt: number
   image: number
   roles: number
-  deletedAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -66,9 +66,9 @@ export type UserMinAggregateInputType = {
   email?: true
   verifiedAt?: true
   image?: true
-  deletedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -77,9 +77,9 @@ export type UserMaxAggregateInputType = {
   email?: true
   verifiedAt?: true
   image?: true
-  deletedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -89,9 +89,9 @@ export type UserCountAggregateInputType = {
   verifiedAt?: true
   image?: true
   roles?: true
-  deletedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -174,9 +174,9 @@ export type UserGroupByOutputType = {
   verifiedAt: Date | null
   image: string | null
   roles: runtime.JsonValue
-  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -207,13 +207,20 @@ export type UserWhereInput = {
   verifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   image?: Prisma.StringNullableFilter<"User"> | string | null
   roles?: Prisma.JsonFilter<"User">
-  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   profile?: Prisma.XOR<Prisma.UserProfileNullableScalarRelationFilter, Prisma.UserProfileWhereInput> | null
-  account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
+  accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   verifications?: Prisma.VerificationListRelationFilter
+  researches?: Prisma.ResearchListRelationFilter
+  participations?: Prisma.RespondentParticipationListRelationFilter
+  reviewedParticipations?: Prisma.RespondentParticipationListRelationFilter
+  tokenWallet?: Prisma.XOR<Prisma.TokenWalletNullableScalarRelationFilter, Prisma.TokenWalletWhereInput> | null
+  reviewedQualityChecks?: Prisma.QualityCheckListRelationFilter
+  reportedContents?: Prisma.ContentReportListRelationFilter
+  reviewedContentReports?: Prisma.ContentReportListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -223,13 +230,20 @@ export type UserOrderByWithRelationInput = {
   verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   roles?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   profile?: Prisma.UserProfileOrderByWithRelationInput
-  account?: Prisma.AccountOrderByWithRelationInput
+  accounts?: Prisma.AccountOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   verifications?: Prisma.VerificationOrderByRelationAggregateInput
+  researches?: Prisma.ResearchOrderByRelationAggregateInput
+  participations?: Prisma.RespondentParticipationOrderByRelationAggregateInput
+  reviewedParticipations?: Prisma.RespondentParticipationOrderByRelationAggregateInput
+  tokenWallet?: Prisma.TokenWalletOrderByWithRelationInput
+  reviewedQualityChecks?: Prisma.QualityCheckOrderByRelationAggregateInput
+  reportedContents?: Prisma.ContentReportOrderByRelationAggregateInput
+  reviewedContentReports?: Prisma.ContentReportOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -243,13 +257,20 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   verifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   image?: Prisma.StringNullableFilter<"User"> | string | null
   roles?: Prisma.JsonFilter<"User">
-  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   profile?: Prisma.XOR<Prisma.UserProfileNullableScalarRelationFilter, Prisma.UserProfileWhereInput> | null
-  account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
+  accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   verifications?: Prisma.VerificationListRelationFilter
+  researches?: Prisma.ResearchListRelationFilter
+  participations?: Prisma.RespondentParticipationListRelationFilter
+  reviewedParticipations?: Prisma.RespondentParticipationListRelationFilter
+  tokenWallet?: Prisma.XOR<Prisma.TokenWalletNullableScalarRelationFilter, Prisma.TokenWalletWhereInput> | null
+  reviewedQualityChecks?: Prisma.QualityCheckListRelationFilter
+  reportedContents?: Prisma.ContentReportListRelationFilter
+  reviewedContentReports?: Prisma.ContentReportListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -259,9 +280,9 @@ export type UserOrderByWithAggregationInput = {
   verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   roles?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -277,9 +298,9 @@ export type UserScalarWhereWithAggregatesInput = {
   verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   roles?: Prisma.JsonWithAggregatesFilter<"User">
-  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -289,13 +310,20 @@ export type UserCreateInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
-  account?: Prisma.AccountCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -305,13 +333,20 @@ export type UserUncheckedCreateInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
-  account?: Prisma.AccountUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
 }
 
 export type UserUpdateInput = {
@@ -321,13 +356,20 @@ export type UserUpdateInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
-  account?: Prisma.AccountUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -337,13 +379,20 @@ export type UserUncheckedUpdateInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
-  account?: Prisma.AccountUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -353,9 +402,9 @@ export type UserCreateManyInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -365,9 +414,9 @@ export type UserUpdateManyMutationInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -377,9 +426,9 @@ export type UserUncheckedUpdateManyInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserOrderByRelevanceInput = {
@@ -395,9 +444,9 @@ export type UserCountOrderByAggregateInput = {
   verifiedAt?: Prisma.SortOrder
   image?: Prisma.SortOrder
   roles?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -406,9 +455,9 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   verifiedAt?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -417,14 +466,19 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   verifiedAt?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -457,18 +511,18 @@ export type UserUpdateOneRequiredWithoutProfileNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProfileInput, Prisma.UserUpdateWithoutProfileInput>, Prisma.UserUncheckedUpdateWithoutProfileInput>
 }
 
-export type UserCreateNestedOneWithoutAccountInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAccountInput, Prisma.UserUncheckedCreateWithoutAccountInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountInput
+export type UserCreateNestedOneWithoutAccountsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAccountInput, Prisma.UserUncheckedCreateWithoutAccountInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountInput
-  upsert?: Prisma.UserUpsertWithoutAccountInput
+export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountsInput
+  upsert?: Prisma.UserUpsertWithoutAccountsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountInput, Prisma.UserUpdateWithoutAccountInput>, Prisma.UserUncheckedUpdateWithoutAccountInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountsInput, Prisma.UserUpdateWithoutAccountsInput>, Prisma.UserUncheckedUpdateWithoutAccountsInput>
 }
 
 export type UserCreateNestedOneWithoutSessionsInput = {
@@ -499,6 +553,110 @@ export type UserUpdateOneRequiredWithoutVerificationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVerificationsInput, Prisma.UserUpdateWithoutVerificationsInput>, Prisma.UserUncheckedUpdateWithoutVerificationsInput>
 }
 
+export type UserCreateNestedOneWithoutReviewedQualityChecksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedQualityChecksInput, Prisma.UserUncheckedCreateWithoutReviewedQualityChecksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedQualityChecksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutReviewedQualityChecksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedQualityChecksInput, Prisma.UserUncheckedCreateWithoutReviewedQualityChecksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedQualityChecksInput
+  upsert?: Prisma.UserUpsertWithoutReviewedQualityChecksInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedQualityChecksInput, Prisma.UserUpdateWithoutReviewedQualityChecksInput>, Prisma.UserUncheckedUpdateWithoutReviewedQualityChecksInput>
+}
+
+export type UserCreateNestedOneWithoutReportedContentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReportedContentsInput, Prisma.UserUncheckedCreateWithoutReportedContentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReportedContentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReviewedContentReportsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedContentReportsInput, Prisma.UserUncheckedCreateWithoutReviewedContentReportsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedContentReportsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReportedContentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReportedContentsInput, Prisma.UserUncheckedCreateWithoutReportedContentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReportedContentsInput
+  upsert?: Prisma.UserUpsertWithoutReportedContentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReportedContentsInput, Prisma.UserUpdateWithoutReportedContentsInput>, Prisma.UserUncheckedUpdateWithoutReportedContentsInput>
+}
+
+export type UserUpdateOneWithoutReviewedContentReportsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedContentReportsInput, Prisma.UserUncheckedCreateWithoutReviewedContentReportsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedContentReportsInput
+  upsert?: Prisma.UserUpsertWithoutReviewedContentReportsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedContentReportsInput, Prisma.UserUpdateWithoutReviewedContentReportsInput>, Prisma.UserUncheckedUpdateWithoutReviewedContentReportsInput>
+}
+
+export type UserCreateNestedOneWithoutParticipationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutParticipationsInput, Prisma.UserUncheckedCreateWithoutParticipationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutParticipationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReviewedParticipationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedParticipationsInput, Prisma.UserUncheckedCreateWithoutReviewedParticipationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedParticipationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutParticipationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutParticipationsInput, Prisma.UserUncheckedCreateWithoutParticipationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutParticipationsInput
+  upsert?: Prisma.UserUpsertWithoutParticipationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutParticipationsInput, Prisma.UserUpdateWithoutParticipationsInput>, Prisma.UserUncheckedUpdateWithoutParticipationsInput>
+}
+
+export type UserUpdateOneWithoutReviewedParticipationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedParticipationsInput, Prisma.UserUncheckedCreateWithoutReviewedParticipationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedParticipationsInput
+  upsert?: Prisma.UserUpsertWithoutReviewedParticipationsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedParticipationsInput, Prisma.UserUpdateWithoutReviewedParticipationsInput>, Prisma.UserUncheckedUpdateWithoutReviewedParticipationsInput>
+}
+
+export type UserCreateNestedOneWithoutResearchesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResearchesInput, Prisma.UserUncheckedCreateWithoutResearchesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResearchesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutResearchesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResearchesInput, Prisma.UserUncheckedCreateWithoutResearchesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResearchesInput
+  upsert?: Prisma.UserUpsertWithoutResearchesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResearchesInput, Prisma.UserUpdateWithoutResearchesInput>, Prisma.UserUncheckedUpdateWithoutResearchesInput>
+}
+
+export type UserCreateNestedOneWithoutTokenWalletInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTokenWalletInput, Prisma.UserUncheckedCreateWithoutTokenWalletInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTokenWalletInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTokenWalletNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTokenWalletInput, Prisma.UserUncheckedCreateWithoutTokenWalletInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTokenWalletInput
+  upsert?: Prisma.UserUpsertWithoutTokenWalletInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTokenWalletInput, Prisma.UserUpdateWithoutTokenWalletInput>, Prisma.UserUncheckedUpdateWithoutTokenWalletInput>
+}
+
 export type UserCreateWithoutProfileInput = {
   id?: string
   name: string
@@ -506,12 +664,19 @@ export type UserCreateWithoutProfileInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  account?: Prisma.AccountCreateNestedOneWithoutUserInput
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -521,12 +686,19 @@ export type UserUncheckedCreateWithoutProfileInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  account?: Prisma.AccountUncheckedCreateNestedOneWithoutUserInput
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -552,12 +724,19 @@ export type UserUpdateWithoutProfileInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  account?: Prisma.AccountUpdateOneWithoutUserNestedInput
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -567,88 +746,123 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  account?: Prisma.AccountUncheckedUpdateOneWithoutUserNestedInput
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
 }
 
-export type UserCreateWithoutAccountInput = {
+export type UserCreateWithoutAccountsInput = {
   id?: string
   name: string
   email: string
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
 }
 
-export type UserUncheckedCreateWithoutAccountInput = {
+export type UserUncheckedCreateWithoutAccountsInput = {
   id?: string
   name: string
   email: string
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
 }
 
-export type UserCreateOrConnectWithoutAccountInput = {
+export type UserCreateOrConnectWithoutAccountsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutAccountInput, Prisma.UserUncheckedCreateWithoutAccountInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
 }
 
-export type UserUpsertWithoutAccountInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutAccountInput, Prisma.UserUncheckedUpdateWithoutAccountInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutAccountInput, Prisma.UserUncheckedCreateWithoutAccountInput>
+export type UserUpsertWithoutAccountsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutAccountInput = {
+export type UserUpdateToOneWithWhereWithoutAccountsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutAccountInput, Prisma.UserUncheckedUpdateWithoutAccountInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
 }
 
-export type UserUpdateWithoutAccountInput = {
+export type UserUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
 }
 
-export type UserUncheckedUpdateWithoutAccountInput = {
+export type UserUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -658,12 +872,19 @@ export type UserCreateWithoutSessionsInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
-  account?: Prisma.AccountCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -673,12 +894,19 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
-  account?: Prisma.AccountUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -704,12 +932,19 @@ export type UserUpdateWithoutSessionsInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
-  account?: Prisma.AccountUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -719,12 +954,19 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
-  account?: Prisma.AccountUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserCreateWithoutVerificationsInput = {
@@ -734,12 +976,19 @@ export type UserCreateWithoutVerificationsInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
-  account?: Prisma.AccountCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
 }
 
 export type UserUncheckedCreateWithoutVerificationsInput = {
@@ -749,12 +998,19 @@ export type UserUncheckedCreateWithoutVerificationsInput = {
   verifiedAt?: Date | string | null
   image?: string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
-  account?: Prisma.AccountUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
 }
 
 export type UserCreateOrConnectWithoutVerificationsInput = {
@@ -780,12 +1036,19 @@ export type UserUpdateWithoutVerificationsInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
-  account?: Prisma.AccountUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationsInput = {
@@ -795,12 +1058,747 @@ export type UserUncheckedUpdateWithoutVerificationsInput = {
   verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
-  account?: Prisma.AccountUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserCreateWithoutReviewedQualityChecksInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
+}
+
+export type UserUncheckedCreateWithoutReviewedQualityChecksInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
+}
+
+export type UserCreateOrConnectWithoutReviewedQualityChecksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedQualityChecksInput, Prisma.UserUncheckedCreateWithoutReviewedQualityChecksInput>
+}
+
+export type UserUpsertWithoutReviewedQualityChecksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedQualityChecksInput, Prisma.UserUncheckedUpdateWithoutReviewedQualityChecksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedQualityChecksInput, Prisma.UserUncheckedCreateWithoutReviewedQualityChecksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedQualityChecksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedQualityChecksInput, Prisma.UserUncheckedUpdateWithoutReviewedQualityChecksInput>
+}
+
+export type UserUpdateWithoutReviewedQualityChecksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedQualityChecksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserCreateWithoutReportedContentsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
+}
+
+export type UserUncheckedCreateWithoutReportedContentsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
+}
+
+export type UserCreateOrConnectWithoutReportedContentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReportedContentsInput, Prisma.UserUncheckedCreateWithoutReportedContentsInput>
+}
+
+export type UserCreateWithoutReviewedContentReportsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+}
+
+export type UserUncheckedCreateWithoutReviewedContentReportsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+}
+
+export type UserCreateOrConnectWithoutReviewedContentReportsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedContentReportsInput, Prisma.UserUncheckedCreateWithoutReviewedContentReportsInput>
+}
+
+export type UserUpsertWithoutReportedContentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReportedContentsInput, Prisma.UserUncheckedUpdateWithoutReportedContentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReportedContentsInput, Prisma.UserUncheckedCreateWithoutReportedContentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReportedContentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReportedContentsInput, Prisma.UserUncheckedUpdateWithoutReportedContentsInput>
+}
+
+export type UserUpdateWithoutReportedContentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReportedContentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUpsertWithoutReviewedContentReportsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedContentReportsInput, Prisma.UserUncheckedUpdateWithoutReviewedContentReportsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedContentReportsInput, Prisma.UserUncheckedCreateWithoutReviewedContentReportsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedContentReportsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedContentReportsInput, Prisma.UserUncheckedUpdateWithoutReviewedContentReportsInput>
+}
+
+export type UserUpdateWithoutReviewedContentReportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedContentReportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+}
+
+export type UserCreateWithoutParticipationsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
+}
+
+export type UserUncheckedCreateWithoutParticipationsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
+}
+
+export type UserCreateOrConnectWithoutParticipationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutParticipationsInput, Prisma.UserUncheckedCreateWithoutParticipationsInput>
+}
+
+export type UserCreateWithoutReviewedParticipationsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
+}
+
+export type UserUncheckedCreateWithoutReviewedParticipationsInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
+}
+
+export type UserCreateOrConnectWithoutReviewedParticipationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedParticipationsInput, Prisma.UserUncheckedCreateWithoutReviewedParticipationsInput>
+}
+
+export type UserUpsertWithoutParticipationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutParticipationsInput, Prisma.UserUncheckedUpdateWithoutParticipationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutParticipationsInput, Prisma.UserUncheckedCreateWithoutParticipationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutParticipationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutParticipationsInput, Prisma.UserUncheckedUpdateWithoutParticipationsInput>
+}
+
+export type UserUpdateWithoutParticipationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutParticipationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUpsertWithoutReviewedParticipationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedParticipationsInput, Prisma.UserUncheckedUpdateWithoutReviewedParticipationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedParticipationsInput, Prisma.UserUncheckedCreateWithoutReviewedParticipationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedParticipationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedParticipationsInput, Prisma.UserUncheckedUpdateWithoutReviewedParticipationsInput>
+}
+
+export type UserUpdateWithoutReviewedParticipationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedParticipationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserCreateWithoutResearchesInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
+}
+
+export type UserUncheckedCreateWithoutResearchesInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  tokenWallet?: Prisma.TokenWalletUncheckedCreateNestedOneWithoutUserInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
+}
+
+export type UserCreateOrConnectWithoutResearchesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutResearchesInput, Prisma.UserUncheckedCreateWithoutResearchesInput>
+}
+
+export type UserUpsertWithoutResearchesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutResearchesInput, Prisma.UserUncheckedUpdateWithoutResearchesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutResearchesInput, Prisma.UserUncheckedCreateWithoutResearchesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutResearchesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutResearchesInput, Prisma.UserUncheckedUpdateWithoutResearchesInput>
+}
+
+export type UserUpdateWithoutResearchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutResearchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  tokenWallet?: Prisma.TokenWalletUncheckedUpdateOneWithoutUserNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserCreateWithoutTokenWalletInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationCreateNestedManyWithoutAdminReviewerInput
+  reviewedQualityChecks?: Prisma.QualityCheckCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportCreateNestedManyWithoutReviewerInput
+}
+
+export type UserUncheckedCreateWithoutTokenWalletInput = {
+  id?: string
+  name: string
+  email: string
+  verifiedAt?: Date | string | null
+  image?: string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  researches?: Prisma.ResearchUncheckedCreateNestedManyWithoutResearcherInput
+  participations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutRespondentInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedCreateNestedManyWithoutAdminReviewerInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedCreateNestedManyWithoutReviewerInput
+  reportedContents?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReviewerInput
+}
+
+export type UserCreateOrConnectWithoutTokenWalletInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTokenWalletInput, Prisma.UserUncheckedCreateWithoutTokenWalletInput>
+}
+
+export type UserUpsertWithoutTokenWalletInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTokenWalletInput, Prisma.UserUncheckedUpdateWithoutTokenWalletInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTokenWalletInput, Prisma.UserUncheckedCreateWithoutTokenWalletInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTokenWalletInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTokenWalletInput, Prisma.UserUncheckedUpdateWithoutTokenWalletInput>
+}
+
+export type UserUpdateWithoutTokenWalletInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUpdateManyWithoutAdminReviewerNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUpdateManyWithoutReviewerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTokenWalletInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  researches?: Prisma.ResearchUncheckedUpdateManyWithoutResearcherNestedInput
+  participations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutRespondentNestedInput
+  reviewedParticipations?: Prisma.RespondentParticipationUncheckedUpdateManyWithoutAdminReviewerNestedInput
+  reviewedQualityChecks?: Prisma.QualityCheckUncheckedUpdateManyWithoutReviewerNestedInput
+  reportedContents?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedContentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReviewerNestedInput
 }
 
 
@@ -809,13 +1807,27 @@ export type UserUncheckedUpdateWithoutVerificationsInput = {
  */
 
 export type UserCountOutputType = {
+  accounts: number
   sessions: number
   verifications: number
+  researches: number
+  participations: number
+  reviewedParticipations: number
+  reviewedQualityChecks: number
+  reportedContents: number
+  reviewedContentReports: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   verifications?: boolean | UserCountOutputTypeCountVerificationsArgs
+  researches?: boolean | UserCountOutputTypeCountResearchesArgs
+  participations?: boolean | UserCountOutputTypeCountParticipationsArgs
+  reviewedParticipations?: boolean | UserCountOutputTypeCountReviewedParticipationsArgs
+  reviewedQualityChecks?: boolean | UserCountOutputTypeCountReviewedQualityChecksArgs
+  reportedContents?: boolean | UserCountOutputTypeCountReportedContentsArgs
+  reviewedContentReports?: boolean | UserCountOutputTypeCountReviewedContentReportsArgs
 }
 
 /**
@@ -826,6 +1838,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AccountWhereInput
 }
 
 /**
@@ -842,6 +1861,48 @@ export type UserCountOutputTypeCountVerificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.VerificationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountResearchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResearchWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountParticipationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RespondentParticipationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedParticipationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RespondentParticipationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedQualityChecksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QualityCheckWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReportedContentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ContentReportWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedContentReportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ContentReportWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -850,13 +1911,20 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   verifiedAt?: boolean
   image?: boolean
   roles?: boolean
-  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
-  account?: boolean | Prisma.User$accountArgs<ExtArgs>
+  accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
+  researches?: boolean | Prisma.User$researchesArgs<ExtArgs>
+  participations?: boolean | Prisma.User$participationsArgs<ExtArgs>
+  reviewedParticipations?: boolean | Prisma.User$reviewedParticipationsArgs<ExtArgs>
+  tokenWallet?: boolean | Prisma.User$tokenWalletArgs<ExtArgs>
+  reviewedQualityChecks?: boolean | Prisma.User$reviewedQualityChecksArgs<ExtArgs>
+  reportedContents?: boolean | Prisma.User$reportedContentsArgs<ExtArgs>
+  reviewedContentReports?: boolean | Prisma.User$reviewedContentReportsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -869,17 +1937,24 @@ export type UserSelectScalar = {
   verifiedAt?: boolean
   image?: boolean
   roles?: boolean
-  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "verifiedAt" | "image" | "roles" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "verifiedAt" | "image" | "roles" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
-  account?: boolean | Prisma.User$accountArgs<ExtArgs>
+  accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
+  researches?: boolean | Prisma.User$researchesArgs<ExtArgs>
+  participations?: boolean | Prisma.User$participationsArgs<ExtArgs>
+  reviewedParticipations?: boolean | Prisma.User$reviewedParticipationsArgs<ExtArgs>
+  tokenWallet?: boolean | Prisma.User$tokenWalletArgs<ExtArgs>
+  reviewedQualityChecks?: boolean | Prisma.User$reviewedQualityChecksArgs<ExtArgs>
+  reportedContents?: boolean | Prisma.User$reportedContentsArgs<ExtArgs>
+  reviewedContentReports?: boolean | Prisma.User$reviewedContentReportsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -887,9 +1962,16 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     profile: Prisma.$UserProfilePayload<ExtArgs> | null
-    account: Prisma.$AccountPayload<ExtArgs> | null
+    accounts: Prisma.$AccountPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     verifications: Prisma.$VerificationPayload<ExtArgs>[]
+    researches: Prisma.$ResearchPayload<ExtArgs>[]
+    participations: Prisma.$RespondentParticipationPayload<ExtArgs>[]
+    reviewedParticipations: Prisma.$RespondentParticipationPayload<ExtArgs>[]
+    tokenWallet: Prisma.$TokenWalletPayload<ExtArgs> | null
+    reviewedQualityChecks: Prisma.$QualityCheckPayload<ExtArgs>[]
+    reportedContents: Prisma.$ContentReportPayload<ExtArgs>[]
+    reviewedContentReports: Prisma.$ContentReportPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -898,9 +1980,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     verifiedAt: Date | null
     image: string | null
     roles: runtime.JsonValue
-    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1242,9 +2324,16 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   profile<T extends Prisma.User$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileArgs<ExtArgs>>): Prisma.Prisma__UserProfileClient<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  account<T extends Prisma.User$accountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountArgs<ExtArgs>>): Prisma.Prisma__AccountClient<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   verifications<T extends Prisma.User$verificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  researches<T extends Prisma.User$researchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$researchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResearchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  participations<T extends Prisma.User$participationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$participationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RespondentParticipationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewedParticipations<T extends Prisma.User$reviewedParticipationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedParticipationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RespondentParticipationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tokenWallet<T extends Prisma.User$tokenWalletArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tokenWalletArgs<ExtArgs>>): Prisma.Prisma__TokenWalletClient<runtime.Types.Result.GetResult<Prisma.$TokenWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reviewedQualityChecks<T extends Prisma.User$reviewedQualityChecksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedQualityChecksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QualityCheckPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reportedContents<T extends Prisma.User$reportedContentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportedContentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewedContentReports<T extends Prisma.User$reviewedContentReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedContentReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1280,9 +2369,9 @@ export interface UserFieldRefs {
   readonly verifiedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly image: Prisma.FieldRef<"User", 'String'>
   readonly roles: Prisma.FieldRef<"User", 'Json'>
-  readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 
@@ -1650,9 +2739,9 @@ export type User$profileArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 /**
- * User.account
+ * User.accounts
  */
-export type User$accountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Account
    */
@@ -1666,6 +2755,11 @@ export type User$accountArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   include?: Prisma.AccountInclude<ExtArgs> | null
   where?: Prisma.AccountWhereInput
+  orderBy?: Prisma.AccountOrderByWithRelationInput | Prisma.AccountOrderByWithRelationInput[]
+  cursor?: Prisma.AccountWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AccountScalarFieldEnum | Prisma.AccountScalarFieldEnum[]
 }
 
 /**
@@ -1714,6 +2808,169 @@ export type User$verificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.VerificationScalarFieldEnum | Prisma.VerificationScalarFieldEnum[]
+}
+
+/**
+ * User.researches
+ */
+export type User$researchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Research
+   */
+  select?: Prisma.ResearchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Research
+   */
+  omit?: Prisma.ResearchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResearchInclude<ExtArgs> | null
+  where?: Prisma.ResearchWhereInput
+  orderBy?: Prisma.ResearchOrderByWithRelationInput | Prisma.ResearchOrderByWithRelationInput[]
+  cursor?: Prisma.ResearchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResearchScalarFieldEnum | Prisma.ResearchScalarFieldEnum[]
+}
+
+/**
+ * User.participations
+ */
+export type User$participationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RespondentParticipation
+   */
+  select?: Prisma.RespondentParticipationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RespondentParticipation
+   */
+  omit?: Prisma.RespondentParticipationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RespondentParticipationInclude<ExtArgs> | null
+  where?: Prisma.RespondentParticipationWhereInput
+  orderBy?: Prisma.RespondentParticipationOrderByWithRelationInput | Prisma.RespondentParticipationOrderByWithRelationInput[]
+  cursor?: Prisma.RespondentParticipationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RespondentParticipationScalarFieldEnum | Prisma.RespondentParticipationScalarFieldEnum[]
+}
+
+/**
+ * User.reviewedParticipations
+ */
+export type User$reviewedParticipationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RespondentParticipation
+   */
+  select?: Prisma.RespondentParticipationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RespondentParticipation
+   */
+  omit?: Prisma.RespondentParticipationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RespondentParticipationInclude<ExtArgs> | null
+  where?: Prisma.RespondentParticipationWhereInput
+  orderBy?: Prisma.RespondentParticipationOrderByWithRelationInput | Prisma.RespondentParticipationOrderByWithRelationInput[]
+  cursor?: Prisma.RespondentParticipationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RespondentParticipationScalarFieldEnum | Prisma.RespondentParticipationScalarFieldEnum[]
+}
+
+/**
+ * User.tokenWallet
+ */
+export type User$tokenWalletArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TokenWallet
+   */
+  select?: Prisma.TokenWalletSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TokenWallet
+   */
+  omit?: Prisma.TokenWalletOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TokenWalletInclude<ExtArgs> | null
+  where?: Prisma.TokenWalletWhereInput
+}
+
+/**
+ * User.reviewedQualityChecks
+ */
+export type User$reviewedQualityChecksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QualityCheck
+   */
+  select?: Prisma.QualityCheckSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the QualityCheck
+   */
+  omit?: Prisma.QualityCheckOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QualityCheckInclude<ExtArgs> | null
+  where?: Prisma.QualityCheckWhereInput
+  orderBy?: Prisma.QualityCheckOrderByWithRelationInput | Prisma.QualityCheckOrderByWithRelationInput[]
+  cursor?: Prisma.QualityCheckWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QualityCheckScalarFieldEnum | Prisma.QualityCheckScalarFieldEnum[]
+}
+
+/**
+ * User.reportedContents
+ */
+export type User$reportedContentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ContentReport
+   */
+  select?: Prisma.ContentReportSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ContentReport
+   */
+  omit?: Prisma.ContentReportOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContentReportInclude<ExtArgs> | null
+  where?: Prisma.ContentReportWhereInput
+  orderBy?: Prisma.ContentReportOrderByWithRelationInput | Prisma.ContentReportOrderByWithRelationInput[]
+  cursor?: Prisma.ContentReportWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ContentReportScalarFieldEnum | Prisma.ContentReportScalarFieldEnum[]
+}
+
+/**
+ * User.reviewedContentReports
+ */
+export type User$reviewedContentReportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ContentReport
+   */
+  select?: Prisma.ContentReportSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ContentReport
+   */
+  omit?: Prisma.ContentReportOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContentReportInclude<ExtArgs> | null
+  where?: Prisma.ContentReportWhereInput
+  orderBy?: Prisma.ContentReportOrderByWithRelationInput | Prisma.ContentReportOrderByWithRelationInput[]
+  cursor?: Prisma.ContentReportWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ContentReportScalarFieldEnum | Prisma.ContentReportScalarFieldEnum[]
 }
 
 /**

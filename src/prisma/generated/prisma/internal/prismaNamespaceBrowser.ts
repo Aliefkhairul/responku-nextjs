@@ -55,7 +55,18 @@ export const ModelName = {
   UserProfile: 'UserProfile',
   Account: 'Account',
   Session: 'Session',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  QualityCheck: 'QualityCheck',
+  ContentReport: 'ContentReport',
+  RespondentParticipation: 'RespondentParticipation',
+  ParticipationAnswer: 'ParticipationAnswer',
+  Research: 'Research',
+  ResearchCriteria: 'ResearchCriteria',
+  ResearchQuestion: 'ResearchQuestion',
+  ResearchQuestionChoice: 'ResearchQuestionChoice',
+  Reward: 'Reward',
+  TokenWallet: 'TokenWallet',
+  TokenTransaction: 'TokenTransaction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -81,9 +92,9 @@ export const UserScalarFieldEnum = {
   verifiedAt: 'verifiedAt',
   image: 'image',
   roles: 'roles',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -103,9 +114,9 @@ export const UserProfileScalarFieldEnum = {
   education: 'education',
   occupation: 'occupation',
   dataShareConsentAt: 'dataShareConsentAt',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[keyof typeof UserProfileScalarFieldEnum]
@@ -117,9 +128,9 @@ export const AccountScalarFieldEnum = {
   accountId: 'accountId',
   providerId: 'providerId',
   password: 'password',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
@@ -132,9 +143,9 @@ export const SessionScalarFieldEnum = {
   expiresAt: 'expiresAt',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
@@ -146,6 +157,8 @@ export const VerificationScalarFieldEnum = {
   type: 'type',
   tokenHash: 'tokenHash',
   code: 'code',
+  target: 'target',
+  attempts: 'attempts',
   expiredAt: 'expiredAt',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
@@ -153,6 +166,179 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const QualityCheckScalarFieldEnum = {
+  id: 'id',
+  participationId: 'participationId',
+  signalFlags: 'signalFlags',
+  autoScore: 'autoScore',
+  reviewedBy: 'reviewedBy',
+  decision: 'decision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type QualityCheckScalarFieldEnum = (typeof QualityCheckScalarFieldEnum)[keyof typeof QualityCheckScalarFieldEnum]
+
+
+export const ContentReportScalarFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  reportedBy: 'reportedBy',
+  reason: 'reason',
+  status: 'status',
+  reviewedBy: 'reviewedBy',
+  actionTaken: 'actionTaken',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ContentReportScalarFieldEnum = (typeof ContentReportScalarFieldEnum)[keyof typeof ContentReportScalarFieldEnum]
+
+
+export const RespondentParticipationScalarFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  respondentId: 'respondentId',
+  status: 'status',
+  screeningScore: 'screeningScore',
+  autoScreeningResult: 'autoScreeningResult',
+  submittedAt: 'submittedAt',
+  adminReviewedBy: 'adminReviewedBy',
+  adminReviewedAt: 'adminReviewedAt',
+  holdReleaseAt: 'holdReleaseAt',
+  rewardedAt: 'rewardedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type RespondentParticipationScalarFieldEnum = (typeof RespondentParticipationScalarFieldEnum)[keyof typeof RespondentParticipationScalarFieldEnum]
+
+
+export const ParticipationAnswerScalarFieldEnum = {
+  id: 'id',
+  respondentParticipationId: 'respondentParticipationId',
+  researchQuestionId: 'researchQuestionId',
+  choiceIds: 'choiceIds',
+  answeredAt: 'answeredAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ParticipationAnswerScalarFieldEnum = (typeof ParticipationAnswerScalarFieldEnum)[keyof typeof ParticipationAnswerScalarFieldEnum]
+
+
+export const ResearchScalarFieldEnum = {
+  id: 'id',
+  researcherId: 'researcherId',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  externalSurveyUrl: 'externalSurveyUrl',
+  targetRespondentCount: 'targetRespondentCount',
+  estimatedDurationMinutes: 'estimatedDurationMinutes',
+  deadline: 'deadline',
+  status: 'status',
+  tokensReserved: 'tokensReserved',
+  tokensConsumed: 'tokensConsumed',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ResearchScalarFieldEnum = (typeof ResearchScalarFieldEnum)[keyof typeof ResearchScalarFieldEnum]
+
+
+export const ResearchCriteriaScalarFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  field: 'field',
+  operator: 'operator',
+  value: 'value',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ResearchCriteriaScalarFieldEnum = (typeof ResearchCriteriaScalarFieldEnum)[keyof typeof ResearchCriteriaScalarFieldEnum]
+
+
+export const ResearchQuestionScalarFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  pos: 'pos',
+  question: 'question',
+  questionType: 'questionType',
+  mustFill: 'mustFill',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ResearchQuestionScalarFieldEnum = (typeof ResearchQuestionScalarFieldEnum)[keyof typeof ResearchQuestionScalarFieldEnum]
+
+
+export const ResearchQuestionChoiceScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  pos: 'pos',
+  n: 'n',
+  choiceText: 'choiceText',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ResearchQuestionChoiceScalarFieldEnum = (typeof ResearchQuestionChoiceScalarFieldEnum)[keyof typeof ResearchQuestionChoiceScalarFieldEnum]
+
+
+export const RewardScalarFieldEnum = {
+  id: 'id',
+  participationId: 'participationId',
+  respondentTokenAmount: 'respondentTokenAmount',
+  platformTokenAmount: 'platformTokenAmount',
+  status: 'status',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type RewardScalarFieldEnum = (typeof RewardScalarFieldEnum)[keyof typeof RewardScalarFieldEnum]
+
+
+export const TokenWalletScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  balance: 'balance',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type TokenWalletScalarFieldEnum = (typeof TokenWalletScalarFieldEnum)[keyof typeof TokenWalletScalarFieldEnum]
+
+
+export const TokenTransactionScalarFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  researchId: 'researchId',
+  respondentParticipationId: 'respondentParticipationId',
+  type: 'type',
+  amount: 'amount',
+  idempotencyKey: 'idempotencyKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type TokenTransactionScalarFieldEnum = (typeof TokenTransactionScalarFieldEnum)[keyof typeof TokenTransactionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -168,6 +354,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const JsonNullValueFilter = {
@@ -245,8 +439,116 @@ export const VerificationOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
   tokenHash: 'tokenHash',
-  code: 'code'
+  code: 'code',
+  target: 'target'
 } as const
 
 export type VerificationOrderByRelevanceFieldEnum = (typeof VerificationOrderByRelevanceFieldEnum)[keyof typeof VerificationOrderByRelevanceFieldEnum]
+
+
+export const QualityCheckOrderByRelevanceFieldEnum = {
+  id: 'id',
+  participationId: 'participationId',
+  reviewedBy: 'reviewedBy'
+} as const
+
+export type QualityCheckOrderByRelevanceFieldEnum = (typeof QualityCheckOrderByRelevanceFieldEnum)[keyof typeof QualityCheckOrderByRelevanceFieldEnum]
+
+
+export const ContentReportOrderByRelevanceFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  reportedBy: 'reportedBy',
+  reason: 'reason',
+  reviewedBy: 'reviewedBy'
+} as const
+
+export type ContentReportOrderByRelevanceFieldEnum = (typeof ContentReportOrderByRelevanceFieldEnum)[keyof typeof ContentReportOrderByRelevanceFieldEnum]
+
+
+export const RespondentParticipationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  respondentId: 'respondentId',
+  adminReviewedBy: 'adminReviewedBy'
+} as const
+
+export type RespondentParticipationOrderByRelevanceFieldEnum = (typeof RespondentParticipationOrderByRelevanceFieldEnum)[keyof typeof RespondentParticipationOrderByRelevanceFieldEnum]
+
+
+export const ParticipationAnswerOrderByRelevanceFieldEnum = {
+  id: 'id',
+  respondentParticipationId: 'respondentParticipationId',
+  researchQuestionId: 'researchQuestionId'
+} as const
+
+export type ParticipationAnswerOrderByRelevanceFieldEnum = (typeof ParticipationAnswerOrderByRelevanceFieldEnum)[keyof typeof ParticipationAnswerOrderByRelevanceFieldEnum]
+
+
+export const ResearchOrderByRelevanceFieldEnum = {
+  id: 'id',
+  researcherId: 'researcherId',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  externalSurveyUrl: 'externalSurveyUrl'
+} as const
+
+export type ResearchOrderByRelevanceFieldEnum = (typeof ResearchOrderByRelevanceFieldEnum)[keyof typeof ResearchOrderByRelevanceFieldEnum]
+
+
+export const ResearchCriteriaOrderByRelevanceFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  field: 'field',
+  value: 'value'
+} as const
+
+export type ResearchCriteriaOrderByRelevanceFieldEnum = (typeof ResearchCriteriaOrderByRelevanceFieldEnum)[keyof typeof ResearchCriteriaOrderByRelevanceFieldEnum]
+
+
+export const ResearchQuestionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  researchId: 'researchId',
+  question: 'question'
+} as const
+
+export type ResearchQuestionOrderByRelevanceFieldEnum = (typeof ResearchQuestionOrderByRelevanceFieldEnum)[keyof typeof ResearchQuestionOrderByRelevanceFieldEnum]
+
+
+export const ResearchQuestionChoiceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  n: 'n',
+  choiceText: 'choiceText'
+} as const
+
+export type ResearchQuestionChoiceOrderByRelevanceFieldEnum = (typeof ResearchQuestionChoiceOrderByRelevanceFieldEnum)[keyof typeof ResearchQuestionChoiceOrderByRelevanceFieldEnum]
+
+
+export const RewardOrderByRelevanceFieldEnum = {
+  id: 'id',
+  participationId: 'participationId'
+} as const
+
+export type RewardOrderByRelevanceFieldEnum = (typeof RewardOrderByRelevanceFieldEnum)[keyof typeof RewardOrderByRelevanceFieldEnum]
+
+
+export const TokenWalletOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type TokenWalletOrderByRelevanceFieldEnum = (typeof TokenWalletOrderByRelevanceFieldEnum)[keyof typeof TokenWalletOrderByRelevanceFieldEnum]
+
+
+export const TokenTransactionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  researchId: 'researchId',
+  respondentParticipationId: 'respondentParticipationId',
+  idempotencyKey: 'idempotencyKey'
+} as const
+
+export type TokenTransactionOrderByRelevanceFieldEnum = (typeof TokenTransactionOrderByRelevanceFieldEnum)[keyof typeof TokenTransactionOrderByRelevanceFieldEnum]
 

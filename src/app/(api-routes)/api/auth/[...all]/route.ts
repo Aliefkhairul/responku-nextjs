@@ -1,7 +1,17 @@
 import type { NextRequest } from "next/server"
 import { z } from "zod"
 import { exceptionResponse, handleRouteError, parseBody, readJsonBody, successResponse } from "@/lib/server/api"
-import { confirmVerificationService, loginService, logoutService, registerService, requireCurrentUser } from "@/service/auth"
+import {
+    changeEmailService,
+    confirmEmailChangeService,
+    confirmVerificationService,
+    loginService,
+    logoutService,
+    registerService,
+    requireCurrentUser,
+    requireSession,
+    resendVerificationService,
+} from "@/service/auth"
 
 /* ========== Validasi ========== */
 
@@ -22,12 +32,28 @@ const loginSchema = z.object({
     password: z.string().min(1, "Password is required"),
 })
 
+/** Six digits — the only shape the OTP endpoints accept. */
+const codeField = z
+    .string()
+    .trim()
+    .regex(/^\d{6}$/, "Verification code must be 6 digits")
+
 const confirmVerificationSchema = z.object({
     email: emailField,
-    code: z
-        .string()
-        .trim()
-        .regex(/^\d{6}$/, "Verification code must be 6 digits"),
+    code: codeField,
+})
+
+const resendVerificationSchema = z.object({
+    email: emailField,
+})
+
+const changeEmailSchema = z.object({
+    email: emailField,
+    password: z.string().min(1, "Password is required"),
+})
+
+const confirmEmailChangeSchema = z.object({
+    code: codeField,
 })
 
 /* ========== Helper ========== */
@@ -90,6 +116,47 @@ async function confirmVerificationHandler(req: NextRequest) {
     }
 }
 
+/** send a fresh account verification otp */
+async function resendVerificationHandler(req: NextRequest) {
+    try {
+        const body = parseBody(resendVerificationSchema, await readJsonBody(req))
+        const result = await resendVerificationService(body)
+
+        return successResponse({
+            message: result.alreadyVerified ? "Account is already verified" : "Verification code sent",
+            data: result,
+        })
+    } catch (error) {
+        return handleRouteError(error)
+    }
+}
+
+/** start an email change by sending a code to the new address */
+async function changeEmailHandler(req: NextRequest) {
+    try {
+        const { user } = await requireSession()
+        const body = parseBody(changeEmailSchema, await readJsonBody(req))
+        const result = await changeEmailService({ userId: user.id, ...body })
+
+        return successResponse({ message: "Verification code sent to the new email", data: result })
+    } catch (error) {
+        return handleRouteError(error)
+    }
+}
+
+/** finish an email change with the code sent to the new address */
+async function confirmEmailChangeHandler(req: NextRequest) {
+    try {
+        const { user } = await requireSession()
+        const body = parseBody(confirmEmailChangeSchema, await readJsonBody(req))
+        const result = await confirmEmailChangeService({ userId: user.id, ...body })
+
+        return successResponse({ message: "Email changed", data: result })
+    } catch (error) {
+        return handleRouteError(error)
+    }
+}
+
 /** get the signed-in user */
 async function meHandler(_req: NextRequest) {
     try {
@@ -133,6 +200,12 @@ export async function POST(req: NextRequest) {
             return registerHandler(req)
         case "confirm-verification":
             return confirmVerificationHandler(req)
+        case "resend-verification":
+            return resendVerificationHandler(req)
+        case "change-email":
+            return changeEmailHandler(req)
+        case "confirm-email-change":
+            return confirmEmailChangeHandler(req)
         case "logout":
             return logoutHandler(req)
         default:

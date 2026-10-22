@@ -50,9 +50,9 @@ export type UserProfileMinAggregateOutputType = {
   education: string | null
   occupation: string | null
   dataShareConsentAt: Date | null
-  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type UserProfileMaxAggregateOutputType = {
@@ -69,9 +69,9 @@ export type UserProfileMaxAggregateOutputType = {
   education: string | null
   occupation: string | null
   dataShareConsentAt: Date | null
-  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type UserProfileCountAggregateOutputType = {
@@ -88,9 +88,9 @@ export type UserProfileCountAggregateOutputType = {
   education: number
   occupation: number
   dataShareConsentAt: number
-  deletedAt: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -119,9 +119,9 @@ export type UserProfileMinAggregateInputType = {
   education?: true
   occupation?: true
   dataShareConsentAt?: true
-  deletedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type UserProfileMaxAggregateInputType = {
@@ -138,9 +138,9 @@ export type UserProfileMaxAggregateInputType = {
   education?: true
   occupation?: true
   dataShareConsentAt?: true
-  deletedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type UserProfileCountAggregateInputType = {
@@ -157,9 +157,9 @@ export type UserProfileCountAggregateInputType = {
   education?: true
   occupation?: true
   dataShareConsentAt?: true
-  deletedAt?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -252,20 +252,20 @@ export type UserProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type UserProfileGroupByOutputType = {
   id: string
   userId: string
-  gender: string | null
-  religion: string | null
+  gender: string
+  religion: string
   religionConsentAt: Date | null
-  domicileProvince: string | null
-  domicileCity: string | null
-  domicileLat: runtime.Decimal | null
-  domicileLng: runtime.Decimal | null
+  domicileProvince: string
+  domicileCity: string
+  domicileLat: runtime.Decimal
+  domicileLng: runtime.Decimal
   domicileVerifiedAt: Date | null
-  education: string | null
-  occupation: string | null
+  education: string
+  occupation: string
   dataShareConsentAt: Date | null
-  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: UserProfileCountAggregateOutputType | null
   _avg: UserProfileAvgAggregateOutputType | null
   _sum: UserProfileSumAggregateOutputType | null
@@ -294,40 +294,40 @@ export type UserProfileWhereInput = {
   NOT?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   id?: Prisma.StringFilter<"UserProfile"> | string
   userId?: Prisma.StringFilter<"UserProfile"> | string
-  gender?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  religion?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  gender?: Prisma.StringFilter<"UserProfile"> | string
+  religion?: Prisma.StringFilter<"UserProfile"> | string
   religionConsentAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
-  domicileProvince?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  domicileCity?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  domicileLat?: Prisma.DecimalNullableFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.DecimalNullableFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFilter<"UserProfile"> | string
+  domicileCity?: Prisma.StringFilter<"UserProfile"> | string
+  domicileLat?: Prisma.DecimalFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
-  education?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  occupation?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  education?: Prisma.StringFilter<"UserProfile"> | string
+  occupation?: Prisma.StringFilter<"UserProfile"> | string
   dataShareConsentAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
-  deletedAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type UserProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  gender?: Prisma.SortOrderInput | Prisma.SortOrder
-  religion?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  religion?: Prisma.SortOrder
   religionConsentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileProvince?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileCity?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileLat?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileLng?: Prisma.SortOrderInput | Prisma.SortOrder
+  domicileProvince?: Prisma.SortOrder
+  domicileCity?: Prisma.SortOrder
+  domicileLat?: Prisma.SortOrder
+  domicileLng?: Prisma.SortOrder
   domicileVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  education?: Prisma.SortOrderInput | Prisma.SortOrder
-  occupation?: Prisma.SortOrderInput | Prisma.SortOrder
+  education?: Prisma.SortOrder
+  occupation?: Prisma.SortOrder
   dataShareConsentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   _relevance?: Prisma.UserProfileOrderByRelevanceInput
 }
@@ -338,40 +338,40 @@ export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   OR?: Prisma.UserProfileWhereInput[]
   NOT?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
-  gender?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  religion?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  gender?: Prisma.StringFilter<"UserProfile"> | string
+  religion?: Prisma.StringFilter<"UserProfile"> | string
   religionConsentAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
-  domicileProvince?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  domicileCity?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  domicileLat?: Prisma.DecimalNullableFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.DecimalNullableFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFilter<"UserProfile"> | string
+  domicileCity?: Prisma.StringFilter<"UserProfile"> | string
+  domicileLat?: Prisma.DecimalFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
-  education?: Prisma.StringNullableFilter<"UserProfile"> | string | null
-  occupation?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  education?: Prisma.StringFilter<"UserProfile"> | string
+  occupation?: Prisma.StringFilter<"UserProfile"> | string
   dataShareConsentAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
-  deletedAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"UserProfile"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId">
 
 export type UserProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  gender?: Prisma.SortOrderInput | Prisma.SortOrder
-  religion?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  religion?: Prisma.SortOrder
   religionConsentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileProvince?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileCity?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileLat?: Prisma.SortOrderInput | Prisma.SortOrder
-  domicileLng?: Prisma.SortOrderInput | Prisma.SortOrder
+  domicileProvince?: Prisma.SortOrder
+  domicileCity?: Prisma.SortOrder
+  domicileLat?: Prisma.SortOrder
+  domicileLng?: Prisma.SortOrder
   domicileVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  education?: Prisma.SortOrderInput | Prisma.SortOrder
-  occupation?: Prisma.SortOrderInput | Prisma.SortOrder
+  education?: Prisma.SortOrder
+  occupation?: Prisma.SortOrder
   dataShareConsentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserProfileCountOrderByAggregateInput
   _avg?: Prisma.UserProfileAvgOrderByAggregateInput
   _max?: Prisma.UserProfileMaxOrderByAggregateInput
@@ -385,152 +385,152 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   NOT?: Prisma.UserProfileScalarWhereWithAggregatesInput | Prisma.UserProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
   userId?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
-  gender?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  religion?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  gender?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
+  religion?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
   religionConsentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
-  domicileProvince?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  domicileCity?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  domicileLat?: Prisma.DecimalNullableWithAggregatesFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.DecimalNullableWithAggregatesFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
+  domicileCity?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
+  domicileLat?: Prisma.DecimalWithAggregatesFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalWithAggregatesFilter<"UserProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
-  education?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
-  occupation?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  education?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
+  occupation?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
   dataShareConsentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
-  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
 }
 
 export type UserProfileCreateInput = {
   id?: string
-  gender?: string | null
-  religion?: string | null
+  gender: string
+  religion: string
   religionConsentAt?: Date | string | null
-  domicileProvince?: string | null
-  domicileCity?: string | null
-  domicileLat?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince: string
+  domicileCity: string
+  domicileLat: runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng: runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Date | string | null
-  education?: string | null
-  occupation?: string | null
+  education: string
+  occupation: string
   dataShareConsentAt?: Date | string | null
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutProfileInput
 }
 
 export type UserProfileUncheckedCreateInput = {
   id?: string
   userId: string
-  gender?: string | null
-  religion?: string | null
+  gender: string
+  religion: string
   religionConsentAt?: Date | string | null
-  domicileProvince?: string | null
-  domicileCity?: string | null
-  domicileLat?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince: string
+  domicileCity: string
+  domicileLat: runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng: runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Date | string | null
-  education?: string | null
-  occupation?: string | null
+  education: string
+  occupation: string
   dataShareConsentAt?: Date | string | null
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type UserProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  religion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  religion?: Prisma.StringFieldUpdateOperationsInput | string
   religionConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  domicileProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileLat?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileCity?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileLat?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.StringFieldUpdateOperationsInput | string
+  occupation?: Prisma.StringFieldUpdateOperationsInput | string
   dataShareConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
 }
 
 export type UserProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  religion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  religion?: Prisma.StringFieldUpdateOperationsInput | string
   religionConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  domicileProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileLat?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileCity?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileLat?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.StringFieldUpdateOperationsInput | string
+  occupation?: Prisma.StringFieldUpdateOperationsInput | string
   dataShareConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserProfileCreateManyInput = {
   id?: string
   userId: string
-  gender?: string | null
-  religion?: string | null
+  gender: string
+  religion: string
   religionConsentAt?: Date | string | null
-  domicileProvince?: string | null
-  domicileCity?: string | null
-  domicileLat?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince: string
+  domicileCity: string
+  domicileLat: runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng: runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Date | string | null
-  education?: string | null
-  occupation?: string | null
+  education: string
+  occupation: string
   dataShareConsentAt?: Date | string | null
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type UserProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  religion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  religion?: Prisma.StringFieldUpdateOperationsInput | string
   religionConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  domicileProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileLat?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileCity?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileLat?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.StringFieldUpdateOperationsInput | string
+  occupation?: Prisma.StringFieldUpdateOperationsInput | string
   dataShareConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  religion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  religion?: Prisma.StringFieldUpdateOperationsInput | string
   religionConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  domicileProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileLat?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileCity?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileLat?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.StringFieldUpdateOperationsInput | string
+  occupation?: Prisma.StringFieldUpdateOperationsInput | string
   dataShareConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserProfileNullableScalarRelationFilter = {
@@ -558,9 +558,9 @@ export type UserProfileCountOrderByAggregateInput = {
   education?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   dataShareConsentAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type UserProfileAvgOrderByAggregateInput = {
@@ -582,9 +582,9 @@ export type UserProfileMaxOrderByAggregateInput = {
   education?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   dataShareConsentAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type UserProfileMinOrderByAggregateInput = {
@@ -601,9 +601,9 @@ export type UserProfileMinOrderByAggregateInput = {
   education?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   dataShareConsentAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type UserProfileSumOrderByAggregateInput = {
@@ -643,8 +643,8 @@ export type UserProfileUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserProfileUpdateToOneWithWhereWithoutUserInput, Prisma.UserProfileUpdateWithoutUserInput>, Prisma.UserProfileUncheckedUpdateWithoutUserInput>
 }
 
-export type NullableDecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -653,38 +653,38 @@ export type NullableDecimalFieldUpdateOperationsInput = {
 
 export type UserProfileCreateWithoutUserInput = {
   id?: string
-  gender?: string | null
-  religion?: string | null
+  gender: string
+  religion: string
   religionConsentAt?: Date | string | null
-  domicileProvince?: string | null
-  domicileCity?: string | null
-  domicileLat?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince: string
+  domicileCity: string
+  domicileLat: runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng: runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Date | string | null
-  education?: string | null
-  occupation?: string | null
+  education: string
+  occupation: string
   dataShareConsentAt?: Date | string | null
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type UserProfileUncheckedCreateWithoutUserInput = {
   id?: string
-  gender?: string | null
-  religion?: string | null
+  gender: string
+  religion: string
   religionConsentAt?: Date | string | null
-  domicileProvince?: string | null
-  domicileCity?: string | null
-  domicileLat?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince: string
+  domicileCity: string
+  domicileLat: runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng: runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Date | string | null
-  education?: string | null
-  occupation?: string | null
+  education: string
+  occupation: string
   dataShareConsentAt?: Date | string | null
-  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type UserProfileCreateOrConnectWithoutUserInput = {
@@ -705,38 +705,38 @@ export type UserProfileUpdateToOneWithWhereWithoutUserInput = {
 
 export type UserProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  religion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  religion?: Prisma.StringFieldUpdateOperationsInput | string
   religionConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  domicileProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileLat?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileCity?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileLat?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.StringFieldUpdateOperationsInput | string
+  occupation?: Prisma.StringFieldUpdateOperationsInput | string
   dataShareConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  religion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  religion?: Prisma.StringFieldUpdateOperationsInput | string
   religionConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  domicileProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  domicileLat?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  domicileLng?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  domicileProvince?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileCity?: Prisma.StringFieldUpdateOperationsInput | string
+  domicileLat?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  domicileLng?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   domicileVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.StringFieldUpdateOperationsInput | string
+  occupation?: Prisma.StringFieldUpdateOperationsInput | string
   dataShareConsentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -755,9 +755,9 @@ export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   education?: boolean
   occupation?: boolean
   dataShareConsentAt?: boolean
-  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userProfile"]>
 
@@ -777,12 +777,12 @@ export type UserProfileSelectScalar = {
   education?: boolean
   occupation?: boolean
   dataShareConsentAt?: boolean
-  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "gender" | "religion" | "religionConsentAt" | "domicileProvince" | "domicileCity" | "domicileLat" | "domicileLng" | "domicileVerifiedAt" | "education" | "occupation" | "dataShareConsentAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "gender" | "religion" | "religionConsentAt" | "domicileProvince" | "domicileCity" | "domicileLat" | "domicileLng" | "domicileVerifiedAt" | "education" | "occupation" | "dataShareConsentAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -795,20 +795,20 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
-    gender: string | null
-    religion: string | null
+    gender: string
+    religion: string
     religionConsentAt: Date | null
-    domicileProvince: string | null
-    domicileCity: string | null
-    domicileLat: runtime.Decimal | null
-    domicileLng: runtime.Decimal | null
+    domicileProvince: string
+    domicileCity: string
+    domicileLat: runtime.Decimal
+    domicileLng: runtime.Decimal
     domicileVerifiedAt: Date | null
-    education: string | null
-    occupation: string | null
+    education: string
+    occupation: string
     dataShareConsentAt: Date | null
-    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["userProfile"]>
   composites: {}
 }
@@ -1192,9 +1192,9 @@ export interface UserProfileFieldRefs {
   readonly education: Prisma.FieldRef<"UserProfile", 'String'>
   readonly occupation: Prisma.FieldRef<"UserProfile", 'String'>
   readonly dataShareConsentAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
-  readonly deletedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
 }
     
 

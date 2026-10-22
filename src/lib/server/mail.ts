@@ -1,5 +1,5 @@
 import { Resend } from "resend"
-import { AccountVerificationEmail } from "@/emails/account-verification"
+import { VerificationCodeEmail } from "@/emails/verification-code"
 import { env } from "@/env"
 
 export const resend = new Resend(env.RESEND_API_KEY)
@@ -13,25 +13,26 @@ export const resend = new Resend(env.RESEND_API_KEY)
  */
 const MAIL_FROM = env.MAIL_FROM_ADDRESS ?? `no-reply${env.APP_MAIL_NAME ?? "@resend.dev"}`
 
-type SendAccountVerificationEmail = {
+type SendVerificationCodeEmail = {
     to: string
     name: string
     code: string
     expiresInMinutes: number
+    purpose: "signup" | "email-change"
 }
 
 /**
- * Sends the account verification OTP.
+ * Sends a verification OTP.
  *
  * Resend resolves with an `error` object rather than rejecting, so a failed
  * delivery is re-thrown here to let callers decide what to do about it.
  */
-export async function sendAccountVerificationEmail({ to, name, code, expiresInMinutes }: SendAccountVerificationEmail) {
+export async function sendVerificationCodeEmail({ to, name, code, expiresInMinutes, purpose }: SendVerificationCodeEmail) {
     const { error } = await resend.emails.send({
         from: MAIL_FROM,
         to,
-        subject: "Your Responku verification code",
-        react: AccountVerificationEmail({ name, code, expiresInMinutes }),
+        subject: purpose === "email-change" ? "Confirm your new Responku email" : "Your Responku verification code",
+        react: VerificationCodeEmail({ name, code, expiresInMinutes, purpose }),
     })
 
     if (error) throw new Error(`RESEND_SEND_FAILED: ${error.message}`)
