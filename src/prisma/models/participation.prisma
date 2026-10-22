@@ -60,6 +60,9 @@ model ParticipationAnswer {
 
   // Array id pilihan, mis. ["id1","id2"]; null untuk jawaban non-pilihan
   choiceIds  Json?
+  // Jawaban bebas untuk soal yang tidak memakai pilihan (TEXT/NUMBER/SCALE);
+  // null untuk jawaban pilihan, jadi salah satu dari choiceIds/answerText yang terisi
+  answerText String? @db.Text
   answeredAt DateTime? @db.DateTime(3)
 
   createdAt DateTime  @default(now()) @db.DateTime(3)
