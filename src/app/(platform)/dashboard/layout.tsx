@@ -5,7 +5,6 @@ import {
     CircleHelpIcon,
     LayoutDashboardIcon,
     type LucideIcon,
-    Loader2,
     MenuIcon,
     Microscope,
     SettingsIcon,
@@ -14,14 +13,13 @@ import {
     XIcon,
 } from "lucide-react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { type ReactNode, useState } from "react"
+import { StartResearchMenuItem } from "@/components/dashboard/start-research-menu-item"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { toast } from "@/components/ui/toast"
-import { postJson } from "@/lib/api-client"
 import { DashboardStoreProvider, useDashboardStore } from "@/lib/stores/dashboard-store-provider"
 import { cn } from "@/lib/cn"
 
@@ -77,50 +75,7 @@ const user = {
 }
 
 function MenuList({ items, open, onItemClick, pathnames }: { items: MenuItem[]; open: boolean; onItemClick?: () => void; pathnames: string[] }) {
-    const router = useRouter()
-    const [creating, setCreating] = useState(false)
     const hideOnCollapse = open ? "opacity-100" : "md:opacity-0"
-
-    /**
-     * "Buat Riset" creates a draft and opens it: the editor lives at
-     * `/create-research/{id}`, so there is no URL to link to until the draft exists.
-     *
-     * The request carries no body — the backend owns the draft's initial shape.
-     */
-    async function createResearch(): Promise<void> {
-        // Each call makes a row, so a second click while one is in flight is refused.
-        if (creating) return
-
-        setCreating(true)
-        const result = await postJson<{ research: { id: string } }>("/api/research/create")
-
-        if (!result.ok) {
-            setCreating(false)
-
-            if (result.statusCode === 401) {
-                router.replace("/login")
-                return
-            }
-
-            toast.add({
-                type: "error",
-                title: "Gagal membuat riset",
-                description: result.statusCode === 403 ? "Akunmu belum punya akses peneliti." : result.message,
-            })
-            return
-        }
-
-        const researchId = result.data?.research.id
-
-        if (researchId === undefined) {
-            setCreating(false)
-            toast.add({ type: "error", title: "Gagal membuat riset", description: "Server tidak mengembalikan id riset." })
-            return
-        }
-
-        toast.add({ type: "success", title: "Draft riset dibuat", description: "Melanjutkan ke editor kuesioner." })
-        router.push(`/create-research/${researchId}`)
-    }
 
     return (
         <ul className="flex flex-col gap-1">
@@ -128,28 +83,10 @@ function MenuList({ items, open, onItemClick, pathnames }: { items: MenuItem[]; 
                 const urls = url.split("/").filter((c) => c !== "")
                 const isActive = urls.every((c) => pathnames.includes(c))
 
-                // "Buat Riset" is an action, not a destination, so it is a plain button
-                // instead of a link to a page that has no draft to open yet.
+                // "Buat Riset" acts on click instead of navigating, so it brings its own
+                // button and the picker that asks which draft is meant.
                 if (url === CREATE_RESEARCH_PATH) {
-                    return (
-                        <button
-                            type="button"
-                            key={label}
-                            title={label}
-                            disabled={creating}
-                            onClick={() => {
-                                onItemClick?.()
-                                void createResearch()
-                            }}
-                            className={`w-full h-10 flex items-center gap-3 px-3 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-60`}
-                        >
-                            {creating ? <Loader2 className="size-5 shrink-0 animate-spin" /> : <Icon className="size-5 shrink-0" />}
-                            <span className={`whitespace-nowrap transition-opacity duration-200 font-medium ${hideOnCollapse}`}>{label}</span>
-                            {highlight && (
-                                <ArrowUpRightIcon className={`size-4 shrink-0 ml-auto transition-opacity duration-200 ${hideOnCollapse}`} />
-                            )}
-                        </button>
-                    )
+                    return <StartResearchMenuItem key={label} label={label} icon={Icon} highlight={highlight} open={open} onItemClick={onItemClick} />
                 }
 
                 return (

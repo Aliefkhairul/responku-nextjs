@@ -66,3 +66,7 @@ export function postJson<T = unknown>(path: string, body?: unknown) {
 export function patchJson<T = unknown>(path: string, body?: unknown) {
     return request<T>(path, json("PATCH", body))
 }
+
+export function deleteJson<T = unknown>(path: string) {
+    return request<T>(path, { method: "DELETE" })
+}

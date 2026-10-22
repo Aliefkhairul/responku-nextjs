@@ -464,6 +464,107 @@ Semua endpoint research butuh **login** dan role **`researcher`** — kalau tida
 
 Riset diidentifikasi lewat `{id}` di URL. Nama aksi (`create`) tidak pernah dianggap sebagai id.
 
+### `GET /api/research`
+
+Daftar riset milik pemanggil, yang paling baru diperbarui dulu.
+
+**Query**
+
+| Param    | Aturan                                                                                                |
+| -------- | ----------------------------------------------------------------------------------------------------- |
+| `status` | opsional, salah satu `DRAFT`/`PENDING_REVIEW`/`PUBLISHED`/`CLOSED`/`COMPLETED`/`REJECTED`/`CANCELLED` |
+| `take`   | opsional, bilangan bulat 1–100 (default 50)                                                           |
+
+**Response `200`**
+
+```json
+{
+    "ok": true,
+    "statusCode": 200,
+    "message": "Researches",
+    "data": {
+        "researches": [
+            {
+                "id": "…",
+                "title": "",
+                "status": "DRAFT",
+                "questionCount": 0,
+                "targetRespondentCount": 0,
+                "tokensReserved": 0,
+                "tokensConsumed": 0,
+                "respondentCount": 0,
+                "updatedAt": "2026-10-22T…"
+            }
+        ]
+    }
+}
+```
+
+`title` kosong untuk draft yang belum diberi judul. Riset yang sudah di-archive tidak ikut terdaftar, dan
+query yang tidak valid dijawab `422` dengan key `status`/`take`.
+
+`respondentCount` adalah jumlah partisipasi yang **sudah dikirim** (`submittedAt` terisi) — sekadar join
+belum dihitung. Bandingkan dengan `targetRespondentCount` untuk progres "responden terkumpul".
+
+**Error:** `401` · `403` bila bukan `researcher` · `422`.
+
+---
+
+### `GET /api/research/available`
+
+Feed untuk **responden**: riset milik orang lain yang sedang dibuka dan belum pernah dia ikuti. Butuh
+login, tapi **tidak** butuh role `researcher` — ini sisi sebaliknya dari resource yang sama.
+
+Yang tidak ikut masuk daftar:
+
+- riset milik pemanggil sendiri,
+- yang statusnya bukan `PUBLISHED`,
+- yang sudah di-archive,
+- yang deadline-nya sudah lewat (statusnya masih `PUBLISHED`, tapi tidak lagi menerima jawaban),
+- yang sudah pernah dia ikuti (baris partisipasi apa pun).
+
+**Query**
+
+| Param      | Aturan                                                                    |
+| ---------- | ------------------------------------------------------------------------- |
+| `category` | opsional, salah satu `fintech`/`retail`/`education`/`health`/`technology` |
+| `take`     | opsional, bilangan bulat 1–100 (default 50)                               |
+
+**Response `200`**
+
+```json
+{
+    "ok": true,
+    "statusCode": 200,
+    "message": "Available research",
+    "data": {
+        "researches": [
+            {
+                "id": "…",
+                "title": "…",
+                "description": "…",
+                "category": "fintech",
+                "researcherName": "…",
+                "tokenPerRespondent": 2,
+                "rewardIdr": 2000,
+                "estimatedDurationMinutes": 8,
+                "deadline": "2026-12-31T…",
+                "respondentCount": 82,
+                "targetRespondentCount": 100
+            }
+        ]
+    }
+}
+```
+
+`rewardIdr` dihitung di server (`tokenPerRespondent × TOKEN_PRICE_IDR`), supaya client tidak perlu tahu
+harga token. `respondentCount` mengikuti aturan yang sama dengan daftar peneliti: hanya partisipasi yang
+sudah dikirim.
+
+**Error:** `401` · `422` query tidak valid.
+
+---
+
 ### `POST /api/research/create`
 
 Membuat draft kosong. **Tidak butuh body** — skeleton-nya ditentukan backend, dan pemiliknya diambil
@@ -961,13 +1062,17 @@ token (top-up, reserve, dan release).
   `TOKEN_EXPIRY_IDLE_MONTHS`, `MIN_RESPONDENT_PER_RESEARCH`, `ADMIN_REVIEW_SLA_HOURS`,
   `CONTENT_REPORT_SLA_HOURS`, dan `QUALITY_HOLD_RELEASE_HOURS` — nilainya sudah terpusat, tapi belum
   ada alur yang memakainya.
-- **List riset** (`GET /api/research`) dan **unpublish** belum ada.
+- **Unpublish riset** yang sudah `PUBLISHED` belum ada — yang tersedia baru `close` dan archive.
 - **Akun yang belum bisa diubah dari UI profil** — belum ada endpoint untuk mengganti `User.name`,
   mengunggah foto (`User.image`), mengganti kata sandi (walau `PASSWORD_RESET` sudah ada di enum),
   maupun ekspor/hapus akun untuk UU PDP.
 - **UI untuk tipe pertanyaan `NUMBER`** — sudah valid di schema dan API, tapi editor belum
   menawarkannya (baru 4 tipe: `SINGLE_CHOICE`, `MULTIPLE_CHOICE`, `TEXT`, `SCALE`), dan halaman
   responden belum merender input angkanya.
+- **Skor “cocok” dan institusi peneliti** — kartu survei di feed responden versi awal menampilkan
+  badge “99% cocok” dan nama institusi; keduanya belum ada datanya. Skor kecocokan butuh evaluasi
+  kriteria terhadap profil (dan profil belum menyimpan usia), sedangkan institusi belum punya kolom —
+  jadi yang tampil sekarang nama peneliti, dan badge kecocokannya dibuang daripada dikarang.
 
 **Perilaku yang mudah bikin bingung:**
 
@@ -994,3 +1099,13 @@ Skrip ini mendaftarkan akun sekali pakai, membuat riset, dan membaca kode OTP la
 (`scripts/db-peek.ts`). Ia juga menyalakan **stub Snap** di `127.0.0.1:4566`, jadi dev server harus
 dijalankan dengan `MIDTRANS_SNAP_BASE_URL` seperti di atas — kalau tidak, `topup` akan memanggil Midtrans
 sungguhan dan ditolak dengan `502`. **Hanya untuk database development.**
+
+Dua seeder untuk alur yang belum punya endpoint-nya sendiri, juga development-only:
+
+```sh
+bun run scripts/credit-wallet.ts <email> <amount>          # isi saldo token
+bun run scripts/seed-participations.ts <email> <count>     # isi partisipasi yang sudah dikirim
+```
+
+Keduanya menulis baris turunannya sekalian (ledger token / partisipasi), jadi datanya tetap bisa
+dijelaskan. Bersihkan dengan `bun run scripts/db-peek.ts purge <pola-email>`.
