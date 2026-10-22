@@ -97,3 +97,44 @@ export type ResearchDetail = {
     criteria: ResearchCriterion[]
     questions: ResearchQuestion[]
 }
+
+/** `GET`/`PATCH /api/user/settings` → `data.settings`. */
+export type AccountSettings = {
+    language: string
+    theme: string
+    compactMode: boolean
+    notifyEmail: boolean
+    notifyPush: boolean
+    notifySurveyReminder: boolean
+    notifyReward: boolean
+    notifyWeeklySummary: boolean
+    notifyPromotion: boolean
+    privacyPublicProfile: boolean
+    privacyOnlineStatus: boolean
+    privacyAnalyticsSharing: boolean
+    securityTwoFactorAuth: boolean
+    updatedAt: string
+}
+
+/** `GET /api/user/sessions` → `data.sessions[]`. */
+export type ActiveSession = {
+    id: string
+    /** Raw user agent; the friendly device label is derived from it in the view. */
+    userAgent: string | null
+    ipAddress: string | null
+    createdAt: string
+    expiresAt: string
+    /** True for the session making the request, which the list will not offer to end. */
+    current: boolean
+}
+
+/** `POST /api/ticket` → `data.ticket`, and `GET /api/ticket` → `data.tickets[]`. */
+export type SupportTicket = {
+    id: string
+    category: string
+    subject: string
+    description: string
+    status: string
+    createdAt: string
+    updatedAt: string
+}

@@ -70,9 +70,9 @@ if (command === "wallet") {
  * hang off it.
  *
  * Children go first because most of these relations are `RESTRICT`, not `CASCADE`:
- * a research or a payment would refuse to let its owner go. Criteria, questions, and
- * choices do cascade from the research, and the profile, accounts, sessions, and
- * verifications cascade from the user. Participations restrict from both ends — the
+ * a research, a payment, or a support ticket would refuse to let its owner go. Criteria,
+ * questions, and choices do cascade from the research, and the profile, accounts, sessions,
+ * and verifications cascade from the user. Participations restrict from both ends — the
  * research and the respondent — so they are cleared before either.
  *
  * Everything runs in one transaction, so a run that hits an unexpected relation
@@ -95,12 +95,13 @@ if (command === "purge") {
     const researches = await prisma.research.findMany({ where: { researcherId: { in: userIds } }, select: { id: true } })
     const researchIds = researches.map((research) => research.id)
 
-    const [transactions, participations, payments, removedWallets, removedResearches, removedUsers] = await prisma.$transaction([
+    const [transactions, participations, payments, removedTickets, removedWallets, removedResearches, removedUsers] = await prisma.$transaction([
         prisma.tokenTransaction.deleteMany({ where: { walletId: { in: walletIds } } }),
         prisma.respondentParticipation.deleteMany({
             where: { OR: [{ researchId: { in: researchIds } }, { respondentId: { in: userIds } }] },
         }),
         prisma.payment.deleteMany({ where: { userId: { in: userIds } } }),
+        prisma.supportTicket.deleteMany({ where: { userId: { in: userIds } } }),
         prisma.tokenWallet.deleteMany({ where: { userId: { in: userIds } } }),
         prisma.research.deleteMany({ where: { researcherId: { in: userIds } } }),
         prisma.user.deleteMany({ where: { id: { in: userIds } } }),
@@ -110,7 +111,8 @@ if (command === "purge") {
 
     console.log(
         `removed ${removedUsers.count} users, ${removedResearches.count} researches, ${removedWallets.count} wallets, ` +
-            `${transactions.count} token transactions, ${participations.count} participations, ${payments.count} payments`,
+            `${transactions.count} token transactions, ${participations.count} participations, ${payments.count} payments, ` +
+            `${removedTickets.count} support tickets`,
     )
 }
 

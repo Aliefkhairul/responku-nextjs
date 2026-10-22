@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { DashboardStoreProvider, useDashboardStore } from "@/lib/stores/dashboard-store-provider"
+import { useCurrentUser } from "@/lib/use-current-user"
 import { cn } from "@/lib/cn"
 
 /** The one menu entry that creates something instead of opening a fixed page. */
@@ -68,11 +69,6 @@ const menus2nd: MenuItem[] = [
         url: "help-center",
     },
 ]
-
-const user = {
-    name: "John Doe",
-    image: "",
-}
 
 function MenuList({ items, open, onItemClick, pathnames }: { items: MenuItem[]; open: boolean; onItemClick?: () => void; pathnames: string[] }) {
     const hideOnCollapse = open ? "opacity-100" : "md:opacity-0"
@@ -134,6 +130,14 @@ function LayoutChildren({ pathname, children }: { pathname: string; children: Re
     const userMode = useDashboardStore((s) => s.userMode)
     const setMode = useDashboardStore((s) => s.setMode)
 
+    const currentUser = useCurrentUser()
+    const user = currentUser.status === "ready" ? currentUser.user : null
+
+    // Empty until the read lands, so the avatars show a plain circle rather than a
+    // placeholder letter that would be replaced a moment later.
+    const userName = user?.name ?? ""
+    const userInitial = userName.trim().charAt(0).toUpperCase()
+
     return (
         <div className="w-full h-dvh flex md:divide-x overflow-hidden">
             {/* aside */}
@@ -189,15 +193,15 @@ function LayoutChildren({ pathname, children }: { pathname: string; children: Re
 
                 {/* user */}
                 <div className="shrink-0 border-t p-2">
-                    <div title={user.name} className="h-12 flex items-center gap-3 px-2 rounded-md">
+                    <div title={userName} className="h-12 flex items-center gap-3 px-2 rounded-md">
                         <Avatar className="size-8 shrink-0">
-                            <AvatarImage src={user.image} alt={user.name} />
-                            <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                            <AvatarImage src={user?.image ?? undefined} alt={userName || "Foto profil"} />
+                            <AvatarFallback>{userInitial}</AvatarFallback>
                         </Avatar>
                         <span
                             className={`text-sm font-medium whitespace-nowrap transition-opacity duration-200 ${open ? "opacity-100" : "md:opacity-0"}`}
                         >
-                            {user.name}
+                            {userName}
                         </span>
                     </div>
                 </div>
@@ -275,8 +279,8 @@ function LayoutChildren({ pathname, children }: { pathname: string; children: Re
                         {/* user */}
                         <Link href="/profile" title="Pengaturan profil" aria-label="Pengaturan profil" className="rounded-full">
                             <Avatar className="size-9">
-                                <AvatarImage src={user.image} alt={user.name} />
-                                <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                                <AvatarImage src={user?.image ?? undefined} alt={userName || "Foto profil"} />
+                                <AvatarFallback>{userInitial}</AvatarFallback>
                             </Avatar>
                         </Link>
                     </div>
