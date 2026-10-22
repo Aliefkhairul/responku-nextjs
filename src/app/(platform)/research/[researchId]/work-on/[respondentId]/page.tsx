@@ -16,6 +16,7 @@ import { toast } from "@/components/ui/toast"
 import { postJson } from "@/lib/api-client"
 import type { ParticipationDetail, ParticipationQuestion } from "@/lib/api-types"
 import { cn } from "@/lib/cn"
+import { useWorkOnTimerStore } from "@/lib/stores/work-on-timer-store-provider"
 
 /**
  * Taking one research.
@@ -362,6 +363,9 @@ export default function Page() {
     const { researchId } = useParams<{ researchId: string }>()
     const [state, setState] = useState<PageState>({ status: "loading" })
 
+    const setTimer = useWorkOnTimerStore((store) => store.setTimer)
+    const clearTimer = useWorkOnTimerStore((store) => store.clearTimer)
+
     useEffect(() => {
         let cancelled = false
 
@@ -377,6 +381,22 @@ export default function Page() {
     useEffect(() => {
         if (state.status === "unauthenticated") router.replace("/login")
     }, [state.status, router])
+
+    // Publish the clock to the header while the questionnaire is open, and take it back down
+    // otherwise so it does not linger on the other pages under this layout.
+    useEffect(() => {
+        if (state.status !== "ready") {
+            clearTimer()
+            return
+        }
+
+        setTimer({
+            startedAt: state.participation.startedAt ?? state.participation.createdAt,
+            estimatedMinutes: state.participation.research.estimatedDurationMinutes,
+        })
+    }, [state, setTimer, clearTimer])
+
+    useEffect(() => clearTimer, [clearTimer])
 
     function reload() {
         setState({ status: "loading" })

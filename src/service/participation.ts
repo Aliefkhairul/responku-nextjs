@@ -35,9 +35,10 @@ const ANSWERED_STATUSES: ParticipationStatus[] = [...PARTICIPATION_DONE_STATUSES
  * How much of the estimated time a submission has to use up before it stops being
  * flagged as too fast — see `toTiming`.
  *
- * A third, deliberately generous: the estimate is the researcher's own guess, and people
- * are routinely quicker than a guess, so the flag has to mean "implausibly quick" rather
- * than "quicker than expected". It is a heuristic to tune, not a verdict.
+ * A third, deliberately generous: the estimate is a rule of thumb from the questionnaire's
+ * length, and people are routinely quicker than a rule of thumb, so the flag has to mean
+ * "implausibly quick" rather than "quicker than expected". It is a heuristic to tune, not a
+ * verdict.
  */
 const TOO_FAST_PACE_PERCENT = 33
 
