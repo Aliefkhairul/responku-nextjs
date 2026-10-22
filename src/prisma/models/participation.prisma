@@ -26,6 +26,10 @@ model RespondentParticipation {
   status              ParticipationStatus  @default(JOINED)
   screeningScore      Int?
   autoScreeningResult AutoScreeningResult?
+  // Kapan responden pertama kali membuka kuesionernya — jam mulai pengerjaan, bukan jam
+  // join. Tidak ada kolom durasi: durasinya dihitung dari startedAt dan submittedAt
+  // saat dibaca, jadi tidak mungkin berbeda dari kedua timestamp itu.
+  startedAt           DateTime?            @db.DateTime(3)
   submittedAt         DateTime?            @db.DateTime(3)
 
   adminReviewedBy String?   @db.VarChar(36)

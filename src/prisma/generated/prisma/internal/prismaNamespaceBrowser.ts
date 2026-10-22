@@ -210,6 +210,7 @@ export const RespondentParticipationScalarFieldEnum = {
   status: 'status',
   screeningScore: 'screeningScore',
   autoScreeningResult: 'autoScreeningResult',
+  startedAt: 'startedAt',
   submittedAt: 'submittedAt',
   adminReviewedBy: 'adminReviewedBy',
   adminReviewedAt: 'adminReviewedAt',
