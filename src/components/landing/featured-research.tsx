@@ -268,7 +268,7 @@ export default function FeaturedResearch() {
 
     return (
         <section id="riset" className="scroll-mt-24 border-t">
-            <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                     <div className="max-w-2xl">
                         <p className="font-mono text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">Riset Unggulan</p>

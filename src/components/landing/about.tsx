@@ -76,13 +76,13 @@ const PILLARS = [
 export default function About() {
     return (
         <section id="tentang" className="scroll-mt-24 border-t">
-            <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
                 <p className="font-mono text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">Tentang Responku</p>
 
                 <p className="mt-6 max-w-4xl text-xl leading-relaxed font-medium text-balance sm:text-2xl">
                     Responku adalah platform riset dan survei yang menghubungkan peneliti dengan responden terverifikasi. Peneliti menyusun kuesioner,
-                    menyaring responden lewat kriteria domisili dan usia, lalu membayar reward dengan token — transparan dan dapat diaudit. Kami bekerja
-                    bersama kampus, lembaga riset, dan perusahaan untuk mengubah pertanyaan menjadi data yang bisa diandalkan.
+                    menyaring responden lewat kriteria domisili dan usia, lalu membayar reward dengan token — transparan dan dapat diaudit. Kami
+                    bekerja bersama kampus, lembaga riset, dan perusahaan untuk mengubah pertanyaan menjadi data yang bisa diandalkan.
                 </p>
 
                 <div className="mt-14 grid gap-10 sm:grid-cols-3 sm:gap-0">

@@ -14,7 +14,7 @@ const CARDS = ["12K+ Responden", "3.4K Riset", "1.2M Jawaban", "98% Domisili ter
 export default function BuildYourResearch() {
     return (
         <section className="border-t">
-            <div className="mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
                         Semua yang kamu butuhkan untuk menjalankan riset sendiri

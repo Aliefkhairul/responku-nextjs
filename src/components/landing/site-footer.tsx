@@ -50,7 +50,7 @@ const FOOTER_GROUPS = [
 export default function SiteFooter() {
     return (
         <footer className="bg-muted">
-            <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
                 <div className="flex flex-col gap-12 lg:flex-row lg:justify-between">
                     <p className="text-3xl font-bold tracking-tight sm:text-4xl">Responku</p>
 
@@ -75,9 +75,7 @@ export default function SiteFooter() {
             </div>
 
             <div className="border-t border-foreground/10">
-                <p className="mx-auto w-full max-w-6xl px-4 py-6 text-sm text-foreground/70 sm:px-6 lg:px-8">
-                    © 2026 Responku — Property of BukaWeb
-                </p>
+                <p className="mx-auto w-full max-w-6xl px-4 py-6 text-sm text-foreground/70 sm:px-6 lg:px-8">© 2026 Responku — Property of BukaWeb</p>
             </div>
         </footer>
     )

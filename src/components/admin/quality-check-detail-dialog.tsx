@@ -235,7 +235,7 @@ export function QualityCheckDetailDialog({
                             </dl>
 
                             {timing?.tooFast === true && (
-                                <p className="text-sm text-amber-600">Dikerjakan jauh lebih cepat dari estimasi — periksa jawabannya.</p>
+                                <p className="text-sm text-warning">Dikerjakan jauh lebih cepat dari estimasi — periksa jawabannya.</p>
                             )}
 
                             {participation.reward && (
