@@ -100,6 +100,8 @@ Nilai-nilai ini dipakai di request dan response:
 | `status` (partisipasi) | `JOINED`, `IN_PROGRESS`, `SUBMITTED`, `UNDER_REVIEW`, `APPROVED`, `REJECTED`, `EXPIRED` |
 | `screeningResult`      | `PASS`, `FAIL`, `NEEDS_REVIEW`                                                          |
 | `status` (reward)      | `PENDING`, `HELD`, `PAID`, `CANCELLED`                                                  |
+| `status` (report)      | `OPEN`, `UNDER_REVIEW`, `RESOLVED`, `DISMISSED`                                         |
+| `action` (report)      | `NONE`, `WARNING`, `CONTENT_REMOVED`, `RESEARCH_SUSPENDED`, `USER_BANNED`               |
 
 `roles` disimpan sebagai JSON array. User yang baru mendaftar mendapat
 `["researcher", "respondent"]`; admin `["researcher", "respondent", "admin"]`.
@@ -677,6 +679,43 @@ halaman yang baru ia pakai.
 **Response `200`** — `{ "revoked": 2 }` (`0` bila memang tidak ada perangkat lain).
 
 **Error:** `401`.
+
+---
+
+### `GET /api/user/export`
+
+Menyerahkan salinan seluruh data milik pemanggil sebagai satu objek JSON — hak akses data (UU PDP).
+Isinya mengikuti baris yang tersimpan, bukan bentuk response endpoint lain: `account`, `profile`,
+`settings`, `researches`, `participations`, `payments`, `wallet`, `supportTickets`, dan `contentReports`.
+
+Kredensial **tidak** disertakan: `Account.password` dan `Session.token` adalah rahasia, bukan data
+pemilik akun.
+
+**Response `200`** — `data.export` berisi objek tersebut, dengan `exportedAt` sebagai penanda waktu.
+
+**Error:** `401`.
+
+---
+
+### `DELETE /api/user`
+
+Menghapus akun pemanggil secara permanen. Dua jenis data diperlakukan berbeda:
+
+- Data pribadi tanpa nilai audit — profil, preferensi, kredensial (`Account`), sesi, dan kode verifikasi —
+  dihapus sungguhan.
+- Baris akun dan baris finansial yang menunjuk ke sana (payment, ledger token, reward) **tetap disimpan**
+  sebagai jejak audit, tapi dianonimkan: nama, email, foto, dan status verifikasi dikosongkan, dan
+  `deletedAt` diisi.
+
+`deletedAt` itulah yang mengunci akun — `login` dan resolusi sesi sama-sama menolak user yang
+soft-deleted. Cookie sesi ikut dibersihkan, jadi pemanggil langsung keluar.
+
+Baris riset dan partisipasi dibiarkan: itu catatan riset platform dan data orang lain juga, di luar
+jangkauan penghapusan mandiri ini.
+
+**Response `200`** — `{ "deleted": true }`.
+
+**Error:** `401` · `404` akun tidak ditemukan.
 
 ---
 
@@ -1374,6 +1413,11 @@ idempoten walaupun bentuk jawabannya bukan.
 **Hanya admin** (`roles` memuat `"admin"`). Memutuskan satu kiriman, dan **inilah yang membayar
 responden** saat diputuskan `APPROVED`.
 
+**Quality check harus diputuskan dulu.** Satu kiriman disaring saat dikirim, dan check-nya adalah catatan
+"baca yang ini" — jadi membayar sebelum membacanya sama dengan membayar buta. Selama check-nya masih
+`PENDING`, keputusan di sini dijawab `409`. Gate-nya hanya berlaku kalau check-nya ada: baris yang dikirim
+sebelum fitur penyaringan ada tidak punya check, dan menolaknya akan membuatnya menggantung selamanya.
+
 **Request**
 
 ```json
@@ -1402,8 +1446,9 @@ berpindah**. Reservasinya tidak disentuh, jadi sisa anggaran peneliti tetap dile
 **Response `200`** — `data.participation` (lengkap dengan pertanyaan dan jawabannya, karena itu yang
 sedang ditinjau) dengan status baru.
 
-**Error:** `401` · `403` bukan admin · `404` · `409` partisipasinya sudah tidak menunggu tinjauan
-(sudah `APPROVED`/`REJECTED`), `Reward`-nya sudah tidak `PENDING`, atau anggaran reward-nya habis ·
+**Error:** `401` · `403` bukan admin · `404` · `409` quality check-nya belum diputuskan, partisipasinya
+sudah tidak menunggu tinjauan (sudah `APPROVED`/`REJECTED`), `Reward`-nya sudah tidak `PENDING`, atau
+anggaran reward-nya habis ·
 `422` `decision` tidak dikenal.
 
 Keputusan kedua dijawab `409`, bukan membayar dua kali: hanya partisipasi yang masih menunggu tinjauan yang
@@ -1454,11 +1499,152 @@ kolom `completedAt` yang terpisah karena isinya akan sama persis dengan `submitt
 **`tooFast` hanyalah penanda awal, bukan penilaian.** Jamnya berjalan dari saat kuesioner **dibuka**, bukan
 saat jawaban terakhir diketik, jadi jendelanya sudah termasuk waktu responden meninggalkan halaman di
 tengah-tengah — tesnya konservatif dan hanya menyala untuk kiriman yang selesai hampir seketika. Angka
-sepertiganya sengaja longgar dan ada di `TOO_FAST_PACE_PERCENT` (`src/service/participation.ts`) untuk
-disetel. Yang perlu dilakukan pada kiriman bertanda adalah **membaca jawabannya**, bukan menolaknya.
+sepertiganya sengaja longgar dan ada di `TOO_FAST_PACE_PERCENT` (`src/lib/server/quality.ts`) untuk
+disetel. Saat submit, flag ini dan pola jawaban disimpan ke `QualityCheck`; admin dapat membaca jawaban
+lengkap dan memutuskan check lewat endpoint berikutnya.
 
-Kalau nanti penanda ini perlu disaring atau ditindaklanjuti, tempatnya adalah `QualityCheck.signalFlags`
-(`SPEEDING`, `STRAIGHT_LINING`) — belum dipakai, lihat catatan di bawah.
+---
+
+## Quality check
+
+Endpoint ini hanya untuk admin (`roles` memuat `"admin"`). Setiap submission membuat satu check berstatus
+`PENDING` dalam transaksi yang sama dengan penyimpanan reward dan waktu pengiriman. Auto-screening hanya
+menunjukkan kiriman yang perlu dibaca — keputusan pada quality check **tidak** mengubah status participation
+atau reward, dan tidak membayar maupun membatalkan token.
+
+### `GET /api/quality-check`
+
+Antrean check terbaru dulu (default 50, maksimal 100). Jawaban lengkap tidak disertakan di antrean; buka
+check individual untuk meninjaunya.
+
+| Query      | Aturan                                           |
+| ---------- | ------------------------------------------------ |
+| `decision` | opsional: `PENDING`, `APPROVED`, atau `REJECTED` |
+| `take`     | opsional, bilangan bulat 1–100 (default 50)      |
+
+Response `200`: `data.qualityChecks[]`. Setiap item memuat `id`, `participationId`, `decision`,
+`signalFlags`, `autoScore`, `reviewedBy`, `createdAt`, `updatedAt`, dan ringkasan `participation` (responden,
+riset, status, serta waktu submit).
+
+### `GET /api/quality-check/{id}`
+
+Detail satu check — semua yang dibutuhkan admin untuk menilai kiriman dalam satu baca: riset seperti
+yang dilihat responden, waktu mulai & kirim, durasi terhadap estimasi (dasar sinyal `SPEEDING`), reward
+yang dipertaruhkan, dan seluruh jawaban.
+
+Response `200`: `data.qualityCheck`, dengan field antrean plus `participation` yang diperluas:
+
+| Field                           | Isi                                                                                                                                |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `participation.respondentEmail` | email responden                                                                                                                    |
+| `participation.screeningScore`  | skor kriteria (persen) atau `null`                                                                                                 |
+| `participation.screeningResult` | `PASS`/`FAIL`/`NEEDS_REVIEW` atau `null`                                                                                           |
+| `participation.startedAt`       | kapan kuesioner pertama dibuka                                                                                                     |
+| `participation.createdAt`       | kapan responden join                                                                                                               |
+| `participation.timing`          | `actualSeconds`, `estimatedSeconds`, `tooFast`, dan varian per-pertanyaan                                                          |
+| `participation.reward`          | `tokenAmount`, `status`, `paidAt` atau `null`                                                                                      |
+| `participation.research`        | `id`, `title`, `description`, `category`, `researcherName`, `tokenPerRespondent`, `estimatedDurationMinutes`, `deadline`, `status` |
+| `participation.questions[]`     | tiap pertanyaan dengan `choices` dan `answer` (`selected` daftar ID, `text`)                                                       |
+
+Field-field itu **hanya** ada di detail; antrean (`GET /api/quality-check`) hanya membawa ringkasan.
+
+### `POST /api/quality-check/{id}/review`
+
+**Hanya admin.** Memutuskan quality check tepat satu kali; keputusan kedua (termasuk dua review serentak) dijawab
+`409` dan tidak menimpa keputusan pertama.
+
+```json
+{ "decision": "APPROVED" }
+```
+
+`decision` wajib `APPROVED` atau `REJECTED`. Response `200`: `data.qualityCheck` setelah keputusan tersimpan.
+
+**Error:** `401` belum login · `403` bukan admin · `404` quality check tidak ditemukan · `409` check sudah
+diputuskan · `422` filter atau body tidak valid.
+
+---
+
+## Content report
+
+Pelaporan konten oleh responden dan keputusannya oleh admin. `POST` (melaporkan) butuh login + role
+`respondent`; `GET` dan review hanya untuk admin (`roles` memuat `"admin"`).
+
+Satu laporan adalah satu baris per pelaporan. Keputusan admin **tidak** menghapus konten atau
+menangguhkan riset dengan sendirinya: `actionTaken` mencatat apa yang dilakukan, dan penegakannya tetap
+langkah terpisah.
+
+### `POST /api/report`
+
+**Hanya responden.** Melaporkan sebuah riset.
+
+**Request**
+
+```json
+{
+    "researchId": "…",
+    "reason": "Pertanyaan mengandung data pribadi yang tidak relevan dan memaksa jawaban."
+}
+```
+
+| Field        | Aturan                                         |
+| ------------ | ---------------------------------------------- |
+| `researchId` | wajib, id riset yang ada dan belum diarsipkan  |
+| `reason`     | wajib, 20–5000 karakter (spasi tepi dirapikan) |
+
+Satu pelapor hanya boleh punya **satu** laporan terbuka per riset; laporan kedua saat yang pertama masih
+`OPEN`/`UNDER_REVIEW` dijawab `409`.
+
+**Response `201`** — `data.report`, memuat `id`, `researchId`, `reportedBy`, `reason`, `status`,
+`actionTaken`, `reviewedBy`, `createdAt`, `updatedAt`, ringkasan `research` (`id`, `title`,
+`researcherName`), dan `reporter` (`id`, `name`).
+
+**Error:** `401` · `403` bukan responden · `404` riset tidak ditemukan · `409` sudah ada laporan terbuka ·
+`422`.
+
+---
+
+### `GET /api/report`
+
+**Hanya admin.** Antrean laporan, terbaru dulu (default 50, maksimal 100).
+
+| Query    | Aturan                                                         |
+| -------- | -------------------------------------------------------------- |
+| `status` | opsional: `OPEN`, `UNDER_REVIEW`, `RESOLVED`, atau `DISMISSED` |
+| `take`   | opsional, bilangan bulat 1–100 (default 50)                    |
+
+**Response `200`** — `data.reports[]`, tiap item berbentuk sama dengan `POST` di atas.
+
+**Error:** `401` · `403` bukan admin · `422`.
+
+---
+
+### `GET /api/report/{id}`
+
+**Hanya admin.** Satu laporan beserta riset dan pelapornya.
+
+**Response `200`** — `data.report`.
+
+**Error:** `401` · `403` · `404`.
+
+---
+
+### `POST /api/report/{id}/review`
+
+**Hanya admin.** Memutuskan laporan tepat satu kali; keputusan kedua (termasuk dua review serentak)
+dijawab `409` dan tidak menimpa keputusan pertama.
+
+```json
+{ "status": "RESOLVED", "actionTaken": "WARNING" }
+```
+
+| Field         | Aturan                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| `status`      | wajib, `RESOLVED` atau `DISMISSED`                                                               |
+| `actionTaken` | opsional, `NONE`/`WARNING`/`CONTENT_REMOVED`/`RESEARCH_SUSPENDED`/`USER_BANNED` (default `NONE`) |
+
+**Response `200`** — `data.report` setelah keputusan tersimpan.
+
+**Error:** `401` · `403` bukan admin · `404` · `409` laporan sudah diputuskan · `422`.
 
 ---
 
@@ -1563,6 +1749,50 @@ token ada di env, jadi kalau harganya berubah, order lama tetap melaporkan jumla
 dibeli dan dikreditkan.
 
 **Error:** `401` · `422` validasi · `502` Snap menolak atau menjawab tanpa token.
+
+---
+
+### `POST /api/payment/withdraw`
+
+Mengajukan penarikan saldo token menjadi uang tunai. Token **langsung keluar dari wallet** saat request
+diterima — permintaan ini adalah reservasi, supaya saldo tidak bisa dipakai dua kali selama pencairan
+diproses — dan sebuah payment `WITHDRAWAL` dicatat `PENDING` untuk diselesaikan admin.
+
+Platform menyimpan `WITHDRAWAL_FEE_PERCENT` dari token yang ditarik, jadi rupiah yang menjadi hak
+pemanggil adalah netto setelah biaya: `amountIdr` adalah netto, sementara `tokenAmount` adalah bruto yang
+keluar dari wallet.
+
+**Request**
+
+```json
+{ "tokenAmount": 50 }
+```
+
+| Field         | Aturan                                                  |
+| ------------- | ------------------------------------------------------- |
+| `tokenAmount` | wajib, bilangan bulat 1–1.000.000, tidak melebihi saldo |
+
+**Response `201`**
+
+```json
+{
+    "ok": true,
+    "statusCode": 201,
+    "message": "Withdrawal requested",
+    "data": {
+        "payment": { "id": "…", "type": "WITHDRAWAL", "status": "PENDING", "tokenAmount": 50, "amountIdr": 47500 },
+        "feeTokens": 2,
+        "netTokens": 48,
+        "amountIdr": 47500
+    }
+}
+```
+
+Debit saldo dan pembuatan order berbagi satu transaksi, dan baris ledger-nya berkunci pada payment,
+jadi percobaan ulang tidak bisa mendebit dua kali. Pemeriksaan saldo berupa update bersyarat, sehingga
+dua penarikan yang berbarengan tidak bisa sama-sama lolos dan membuat saldo minus.
+
+**Error:** `401` · `422` validasi atau saldo kurang.
 
 ---
 
@@ -1756,13 +1986,202 @@ riwayat satu akun tidak pernah terlihat akun lain.
 
 ---
 
+### `GET /api/ticket/{id}`
+
+Satu tiket milik pemanggil. Dibatasi `userId`, jadi id milik orang lain dijawab `404`.
+
+**Response `200`** — `data.ticket` (bentuk sama dengan `POST /api/ticket`).
+
+**Error:** `401` · `404`.
+
+---
+
+### `GET /api/ticket/admin`
+
+**Hanya admin.** Antrean seluruh tiket, terbaru dulu (default 50, maksimal 100). Tidak dibatasi pemilik —
+ini antrean peninjauan.
+
+| Query    | Aturan                                              |
+| -------- | --------------------------------------------------- |
+| `status` | opsional, salah satu `REVIEW`/`RESOLVED`/`REJECTED` |
+| `take`   | opsional, bilangan bulat 1–100 (default 50)         |
+
+**Response `200`** — `data.tickets[]`. Tiap item memuat field tiket biasa plus `userId`, `requester`
+(`id`, `name`, `email`), `reviewedBy`, `reviewedAt`, dan `resolutionNote`.
+
+**Error:** `401` · `403` bukan admin · `422`.
+
+---
+
+### `GET /api/ticket/admin/{id}`
+
+**Hanya admin.** Satu tiket beserta pemohon dan jejak peninjauannya.
+
+**Response `200`** — `data.ticket` (bentuk admin di atas).
+
+**Error:** `401` · `403` · `404`.
+
+---
+
+### `POST /api/ticket/{id}/review`
+
+**Hanya admin.** Menutup tiket tepat satu kali; tiket yang sudah `RESOLVED`/`REJECTED` dijawab `409` dan
+tidak ditimpa.
+
+```json
+{ "status": "RESOLVED", "resolutionNote": "Banding diterima, reward dibayarkan ulang." }
+```
+
+| Field            | Aturan                                         |
+| ---------------- | ---------------------------------------------- |
+| `status`         | wajib, `RESOLVED` atau `REJECTED`              |
+| `resolutionNote` | opsional, maksimal 5000 karakter, boleh `null` |
+
+**Response `200`** — `data.ticket` (bentuk admin) setelah keputusan tersimpan.
+
+**Error:** `401` · `403` bukan admin · `404` · `409` tiket sudah ditinjau · `422`.
+
+---
+
+## Admin
+
+Back office untuk admin (`roles` memuat `"admin"`). Semua endpoint di bagian ini butuh role itu;
+yang bukan admin dijawab `403`.
+
+Antrean moderasi yang sudah punya endpoint sendiri tidak diulang di sini: quality check
+(`/api/quality-check`), laporan konten (`/api/report`), tiket (`/api/ticket/admin`), dan keputusan
+partisipasi (`POST /api/participation/{id}/review`). Bagian ini menambahkan ringkasan, antrean
+partisipasi, penarikan, dan peran pengguna.
+
+### `GET /api/admin/overview`
+
+Hitungan antrean yang menunggu tindakan.
+
+**Response `200`** — `data.overview`:
+
+```json
+{
+    "pendingParticipations": 3,
+    "pendingQualityChecks": 1,
+    "openReports": 0,
+    "openTickets": 2,
+    "pendingWithdrawals": 1,
+    "totalUsers": 42,
+    "publishedResearches": 5
+}
+```
+
+**Error:** `401` · `403`.
+
+---
+
+### `GET /api/admin/participations`
+
+Antrean kiriman yang menunggu keputusan, **terlama dulu** (default 50, maksimal 100). Tanpa
+`status`, mencakup `SUBMITTED` dan `UNDER_REVIEW`.
+
+| Query    | Aturan                                      |
+| -------- | ------------------------------------------- |
+| `status` | opsional, salah satu status partisipasi     |
+| `take`   | opsional, bilangan bulat 1–100 (default 50) |
+
+**Response `200`** — `data.participations[]`, tiap item memuat `id`, `status`, `screeningScore`,
+`screeningResult`, `startedAt`, `submittedAt`, `createdAt`, `respondent` (`id`, `name`, `email`),
+`research` (`id`, `title`, `tokenPerRespondent`), `reward` (`status`, `tokenAmount`), dan `qualityCheck`
+(`id`, `decision`) atau `null`.
+
+`qualityCheck` adalah langkah sebelum keputusan: selama `decision`-nya masih `PENDING`, keputusan reward
+lewat `POST /api/participation/{id}/review` akan dijawab `409`.
+
+**Error:** `401` · `403` · `422`.
+
+---
+
+### `GET /api/admin/withdrawals`
+
+Antrean penarikan, terbaru dulu (default 50, maksimal 100).
+
+| Query    | Aturan                                                       |
+| -------- | ------------------------------------------------------------ |
+| `status` | opsional: `PENDING`, `PAID`, `FAILED`, `EXPIRED`, `REFUNDED` |
+| `take`   | opsional, bilangan bulat 1–100 (default 50)                  |
+
+**Response `200`** — `data.withdrawals[]`, tiap item memuat `id`, `userId`, `providerRef`,
+`tokenAmount`, `amountIdr`, `status`, `createdAt`, `updatedAt`, dan `user` (`id`, `name`, `email`).
+
+**Error:** `401` · `403` · `422`.
+
+---
+
+### `POST /api/admin/withdrawals/{id}/settle`
+
+Menyelesaikan penarikan. Token sudah keluar dari wallet saat diajukan, jadi ini langkah terakhir.
+
+```json
+{ "decision": "PAID" }
+```
+
+| Field      | Aturan                      |
+| ---------- | --------------------------- |
+| `decision` | wajib, `PAID` atau `FAILED` |
+
+`PAID` hanya menutup order. `FAILED` mengembalikan token ke wallet dengan baris ledger `REFUND`
+berkunci pada payment, jadi percobaan ulang tidak bisa mengkredit dua kali. Keduanya ditolak `409`
+kalau order sudah tidak `PENDING`.
+
+**Response `200`** — `data.withdrawal` setelah diselesaikan.
+
+**Error:** `401` · `403` · `404` · `409` sudah diselesaikan · `422`.
+
+---
+
+### `GET /api/admin/users`
+
+Daftar pengguna, terbaru dulu (default 50, maksimal 100). Akun yang sudah dihapus (soft-deleted)
+tidak ikut.
+
+| Query    | Aturan                                      |
+| -------- | ------------------------------------------- |
+| `search` | opsional, cocokkan sebagian nama atau email |
+| `take`   | opsional, bilangan bulat 1–100 (default 50) |
+
+**Response `200`** — `data.users[]`, tiap item memuat `id`, `name`, `email`, `image`, `roles`,
+`verifiedAt`, dan `createdAt`.
+
+**Error:** `401` · `403` · `422`.
+
+---
+
+### `PATCH /api/admin/users/{id}/roles`
+
+Mengganti seluruh daftar peran pengguna.
+
+```json
+{ "roles": ["researcher", "respondent", "admin"] }
+```
+
+| Field   | Aturan                                                             |
+| ------- | ------------------------------------------------------------------ |
+| `roles` | wajib, array dari `researcher`/`respondent`/`admin` (boleh kosong) |
+
+Daftar kosong diizinkan: itu mengunci akun dari semua layar ber-role tanpa menghapus apa pun.
+
+**Response `200`** — `data.user` setelah peran disimpan.
+
+**Error:** `401` · `403` · `404` · `422`.
+
+---
+
 ## Catatan & yang belum ada
 
 **Yang sudah berjalan:** register/login/confirm/logout/me, profil demografi (dengan aturan consent
 UU PDP) + unggah foto profil ke Cloudinary, preferensi Account Settings (umum, notifikasi, privasi &
-keamanan) + sesi aktif, draft riset + detail + update + criteria + kuesioner + publish + close +
-delete, alur responden (ikut riset + screening kriteria + jawab + kirim + ditinjau admin + dibayar), tiket
-bantuan (pusat bantuan), serta wallet token (top-up, reserve, bayar responden, dan release).
+keamanan) + sesi aktif + ekspor & hapus akun, draft riset + detail + update + criteria + kuesioner +
+publish + close + delete, alur responden (ikut riset + screening kriteria + jawab + kirim + ditinjau
+admin + dibayar), pelaporan konten oleh responden + keputusannya oleh admin, tiket bantuan (pusat
+bantuan) + peninjauannya oleh admin, wallet token (top-up, reserve, bayar responden, release, dan
+penarikan saldo), serta panel admin (`/admin`) yang menyatukan antrean moderasi, menyelesaikan
+penarikan, dan mengatur peran pengguna.
 
 **Yang belum ada:**
 
@@ -1773,18 +2192,23 @@ bantuan (pusat bantuan), serta wallet token (top-up, reserve, bayar responden, d
 - **Preferensi akun belum dipakai ke mana-mana** — nilai yang disimpan lewat `PATCH /api/user/settings`
   baru sebatas tersimpan: bahasa, tema, dan mode ringkas belum benar-benar mengubah tampilan, dan
   `securityTwoFactorAuth` belum menjadi alur login 2FA.
-- **Peninjauan tiket oleh admin** — tiket selalu lahir `REVIEW` dan kolom peninjauannya (`reviewedBy`,
-  `reviewedAt`, `resolutionNote`) sudah ada di schema, tapi belum ada endpoint untuk memindahkannya ke
-  `RESOLVED`/`REJECTED`. Saat ini status hanya bisa diubah manual lewat database.
-
+- **Penegakan laporan konten** — `POST /api/report/{id}/review` mencatat `actionTaken`, tapi tidak
+  mengeksekusinya: `CONTENT_REMOVED` tidak menghapus riset, `RESEARCH_SUSPENDED` tidak menangguhkan, dan
+  `USER_BANNED` tidak memblokir akun. `CONTENT_REPORT_SLA_HOURS` juga belum dipakai untuk mengingatkan
+  laporan yang menua.
 - **Verifikasi nomor telepon (`PHONE_VERIFICATION`)** — sudah ada di enum `VerificationType`, dan
   nomornya kini tersimpan di `UserProfile.phoneNumber` (bisa diubah lewat `PATCH /api/user/profile`),
   tapi belum ada endpoint verifikasinya karena belum ada penyedia SMS/WhatsApp (baru Resend untuk
   email).
-- **Endpoint untuk mengubah `roles`** (promote ke admin) — masih manual lewat database.
+- **Moderasi riset oleh admin** — panel admin belum bisa menangguhkan atau menolak riset;
+  `ResearchStatus.PENDING_REVIEW`/`REJECTED` masih belum dipakai, dan `actionTaken` pada laporan konten
+  hanya dicatat, tidak ditegakkan. Peran pengguna sudah bisa diubah dari panel (`PATCH
+/api/admin/users/{id}/roles`).
 - **Sisa alur token** — top-up (`TOPUP`), reserve (`RESERVE`), pembayaran responden (`REWARD`, saat
-  approval), dan pelepasan sisa reservasi (`RELEASE`, lewat `close` maupun archive) sudah jalan. Yang
-  belum: `CONSUME`, `WITHDRAW`, `FEE`, dan `REFUND` — penarikan saldo dan pembalikan kredit belum ada.
+  approval), pelepasan sisa reservasi (`RELEASE`, lewat `close` maupun archive), dan penarikan saldo
+  (`WITHDRAW`, lewat `POST /api/payment/withdraw`) sudah jalan. Yang belum: `CONSUME`, `FEE`, dan
+  `REFUND` — pembalikan kredit belum ada. Biaya penarikan dihitung dan dikembalikan di response
+  (`feeTokens`) tapi belum ditulis sebagai baris ledger `FEE` tersendiri.
 - **Pembagian reward peneliti vs platform** — `REWARD_SPLIT_RESPONDENT_PERCENT` dan
   `REWARD_SPLIT_PLATFORM_PERCENT` **belum dipakai**: responden menerima `tokenPerRespondent` penuh dan
   `Reward.platformTokenAmount` diisi `0`. Itu pilihan yang menjaga dua hal yang sudah terlanjur rilis —
@@ -1792,12 +2216,6 @@ bantuan (pusat bantuan), serta wallet token (top-up, reserve, bayar responden, d
   menampilkan `rewardIdr` sebesar nilai itu — sekaligus menjaga ledger: potongan platform tidak punya
   wallet tujuan, jadi menerapkannya akan membuat token keluar dari pembukuan tanpa jejak. Perlu keputusan
   produk: potong dari `tokenPerRespondent` (dan perbaiki `rewardIdr`), atau tagih di atasnya saat publish.
-- **Auto-screening kualitas jawaban** — kolom `QualityCheck`, `signalFlags` (`SPEEDING`,
-  `STRAIGHT_LINING`), dan `autoScore` belum diisi, dan belum ada endpoint yang membuatnya. Yang sudah ada
-  hanya blok `timing` pada response partisipasi: `tooFast` dihitung saat dibaca dari dua timestamp yang
-  sudah tersimpan, jadi tidak perlu ditulis ke kolom mana pun. Kalau nanti perlu disaring atau
-  ditindaklanjuti, `signalFlags` adalah tempatnya. `screeningScore`/`screeningResult` yang terisi berasal
-  dari kriteria saat join, bukan dari mutu jawaban.
 - **Penahanan reward** — approval membayar **langsung**: `Reward` melompat `PENDING` → `PAID`, dan
   `HELD`, `QUALITY_HOLD_RELEASE_HOURS`, serta `Participation.holdReleaseAt` belum dipakai. Jadi belum ada
   jeda tahan-kualitas antara approve dan saldo masuk, dan belum ada cara membalik bayaran yang sudah
@@ -1809,21 +2227,23 @@ bantuan (pusat bantuan), serta wallet token (top-up, reserve, bayar responden, d
   Snap, dan webhook memverifikasi signature Midtrans. Env yang dipakai: `MIDTRANS_SERVER_KEY` (wajib
   untuk mengaktifkan), `MIDTRANS_IS_PRODUCTION` (default `false` = sandbox), dan `MIDTRANS_SNAP_BASE_URL`
   (opsional, untuk mengarahkan Snap ke proxy/stub). Snap.js di browser (`client_key`) belum dipasang —
-  UI masih mock. **Penarikan** (`WITHDRAWAL`) dan **refund** juga belum ada.
-- **Aturan ekonomi lewat env** — selain `TOKEN_PRICE_IDR`: `REWARD_SPLIT_PLATFORM_PERCENT` +
-  `REWARD_SPLIT_RESPONDENT_PERCENT` (harus berjumlah 100), `WITHDRAWAL_FEE_PERCENT`,
-  `TOKEN_EXPIRY_IDLE_MONTHS`, `MIN_RESPONDENT_PER_RESEARCH`, `ADMIN_REVIEW_SLA_HOURS`,
-  `CONTENT_REPORT_SLA_HOURS`, dan `QUALITY_HOLD_RELEASE_HOURS` — nilainya sudah terpusat, tapi belum
-  ada alur yang memakainya.
+  UI masih mock. **Penarikan** (`WITHDRAWAL`) sudah ada lewat `POST /api/payment/withdraw` (dicatat
+  `PENDING` untuk diselesaikan admin; belum ada endpoint penyelesaiannya), sedangkan **refund** belum ada.
+- **Aturan ekonomi lewat env** — selain `TOKEN_PRICE_IDR`: `WITHDRAWAL_FEE_PERCENT` sudah dipakai
+  `POST /api/payment/withdraw`. Yang belum dipakai alurnya: `REWARD_SPLIT_PLATFORM_PERCENT` +
+  `REWARD_SPLIT_RESPONDENT_PERCENT` (harus berjumlah 100), `TOKEN_EXPIRY_IDLE_MONTHS`,
+  `MIN_RESPONDENT_PER_RESEARCH`, `ADMIN_REVIEW_SLA_HOURS`, `CONTENT_REPORT_SLA_HOURS`, dan
+  `QUALITY_HOLD_RELEASE_HOURS`.
 - **Unpublish riset** yang sudah `PUBLISHED` belum ada — yang tersedia baru `close` dan archive.
 - **Akun yang belum bisa diubah dari UI profil** — belum ada endpoint untuk mengganti `User.name`
-  maupun mengganti kata sandi (walau `PASSWORD_RESET` sudah ada di enum), dan ekspor/hapus akun untuk
-  UU PDP juga belum ada. Foto profil (`User.image`) sudah bisa diunggah lewat
-  `POST /api/user/avatar`, begitu juga email dan nomor telepon.
+  maupun mengganti kata sandi (walau `PASSWORD_RESET` sudah ada di enum). Ekspor dan hapus akun untuk
+  UU PDP sudah ada (`GET /api/user/export`, `DELETE /api/user`). Foto profil (`User.image`) sudah bisa
+  diunggah lewat `POST /api/user/avatar`, begitu juga email dan nomor telepon.
 - **Sampah asset Cloudinary** — unggahan ulang foto profil menimpa asset yang sama, jadi tidak menumpuk
-  sampah. Yang belum ada: menghapus gambar dari Cloudinary saat akun dihapus, dan menghapus foto dari
-  profil (`DELETE`). Utility baca-satu-asset (`getSingleAsset`) sudah ada di
-  `src/lib/server/cloudinary.ts` tapi belum dipakai endpoint mana pun.
+  sampah. Yang belum ada: menghapus gambar dari Cloudinary saat akun dihapus (`DELETE /api/user` sudah
+  mengosongkan `User.image` tapi tidak menyentuh Cloudinary), dan menghapus foto dari profil (`DELETE`).
+  Utility baca-satu-asset (`getSingleAsset`) sudah ada di `src/lib/server/cloudinary.ts` tapi belum
+  dipakai endpoint mana pun.
 - **UI untuk tipe pertanyaan `NUMBER`** — sudah valid di schema dan API, tapi editor belum
   menawarkannya (baru 4 tipe: `SINGLE_CHOICE`, `MULTIPLE_CHOICE`, `TEXT`, `SCALE`), dan halaman
   responden belum merender input angkanya.
@@ -1845,6 +2265,9 @@ bantuan (pusat bantuan), serta wallet token (top-up, reserve, bayar responden, d
   Pengecualiannya `GET /api/research/available`, `GET /api/research/available/{id}`, dan
   `POST /api/research/{id}/participate`, yang memang bukan milik peneliti dan diperiksa dengan role
   `respondent` sebelum guard itu.
+- Untuk `report` dan `ticket`, guard session + role juga jalan sebelum routing: `GET /api/report*` dan
+  `POST /api/report/{id}/review` butuh role `admin`, `POST /api/report` butuh role `respondent`, dan
+  `GET /api/ticket/admin*` + `POST /api/ticket/{id}/review` butuh role `admin`. Sisanya cukup login.
 - `POST /api/participation/{id}/submit` boleh tanpa body sama sekali; body `{}` dan body kosong sama
   artinya, yaitu "tidak ada jawaban baru, kirim yang sudah tersimpan".
 - Deadline riset diperiksa **dua kali**: saat join dan saat submit. Yang kedua itu yang menutup celah
@@ -1854,8 +2277,10 @@ bantuan (pusat bantuan), serta wallet token (top-up, reserve, bayar responden, d
 
 ## Smoke test
 
-`scripts/api-smoke.sh` menjalankan semua endpoint di atas dengan curl terhadap dev server
+`scripts/api-smoke.sh` menjalankan hampir semua endpoint di atas dengan curl terhadap dev server
 (`bun run dev`) dan mencetak satu baris per request: method, path, status HTTP, dan cuplikan response.
+Satu pengecualian: `DELETE /api/user` bersifat merusak (akun dianonimkan dan dikunci), jadi tidak ikut
+dijalankan — uji manual kalau perlu.
 Alur responden (ikut → jawab → kirim → ditinjau admin → dibayar) dijalankan dengan **akun kedua**, karena
 satu akun tidak bisa menjadi dua sisi sekaligus; langkah tinjaunya memakai akun pertama yang dinaikkan ke
 role `admin` lewat `scripts/db-peek.ts roles`.

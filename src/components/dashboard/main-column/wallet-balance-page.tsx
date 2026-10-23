@@ -12,9 +12,10 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "@/components/ui/toast"
 import { getJson, postJson } from "@/lib/api-client"
-import type { Payment, TopupResult, Wallet, WalletTransaction } from "@/lib/api-types"
+import type { Payment, TopupResult, Wallet, WalletTransaction, WithdrawResult } from "@/lib/api-types"
 import { formatIdr } from "@/lib/currency"
 import { isCredit, tokenTransactionDescription, tokenTransactionLabel } from "@/lib/token-transaction"
+import { useRefreshOnFocus } from "@/lib/use-refresh-on-focus"
 
 /* ========== Konstanta ========== */
 
@@ -247,17 +248,44 @@ function TopupDialog({ tokenPriceIdr, onCredited }: { tokenPriceIdr: number; onC
 
 /* ========== Tarik tunai ========== */
 
-/** Withdrawing has no endpoint yet, so the dialog says so instead of pretending. */
-function WithdrawDialog({ tokenPriceIdr }: { tokenPriceIdr: number }) {
+/**
+ * Requests a withdrawal.
+ *
+ * The tokens leave the wallet as soon as the request is accepted, so the dialog closes and
+ * the page reloads its balance rather than waiting for the payout — which an admin settles
+ * afterwards. The fee is shown from the server's own numbers, so the client never recomputes
+ * it.
+ */
+function WithdrawDialog({ tokenPriceIdr, onWithdrawn }: { tokenPriceIdr: number; onWithdrawn: () => void }) {
     const [open, setOpen] = useState(false)
     const [amount, setAmount] = useState("")
+    const [submitting, setSubmitting] = useState(false)
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const tokens = Number(amount)
+    const valid = Number.isInteger(tokens) && tokens > 0
+
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        toast.add({ type: "info", title: "Penarikan belum tersedia", description: "Alur penarikan saldo belum dibangun." })
+        if (!valid) return
+
+        setSubmitting(true)
+        const result = await postJson<WithdrawResult>("/api/payment/withdraw", { tokenAmount: tokens })
+        setSubmitting(false)
+
+        if (!result.ok || result.data === null) {
+            toast.add({ type: "error", title: "Gagal mengajukan penarikan", description: result.message })
+            return
+        }
+
+        toast.add({
+            type: "success",
+            title: "Penarikan diajukan",
+            description: `${result.data.netTokens.toLocaleString("id-ID")} Token (${formatIdr(result.data.amountIdr)}) akan ditransfer setelah diproses.`,
+        })
 
         setOpen(false)
         setAmount("")
+        onWithdrawn()
     }
 
     return (
@@ -291,10 +319,11 @@ function WithdrawDialog({ tokenPriceIdr }: { tokenPriceIdr: number }) {
                         <p className="text-sm text-muted-foreground">1 Token = {formatIdr(tokenPriceIdr)}</p>
                     </div>
 
-                    {amount && Number(amount) > 0 && (
+                    {valid && (
                         <div className="rounded-lg bg-muted p-3">
                             <p className="text-sm text-muted-foreground">Estimasi penarikan</p>
-                            <p className="text-lg font-semibold">{formatIdr(Number(amount) * tokenPriceIdr)}</p>
+                            <p className="text-lg font-semibold">{formatIdr(tokens * tokenPriceIdr)}</p>
+                            <p className="text-xs text-muted-foreground">Sebelum biaya penarikan.</p>
                         </div>
                     )}
 
@@ -302,8 +331,8 @@ function WithdrawDialog({ tokenPriceIdr }: { tokenPriceIdr: number }) {
                         <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                             Batal
                         </Button>
-                        <Button type="submit" disabled={!amount || Number(amount) <= 0}>
-                            Ajukan Penarikan
+                        <Button type="submit" disabled={!valid || submitting}>
+                            {submitting ? "Memproses..." : "Ajukan Penarikan"}
                         </Button>
                     </DialogFooter>
                 </form>
@@ -367,6 +396,21 @@ export default function WalletBalancePage({ tokenPriceIdr }: { tokenPriceIdr: nu
         void readWallet().then(setState)
     }, [])
 
+    /**
+     * Re-reads without the spinner, for when the page comes back into view.
+     *
+     * A reward is credited by an admin from another session, so a wallet left open would
+     * otherwise keep showing the balance and ledger it had when it mounted. A failed
+     * background read is ignored rather than replacing a page that is already showing data.
+     */
+    const refresh = useCallback(() => {
+        void readWallet().then((next) => {
+            if (next.status === "ready" || next.status === "unauthorized") setState(next)
+        })
+    }, [])
+
+    useRefreshOnFocus(refresh)
+
     // An expired session belongs on the sign-in screen, not in an empty wallet.
     useEffect(() => {
         if (state.status === "unauthorized") router.replace("/login")
@@ -417,7 +461,7 @@ export default function WalletBalancePage({ tokenPriceIdr }: { tokenPriceIdr: nu
 
                     <div className="flex flex-wrap gap-2">
                         <TopupDialog tokenPriceIdr={tokenPriceIdr} onCredited={reload} />
-                        <WithdrawDialog tokenPriceIdr={tokenPriceIdr} />
+                        <WithdrawDialog tokenPriceIdr={tokenPriceIdr} onWithdrawn={reload} />
                     </div>
                 </CardContent>
             </Card>

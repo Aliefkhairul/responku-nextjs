@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto"
+import { env } from "@/env"
 import { BadRequestException, NotFoundException, UnauthorizedException } from "@/lib/server/http-exception"
 import {
     createSnapTransaction,
@@ -94,6 +95,87 @@ export async function topupService({
         await prisma.payment.update({ where: { id: payment.id }, data: { status: PaymentStatus.FAILED } })
 
         throw error
+    }
+}
+
+/* ========== Tarik tunai ========== */
+
+/**
+ * Requests a withdrawal of tokens to cash.
+ *
+ * The tokens leave the wallet immediately: the request is a reservation, so the balance
+ * cannot be spent twice while the payout is processed, and a `WITHDRAWAL` payment row
+ * records the order for an admin to settle. The platform keeps
+ * `WITHDRAWAL_FEE_PERCENT` of the tokens, so the rupiah the caller is owed is the net of
+ * that fee — `amountIdr` is the net, while `tokenAmount` is the gross that left the wallet.
+ *
+ * The debit and the order share one transaction, and the ledger row is keyed by the
+ * payment, so a retry cannot debit twice. The balance check is a conditional update rather
+ * than a read-then-write, so two withdrawals racing cannot both pass it and overdraw.
+ */
+export async function withdrawService({ userId, tokenAmount }: { userId: string; tokenAmount: number }) {
+    const feeTokens = Math.floor((tokenAmount * env.WITHDRAWAL_FEE_PERCENT) / 100)
+    const netTokens = tokenAmount - feeTokens
+    const amountIdr = netTokens * IDR_PER_TOKEN
+    const providerRef = `withdraw-${randomUUID()}`
+
+    const result = await prisma.$transaction(async (tx) => {
+        const wallet = await tx.tokenWallet.findUnique({
+            where: { userId },
+            select: { id: true, balance: true },
+        })
+
+        if (wallet === null) {
+            throw new BadRequestException("Insufficient balance", {
+                tokenAmount: "This account has no token wallet yet.",
+            })
+        }
+
+        // Atomic guard: the balance is only decremented when it still covers the request,
+        // so a concurrent withdrawal cannot slip past a stale read.
+        const debited = await tx.tokenWallet.updateMany({
+            where: { id: wallet.id, balance: { gte: tokenAmount } },
+            data: { balance: { decrement: tokenAmount } },
+        })
+
+        if (debited.count === 0) {
+            throw new BadRequestException("Insufficient balance", {
+                tokenAmount: `You have ${wallet.balance} tokens, which is less than the ${tokenAmount} requested.`,
+            })
+        }
+
+        const payment = await tx.payment.create({
+            data: {
+                userId,
+                type: PaymentType.WITHDRAWAL,
+                provider: MANUAL_PROVIDER,
+                providerRef,
+                amountIdr,
+                tokenAmount,
+                status: PaymentStatus.PENDING,
+                idempotencyKey: `withdraw:${providerRef}`,
+            },
+        })
+
+        await tx.tokenTransaction.create({
+            data: {
+                walletId: wallet.id,
+                paymentId: payment.id,
+                type: TokenTransactionType.WITHDRAW,
+                // Debits are negative, the mirror of a top-up credit.
+                amount: -tokenAmount,
+                idempotencyKey: `withdraw-debit:${payment.id}`,
+            },
+        })
+
+        return { payment, feeTokens, netTokens, amountIdr }
+    })
+
+    return {
+        payment: toPaymentResponse(result.payment),
+        feeTokens: result.feeTokens,
+        netTokens: result.netTokens,
+        amountIdr: result.amountIdr,
     }
 }
 
