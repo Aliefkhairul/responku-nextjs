@@ -44,7 +44,7 @@ export default function BrowseSurveyCard({ research, respondentId }: { research:
 
     return (
         <div className="flex w-full items-center justify-center">
-            <Card.Card className="w-full">
+            <Card.Card className="w-full h-full">
                 <Card.CardHeader className="flex flex-row items-center justify-between gap-4">
                     <div className="flex flex-wrap items-center gap-2">
                         <Badge variant="secondary">{categoryLabel(research.category)}</Badge>
@@ -62,13 +62,13 @@ export default function BrowseSurveyCard({ research, respondentId }: { research:
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="secondary">Reward: {reward}</Badge>
-                        <Badge variant="secondary">~{research.estimatedDurationMinutes} Menit</Badge>
-                        <Badge variant="secondary">
+                        <Badge variant="outline">Reward: {reward}</Badge>
+                        <Badge variant="outline">~{research.estimatedDurationMinutes} Menit</Badge>
+                        <Badge variant="outline">
                             <MapPin className="size-3.5" />
                             Domisili: {regionLabel(research.region)}
                         </Badge>
-                        <Badge variant="secondary">
+                        <Badge variant="outline">
                             Batas pengisian: <b>{research.daysLeft} hari lagi</b>
                         </Badge>
                     </div>

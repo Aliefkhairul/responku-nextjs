@@ -1,8 +1,20 @@
 "use client"
 
-import { Cpu, GraduationCap, Heart, LayoutGrid, Loader2, RefreshCw, ShoppingCart, Wallet, type LucideIcon } from "lucide-react"
+import {
+    ChevronLeft,
+    ChevronRight,
+    Cpu,
+    GraduationCap,
+    Heart,
+    LayoutGrid,
+    Loader2,
+    RefreshCw,
+    ShoppingCart,
+    Wallet,
+    type LucideIcon,
+} from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { FeedFilterChip } from "@/components/feed/feed-filter-chip"
 import BrowseSurveyCard from "@/components/shared/browse-survey-card"
 import { Button } from "@/components/ui/button"
@@ -14,6 +26,9 @@ import { RESEARCH_CATEGORY_ITEMS } from "@/lib/research-category"
 
 /** Longest page the feed endpoint will hand back. */
 const LIST_LIMIT = 100
+
+/** How many cards a page shows. */
+const PAGE_SIZE = 8
 
 /** A chip icon per research category, with a generic fallback for anything unmapped. */
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
@@ -54,6 +69,15 @@ export default function Page() {
     const [state, setState] = useState<FeedState>({ status: "loading" })
     const [category, setCategory] = useState("ALL")
     const [region, setRegion] = useState("ALL")
+    const [page, setPage] = useState(1)
+
+    const resultsRef = useRef<HTMLDivElement>(null)
+
+    // Any change to the filters or the search starts the list over at page one.
+    // biome-ignore lint/correctness/useExhaustiveDependencies: the filters are triggers for the reset, not values the effect reads.
+    useEffect(() => {
+        setPage(1)
+    }, [category, region, query])
 
     useEffect(() => {
         let cancelled = false
@@ -92,8 +116,18 @@ export default function Page() {
         return true
     })
 
+    const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE))
+    // Clamped, so a page that no longer exists after filtering falls back to the last one.
+    const currentPage = Math.min(page, pageCount)
+    const paged = visible.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+
+    function goToPage(next: number) {
+        setPage(next)
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+
     return (
-        <main className="container2nd mx-auto mt-15 py-8 pb-16">
+        <main className="container3nd mx-auto mt-15 py-8 pb-16">
             {/* header */}
             <div className="max-w-2xl">
                 <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">Jelajahi riset yang sedang dibuka</h1>
@@ -145,7 +179,7 @@ export default function Page() {
             </div>
 
             {/* results */}
-            <div className="mt-8">
+            <div ref={resultsRef} className="mt-8 scroll-mt-20">
                 {state.status === "loading" && (
                     <p className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Loader2 className="size-4 animate-spin" />
@@ -175,11 +209,36 @@ export default function Page() {
                                 {query !== "" ? `Tidak ada riset yang cocok dengan “${rawQuery}”.` : "Belum ada riset yang cocok dengan filter ini."}
                             </p>
                         ) : (
-                            <div className="mt-4 grid gap-5 lg:grid-cols-2">
-                                {visible.map((research) => (
-                                    <BrowseSurveyCard key={research.id} research={research} respondentId={respondentId} />
-                                ))}
-                            </div>
+                            <>
+                                <div className="mt-4 grid gap-5 lg:grid-cols-2">
+                                    {paged.map((research) => (
+                                        <BrowseSurveyCard key={research.id} research={research} respondentId={respondentId} />
+                                    ))}
+                                </div>
+
+                                {pageCount > 1 && (
+                                    <div className="mt-8 flex items-center justify-between gap-3">
+                                        <Button variant="outline" size="sm" disabled={currentPage <= 1} onClick={() => goToPage(currentPage - 1)}>
+                                            <ChevronLeft />
+                                            Sebelumnya
+                                        </Button>
+
+                                        <span className="text-sm text-muted-foreground">
+                                            Halaman {currentPage} dari {pageCount}
+                                        </span>
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            disabled={currentPage >= pageCount}
+                                            onClick={() => goToPage(currentPage + 1)}
+                                        >
+                                            Berikutnya
+                                            <ChevronRight />
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </>
                 )}
