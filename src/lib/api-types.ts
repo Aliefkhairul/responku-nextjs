@@ -65,6 +65,11 @@ export type AvailableResearch = {
     daysLeft: number
     respondentCount: number
     targetRespondentCount: number
+    /**
+     * The domicile region the research screens for — one of the editor's region keys, or
+     * `"all"` when it targets the whole country. The label is the card's to look up.
+     */
+    region: string
 }
 
 /** A screening rule stored on a research. */
