@@ -9,9 +9,9 @@ import Image from "next/image"
  */
 
 const FOUNDERS = [
-    { name: "Rangga Pratama", role: "Co-founder & CEO", photo: "https://i.pravatar.cc/800?img=12" },
-    { name: "Sinta Maharani", role: "Co-founder & CTO", photo: "https://i.pravatar.cc/800?img=32" },
-    { name: "Bagas Nugroho", role: "Co-founder & COO", photo: "https://i.pravatar.cc/800?img=45" },
+    { name: "Imam Mashduqi", role: "Co-founder & CEO", photo: "https://i.pravatar.cc/800?img=12" },
+    { name: "Azhar Rizqullah", role: "Co-founder & CTO", photo: "https://i.pravatar.cc/800?img=32" },
+    { name: "Alief Khairul Fadzli", role: "Engineer & Co-founder", photo: "https://i.pravatar.cc/800?img=45" },
 ]
 
 export default function Founders() {

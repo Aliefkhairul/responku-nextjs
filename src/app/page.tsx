@@ -239,7 +239,7 @@ export default function Page() {
                         <ol className="mt-10 grid gap-8 sm:grid-cols-3">
                             {STEPS.map((step, index) => (
                                 <li key={step.title} className="space-y-3">
-                                    <span className="flex size-7 items-center justify-center rounded-full bg-foreground text-sm font-semibold text-background">
+                                    <span className="flex size-9 items-center justify-center rounded-full bg-foreground text-sm font-semibold text-background">
                                         {index + 1}
                                     </span>
                                     <h3 className="font-semibold">{step.title}</h3>
