@@ -276,7 +276,7 @@ export default function FeaturedResearch() {
                         <p className="mt-4 leading-relaxed text-muted-foreground">Riset populer dari kampus, lembaga riset, dan perusahaan.</p>
                     </div>
 
-                    <Link href="/register" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "shrink-0 rounded-full px-5")}>
+                    <Link href="/feed" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "shrink-0 rounded-full px-5")}>
                         Lihat semua
                         <ArrowRight />
                     </Link>

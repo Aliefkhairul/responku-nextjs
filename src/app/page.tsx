@@ -18,10 +18,9 @@ import { cn } from "@/lib/cn"
  */
 
 const NAV_LINKS = [
-    { label: "Riset", href: "#riset" },
+    { label: "Jelajahi", href: "/feed" },
     { label: "Fitur", href: "#fitur" },
     { label: "Cara Kerja", href: "#cara-kerja" },
-    { label: "Mulai", href: "#mulai" },
     { label: "Bantuan", href: "/help-center" },
 ]
 
@@ -127,8 +126,8 @@ export default function Page() {
                         <Link href="/register" className={cn(buttonVariants({ size: "lg" }), "h-11 rounded-full px-6 text-base")}>
                             Mulai Buat Riset
                         </Link>
-                        <Link href="/login" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-11 rounded-full px-6 text-base")}>
-                            Masuk
+                        <Link href="/feed" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-11 rounded-full px-6 text-base")}>
+                            Jelajahi Riset
                         </Link>
                     </div>
 

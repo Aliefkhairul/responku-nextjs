@@ -32,7 +32,7 @@ const FOOTER_GROUPS = [
     {
         heading: "Produk",
         links: [
-            { label: "Riset", href: "#riset" },
+            { label: "Jelajahi Riset", href: "/feed" },
             { label: "Fitur", href: "#fitur" },
             { label: "Cara Kerja", href: "#cara-kerja" },
         ],
