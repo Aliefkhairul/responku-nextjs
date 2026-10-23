@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { BadRequestException, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@/lib/server/http-exception"
+import { BadRequestException, NotFoundException, UnauthorizedException } from "@/lib/server/http-exception"
 import {
     createSnapTransaction,
     isMidtransConfigured,
@@ -25,17 +25,15 @@ const MANUAL_PROVIDER = "manual"
 
 /* ========== Helper ========== */
 
-/** Public view of a payment, with the token amount worked back out of the price. */
+/** Public view of a payment. */
 function toPaymentResponse(payment: PaymentModel) {
-    const amountIdr = Number(payment.amountIdr)
-
     return {
         id: payment.id,
         type: payment.type,
         provider: payment.provider,
         providerRef: payment.providerRef,
-        amountIdr,
-        tokenAmount: amountIdr / IDR_PER_TOKEN,
+        amountIdr: Number(payment.amountIdr),
+        tokenAmount: payment.tokenAmount,
         status: payment.status,
         createdAt: payment.createdAt,
         updatedAt: payment.updatedAt,
@@ -74,6 +72,9 @@ export async function topupService({
             provider: configured ? MIDTRANS_PROVIDER : MANUAL_PROVIDER,
             providerRef,
             amountIdr,
+            // Frozen at creation: the price lives in env, so an order has to remember what
+            // it bought rather than have it recomputed at settlement or on every read.
+            tokenAmount,
             status: PaymentStatus.PENDING,
             idempotencyKey: `topup:${providerRef}`,
         },
@@ -113,6 +114,12 @@ export async function topupService({
  * never credit twice. Two callbacks racing past the status check would trip that
  * unique key instead, rolling the second one back.
  *
+ * The credit is the `tokenAmount` the order was opened with, not a fresh division of
+ * `amountIdr`: the price can change between the order and its settlement, and the
+ * tokens that were quoted are the tokens that are owed. The ledger row also points
+ * back at the payment, so the chain from order to balance is walkable in both
+ * directions.
+ *
  * `REFUNDED` is acknowledged without being applied: reversing a credit is a flow
  * of its own, and a status flip without it would leave the wallet lying.
  */
@@ -142,34 +149,28 @@ export async function settlePaymentService({ providerRef, status }: { providerRe
     const credited = await prisma.$transaction(async (tx) => {
         const current = await tx.payment.findUniqueOrThrow({
             where: { id: payment.id },
-            select: { userId: true, amountIdr: true, status: true },
+            select: { userId: true, tokenAmount: true, status: true },
         })
 
         if (current.status === PaymentStatus.PAID) return false
-
-        const tokenAmount = Number(current.amountIdr) / IDR_PER_TOKEN
-
-        // The wallet holds whole tokens, so a half-token credit would corrupt it.
-        if (!Number.isInteger(tokenAmount)) {
-            throw new InternalServerErrorException(`Payment ${payment.id} does not settle to a whole number of tokens`)
-        }
 
         await tx.payment.update({ where: { id: payment.id }, data: { status: PaymentStatus.PAID } })
 
         const wallet = await tx.tokenWallet.upsert({
             where: { userId: current.userId },
             // Accounts created before wallets were made at registration have none.
-            create: { userId: current.userId, balance: tokenAmount },
-            update: { balance: { increment: tokenAmount } },
+            create: { userId: current.userId, balance: current.tokenAmount },
+            update: { balance: { increment: current.tokenAmount } },
             select: { id: true },
         })
 
         await tx.tokenTransaction.create({
             data: {
                 walletId: wallet.id,
+                paymentId: payment.id,
                 type: TokenTransactionType.TOPUP,
                 // Credits are positive; debits (like a research reserve) are negative.
-                amount: tokenAmount,
+                amount: current.tokenAmount,
                 idempotencyKey: `topup-credit:${payment.id}`,
             },
         })
@@ -257,6 +258,7 @@ export async function getWalletService({ userId }: { userId: string }) {
                     amount: true,
                     researchId: true,
                     respondentParticipationId: true,
+                    paymentId: true,
                     createdAt: true,
                 },
             },
@@ -274,6 +276,7 @@ export async function getWalletService({ userId }: { userId: string }) {
             amount: transaction.amount,
             researchId: transaction.researchId,
             participationId: transaction.respondentParticipationId,
+            paymentId: transaction.paymentId,
             createdAt: transaction.createdAt,
         })),
     }

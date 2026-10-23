@@ -234,3 +234,56 @@ export type AvailableResearchDetailPayload = {
     research: AvailableResearchDetail
     participation: ParticipationRef | null
 }
+
+/**
+ * One row of the token ledger.
+ *
+ * `amount` is signed: credits are positive, debits negative. `researchId` and
+ * `participationId` say what the row was for, and are `null` when it was neither —
+ * a top-up, for instance.
+ */
+export type WalletTransaction = {
+    id: string
+    type: string
+    amount: number
+    researchId: string | null
+    participationId: string | null
+    /** The order behind a top-up credit; `null` for movements that are not a payment. */
+    paymentId: string | null
+    createdAt: string
+}
+
+/** `GET /api/payment/wallet` → `data.wallet`. */
+export type Wallet = {
+    balance: number
+    /** Priced on the server, where the token price lives. */
+    balanceIdr: number
+    transactions: WalletTransaction[]
+}
+
+/** `POST /api/payment/topup` → `data.payment`, and `GET /api/payment` → `data.payments[]`. */
+export type Payment = {
+    id: string
+    type: string
+    provider: string
+    /** The `order_id` the gateway knows this order by. */
+    providerRef: string
+    amountIdr: number
+    /** Worked back out of `amountIdr` on the server. */
+    tokenAmount: number
+    status: string
+    createdAt: string
+    updatedAt: string
+}
+
+/**
+ * `POST /api/payment/topup` → `data`.
+ *
+ * `token` and `redirectUrl` are the hosted payment page, and are `null` when no
+ * gateway is configured — the order is recorded locally either way.
+ */
+export type TopupResult = {
+    payment: Payment
+    token: string | null
+    redirectUrl: string | null
+}

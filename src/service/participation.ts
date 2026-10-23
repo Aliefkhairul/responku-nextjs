@@ -13,11 +13,12 @@ import { prisma } from "@/prisma/prisma"
  * `ParticipationAnswer`, one row per question, replaced as a whole whenever the client
  * sends its form (the same shape the questionnaire itself is written with).
  *
- * Sending a research in is the only place a respondent is paid, and it is the mirror of
- * publishing: publishing reserved `target × tokenPerRespondent` from the researcher's
- * wallet, and each submission consumes exactly `tokenPerRespondent` of that reservation.
- * The two together are why `tokensConsumed` may never exceed `tokensReserved` — past
- * that point the payout would be minting tokens nobody funded.
+ * A submission is not paid on its own: it records the work and the reward it is worth,
+ * and an admin's approval is what moves the tokens (`reviewParticipationService`). Paying
+ * is the mirror of publishing — publishing reserved `target × tokenPerRespondent` from the
+ * researcher's wallet, and each approval consumes exactly `tokenPerRespondent` of that
+ * reservation. The two together are why `tokensConsumed` may never exceed
+ * `tokensReserved` — past that point the payout would be minting tokens nobody funded.
  */
 
 /* ========== Konstanta ========== */
@@ -30,6 +31,15 @@ const DEFAULT_PARTICIPATION_LIMIT = 50
  * server cannot disagree about which ones are closed.
  */
 const ANSWERED_STATUSES: ParticipationStatus[] = [...PARTICIPATION_DONE_STATUSES]
+
+/**
+ * Statuses an admin can still decide.
+ *
+ * Anything already approved or rejected is past reviewing, so this doubles as the
+ * idempotency guard: a second decision on the same submission is refused rather than
+ * paying it twice.
+ */
+const REVIEWABLE_STATUSES: ParticipationStatus[] = [ParticipationStatus.SUBMITTED, ParticipationStatus.UNDER_REVIEW]
 
 /**
  * How much of the estimated time a submission has to use up before it stops being
@@ -246,9 +256,11 @@ function toParticipationDetail(participation: ParticipationDetailRow) {
 }
 
 /** Reads one participation of the caller's, or throws a 404. */
-async function findParticipation(id: string, respondentId: string) {
+async function findParticipation(id: string, respondentId?: string) {
     const participation = await prisma.respondentParticipation.findFirst({
-        where: { id, respondentId, deletedAt: null },
+        // The respondent's own screens scope the read to them; the admin review does not,
+        // because the work being reviewed belongs to somebody else.
+        where: respondentId === undefined ? { id, deletedAt: null } : { id, respondentId, deletedAt: null },
         include: DETAIL_INCLUDE,
     })
 
@@ -524,17 +536,17 @@ export async function saveAnswersService({ id, respondentId, answers }: { id: st
 /* ========== Kirim ========== */
 
 /**
- * Sends a research in and pays the respondent.
+ * Sends a research in for review.
  *
  * `answers` is optional: sending them here saves the client a round trip and makes sure
  * the last page of a form cannot be lost between a save and a submit. Whatever ends up
  * stored is what gets validated, so a submit without a body still refuses a blank
  * required question.
  *
- * Everything moves in one transaction — the answers, the status, the reward, the wallet
- * credit, and the researcher's consumed counter — so a failure leaves the participation
- * exactly as it was rather than half submitted and half paid. The ledger row is keyed by
- * the participation, which is the second lock against a double credit.
+ * No tokens move here. The submission records the answers, the status, and the reward the
+ * work is worth — created `PENDING`, waiting for an admin — and the payout happens in
+ * `reviewParticipationService`. Both writes are one transaction, so a failure leaves the
+ * participation exactly as it was rather than half submitted.
  */
 export async function submitParticipationService({
     id,
@@ -585,48 +597,18 @@ export async function submitParticipationService({
 
         assertRequiredAnswered(research.questions, saved)
 
-        const amount = research.tokenPerRespondent
-        const remaining = research.tokensReserved - research.tokensConsumed
-
-        // The reservation is the ceiling. Paying past it would credit tokens the
-        // researcher never funded, so the payout is refused instead.
-        if (amount > remaining) {
-            throw new ConflictException("This research's reward budget is used up")
-        }
-
-        const wallet = await tx.tokenWallet.upsert({
-            where: { userId: respondentId },
-            create: { userId: respondentId, balance: amount },
-            update: { balance: { increment: amount } },
-            select: { id: true },
-        })
-
-        await tx.tokenTransaction.create({
-            data: {
-                walletId: wallet.id,
-                researchId: research.id,
-                respondentParticipationId: id,
-                type: TokenTransactionType.REWARD,
-                // Credits are positive, the mirror of the reserve's negative debit.
-                amount,
-                idempotencyKey: `participation-reward:${id}`,
-            },
-        })
-
-        // The platform's cut is recorded as zero: the token split has no account to
-        // land in, and inventing a balance for it would move tokens out of the ledger.
-        // The whole `tokenPerRespondent` the researcher reserved is what gets paid out.
+        // The reward is recorded, but nothing is paid and nothing is consumed: an admin
+        // approves the work first, and `reviewParticipationService` is what moves the
+        // tokens. A submission that is never approved therefore leaves the researcher's
+        // reservation exactly as it was.
         await tx.reward.create({
             data: {
                 participationId: id,
-                respondentTokenAmount: amount,
+                respondentTokenAmount: research.tokenPerRespondent,
                 platformTokenAmount: 0,
-                status: RewardStatus.PAID,
-                paidAt: new Date(),
+                status: RewardStatus.PENDING,
             },
         })
-
-        await tx.research.update({ where: { id: research.id }, data: { tokensConsumed: { increment: amount } } })
 
         await tx.respondentParticipation.update({
             where: { id },
@@ -635,4 +617,119 @@ export async function submitParticipationService({
     })
 
     return toParticipationDetail(await findParticipation(id, respondentId))
+}
+
+/* ========== Tinjau ========== */
+
+/** The two decisions an admin can make on a submitted participation. */
+export type ReviewDecision = "APPROVED" | "REJECTED"
+
+/**
+ * Decides a submitted participation, and pays it when it is approved.
+ *
+ * This is where a respondent is paid. Submitting only records the work and what it is
+ * worth; approving moves the tokens — the wallet credit, the ledger row, the reward marked
+ * paid, and the researcher's consumed counter — all in one transaction, so the balance and
+ * the ledger cannot end up disagreeing. The ledger row is keyed by the participation,
+ * which is the second lock against paying the same work twice.
+ *
+ * A rejection cancels the reward and pays nothing. The reservation is left alone: it was
+ * never consumed, so the researcher's unused budget is still released when the research
+ * closes.
+ */
+export async function reviewParticipationService({ id, reviewerId, decision }: { id: string; reviewerId: string; decision: ReviewDecision }) {
+    await prisma.$transaction(async (tx) => {
+        const participation = await tx.respondentParticipation.findFirst({
+            where: { id, deletedAt: null },
+            select: {
+                id: true,
+                respondentId: true,
+                status: true,
+                researchId: true,
+                reward: { select: { status: true } },
+                research: { select: { tokenPerRespondent: true, tokensReserved: true, tokensConsumed: true } },
+            },
+        })
+
+        if (participation === null) throw new NotFoundException("Participation not found")
+
+        if (!REVIEWABLE_STATUSES.includes(participation.status)) {
+            throw new ConflictException(`This participation is ${participation.status} and is no longer awaiting review`)
+        }
+
+        // A reward that is no longer pending was either cancelled by an earlier decision or
+        // paid back when submitting was what paid — nothing either way for this to settle.
+        if (participation.reward !== null && participation.reward.status !== RewardStatus.PENDING) {
+            throw new ConflictException(`This participation's reward is ${participation.reward.status}`)
+        }
+
+        const reviewedAt = new Date()
+
+        if (decision === "REJECTED") {
+            await tx.reward.updateMany({
+                where: { participationId: id, status: RewardStatus.PENDING },
+                data: { status: RewardStatus.CANCELLED },
+            })
+
+            await tx.respondentParticipation.update({
+                where: { id },
+                data: { status: ParticipationStatus.REJECTED, adminReviewedBy: reviewerId, adminReviewedAt: reviewedAt },
+            })
+
+            return
+        }
+
+        const amount = participation.research.tokenPerRespondent
+        const remaining = participation.research.tokensReserved - participation.research.tokensConsumed
+
+        // The reservation is the ceiling. Paying past it would credit tokens the researcher
+        // never funded, so the approval is refused instead.
+        if (amount > remaining) throw new ConflictException("This research's reward budget is used up")
+
+        const wallet = await tx.tokenWallet.upsert({
+            where: { userId: participation.respondentId },
+            create: { userId: participation.respondentId, balance: amount },
+            update: { balance: { increment: amount } },
+            select: { id: true },
+        })
+
+        await tx.tokenTransaction.create({
+            data: {
+                walletId: wallet.id,
+                researchId: participation.researchId,
+                respondentParticipationId: id,
+                type: TokenTransactionType.REWARD,
+                // Credits are positive, the mirror of the reserve's negative debit.
+                amount,
+                idempotencyKey: `participation-reward:${id}`,
+            },
+        })
+
+        // The platform's cut is recorded as zero: the token split has no account to land in,
+        // and inventing a balance for it would move tokens out of the ledger. The whole
+        // `tokenPerRespondent` the researcher reserved is what gets paid out.
+        await tx.reward.updateMany({
+            where: { participationId: id, status: RewardStatus.PENDING },
+            data: { status: RewardStatus.PAID, paidAt: reviewedAt },
+        })
+
+        await tx.research.update({
+            where: { id: participation.researchId },
+            data: { tokensConsumed: { increment: amount } },
+        })
+
+        await tx.respondentParticipation.update({
+            where: { id },
+            data: {
+                status: ParticipationStatus.APPROVED,
+                adminReviewedBy: reviewerId,
+                adminReviewedAt: reviewedAt,
+                rewardedAt: reviewedAt,
+            },
+        })
+    })
+
+    // Read back unscoped: the work being reviewed belongs to somebody else, so the
+    // respondent-scoped lookup the rest of this file uses would not find it.
+    return toParticipationDetail(await findParticipation(id))
 }

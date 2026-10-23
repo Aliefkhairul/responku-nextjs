@@ -1073,6 +1073,12 @@ Menutup sekaligus **mengembalikan sisa anggaran reward** ke wallet peneliti, seb
 sebagai baris ledger `RELEASE` (amount positif) dengan `idempotencyKey: "research-release:{id}"`, dan
 seluruhnya berada dalam **satu transaksi** — menutup dua kali tidak mungkin mengembalikan token dua kali.
 
+Kiriman yang **masih menunggu tinjauan** ikut ditutup di sini: `Reward`-nya menjadi `CANCELLED` dan
+partisipasinya `EXPIRED`. Anggaran yang akan dipakai membayarnya justru sedang dikembalikan, jadi
+membiarkannya menggantung berarti menjanjikan token yang sudah tidak ada — dan approval sesudahnya akan
+mencetak token dari ketiadaan. Karena itu keputusan admin sebaiknya diambil **sebelum** risetnya ditutup:
+setelah ditutup, kiriman yang belum diputuskan tidak bisa dibayar lagi.
+
 **Response `200`**
 
 ```json
@@ -1102,9 +1108,9 @@ Menghapus riset. Tidak butuh body.
 | Belum pernah dipublish | **dihapus permanen**, criteria & soal ikut terhapus                                                                 |
 | Sudah pernah dipublish | **di-archive** (`deletedAt` diisi), baris tetap ada agar data partisipasi, jawaban, dan transaksi token tidak putus |
 
-Archive juga melepas sisa anggaran reward yang belum terpakai, sama seperti `close` di atas — dan
-melepasnya lagi setelah riset ditutup tidak menggandakan apa pun, karena baris `RELEASE`-nya memakai
-`idempotencyKey: "research-release:{id}"`.
+Archive juga melepas sisa anggaran reward yang belum terpakai, sama seperti `close` di atas — termasuk
+menutup kiriman yang masih menunggu tinjauan — dan melepasnya lagi setelah riset ditutup tidak
+menggandakan apa pun, karena baris `RELEASE`-nya memakai `idempotencyKey: "research-release:{id}"`.
 
 **Response `200`**
 
@@ -1233,7 +1239,7 @@ Daftar partisipasi milik pemanggil, terbaru dulu (default 50 baris).
                     "deadline": "…",
                     "status": "PUBLISHED"
                 },
-                "reward": { "tokenAmount": 5, "status": "PAID", "paidAt": "…" }
+                "reward": { "tokenAmount": 5, "status": "PENDING", "paidAt": null }
             }
         ]
     }
@@ -1335,9 +1341,12 @@ riset ini, atau id pilihan yang tidak ditawarkan pertanyaannya.
 
 ### `POST /api/participation/{id}/submit`
 
-Mengirim partisipasi dan **membayar responden**. Body-nya opsional; bila ada, `answers` diperlakukan sama
+Mengirim partisipasi **untuk ditinjau**. Body-nya opsional; bila ada, `answers` diperlakukan sama
 seperti di endpoint sebelumnya _sebelum_ divalidasi, supaya halaman terakhir formulir tidak bisa hilang di
 antara simpan dan kirim.
+
+**Belum ada token yang berpindah di langkah ini.** Yang dibayar adalah approval admin — lihat
+`POST /api/participation/{id}/review` di bawah.
 
 Yang terjadi, semuanya dalam satu transaksi:
 
@@ -1345,20 +1354,60 @@ Yang terjadi, semuanya dalam satu transaksi:
 2. setiap pertanyaan ber-`mustFill` harus terjawab — kalau tidak, `422` dan tidak ada yang berubah;
 3. risetnya harus masih menerima jawaban **dan deadline-nya belum lewat** — deadline diperiksa di sini
    maupun saat join;
-4. `tokenPerRespondent` dibayarkan ke wallet responden sebagai baris ledger `REWARD`, dan `Reward` dibuat
-   dengan status `PAID`;
-5. `Research.tokensConsumed` bertambah sebanyak itu — cerminan `RESERVE` saat publish, dan angka yang
-   membuat sisa reservasi bisa dilepas saat riset ditutup;
-6. `submittedAt` diisi dengan waktu server, yang sekaligus menjadi waktu selesai pengerjaan (lihat
+4. `Reward` dibuat dengan status `PENDING` dan `respondentTokenAmount = tokenPerRespondent` — catatan
+   bahwa pekerjaannya berharga sekian, bukan pembayaran;
+5. `submittedAt` diisi dengan waktu server, yang sekaligus menjadi waktu selesai pengerjaan (lihat
    **Estimasi durasi** di bawah).
 
-**Response `200`** — `data.participation` dengan `status: "SUBMITTED"` dan `reward` yang terisi.
+**Response `200`** — `data.participation` dengan `status: "SUBMITTED"` dan `reward` berstatus `PENDING`.
 
-**Error:** `401`/`403` · `404` · `409` sudah pernah dikirim, risetnya sudah tidak menerima jawaban,
-deadline-nya lewat, atau anggaran reward-nya habis · `422` pertanyaan wajib belum terjawab.
+**Error:** `401`/`403` · `404` · `409` sudah pernah dikirim, atau risetnya sudah tidak menerima jawaban ·
+`422` pertanyaan wajib belum terjawab.
 
-Kiriman kedua dijawab `409`, bukan sukses palsu: baris ledger-nya berkunci pada partisipasi, jadi efeknya
+Kiriman kedua dijawab `409`, bukan sukses palsu: `Reward` berkunci pada partisipasi, jadi efeknya
 idempoten walaupun bentuk jawabannya bukan.
+
+---
+
+### `POST /api/participation/{id}/review`
+
+**Hanya admin** (`roles` memuat `"admin"`). Memutuskan satu kiriman, dan **inilah yang membayar
+responden** saat diputuskan `APPROVED`.
+
+**Request**
+
+```json
+{ "decision": "APPROVED" }
+```
+
+| Field      | Aturan                       |
+| ---------- | ---------------------------- |
+| `decision` | wajib, `APPROVED`/`REJECTED` |
+
+**`APPROVED`** — semuanya dalam satu transaksi:
+
+1. `tokenPerRespondent` dibayarkan ke wallet responden sebagai baris ledger `REWARD` (ber-
+   `researchId` dan `respondentParticipationId`), dan `Reward` menjadi `PAID` dengan `paidAt` terisi;
+2. `Research.tokensConsumed` bertambah sebanyak itu — cerminan `RESERVE` saat publish, dan angka yang
+   membuat sisa reservasi bisa dilepas saat riset ditutup;
+3. partisipasinya menjadi `APPROVED`, dengan `adminReviewedBy`, `adminReviewedAt`, dan `rewardedAt`.
+
+Anggaran reservasi adalah plafonnya: kalau `tokenPerRespondent` melebihi
+`tokensReserved - tokensConsumed`, approval-nya dijawab `409` alih-alih mengkredit token yang tidak pernah
+didanai peneliti.
+
+**`REJECTED`** — `Reward` menjadi `CANCELLED`, partisipasinya `REJECTED`, dan **tidak ada token yang
+berpindah**. Reservasinya tidak disentuh, jadi sisa anggaran peneliti tetap dilepas saat riset ditutup.
+
+**Response `200`** — `data.participation` (lengkap dengan pertanyaan dan jawabannya, karena itu yang
+sedang ditinjau) dengan status baru.
+
+**Error:** `401` · `403` bukan admin · `404` · `409` partisipasinya sudah tidak menunggu tinjauan
+(sudah `APPROVED`/`REJECTED`), `Reward`-nya sudah tidak `PENDING`, atau anggaran reward-nya habis ·
+`422` `decision` tidak dikenal.
+
+Keputusan kedua dijawab `409`, bukan membayar dua kali: hanya partisipasi yang masih menunggu tinjauan yang
+bisa diputuskan, dan baris ledger-nya berkunci pada partisipasi.
 
 ---
 
@@ -1509,6 +1558,10 @@ tanpa kredensial tetap bisa memanggil endpoint ini.
 `providerRef` inilah `order_id` yang dipakai Midtrans. Kalau Snap menolak, ordernya langsung ditandai
 `FAILED` (tidak menggantung `PENDING`) dan endpoint menjawab `502`.
 
+`tokenAmount` **dibekukan saat order dibuat**, bukan dihitung ulang dari `amountIdr` saat dibaca: harga
+token ada di env, jadi kalau harganya berubah, order lama tetap melaporkan jumlah token yang benar-benar
+dibeli dan dikreditkan.
+
 **Error:** `401` · `422` validasi · `502` Snap menolak atau menjawab tanpa token.
 
 ---
@@ -1559,6 +1612,9 @@ Field yang dipakai: `order_id`, `status_code`, `gross_amount`, `transaction_stat
 
 Idempoten: order yang sudah `PAID` dijawab `credited: false`, dan saldo tidak bertambah lagi.
 
+Yang dikreditkan adalah `tokenAmount` milik order itu — bukan pembagian ulang `amountIdr` — dan baris
+ledger yang lahir darinya menyimpan `paymentId`, jadi rantai order → saldo bisa ditelusuri dari kedua arah.
+
 **Refund belum diterapkan.** Notification refund dijawab `200` dengan `ignored: true` dan barisnya
 **tidak** diubah — membalik kredit adalah alur tersendiri, dan menandai `REFUNDED` tanpa menarik tokennya
 kembali akan membuat saldo berbohong. Sampai alur itu ada, balik manual lewat baris `REFUND` di ledger.
@@ -1583,7 +1639,9 @@ Saldo pemanggil beserta mutasi terakhirnya (maksimal 50 baris).
         "wallet": {
             "balance": 950,
             "balanceIdr": 950000,
-            "transactions": [{ "id": "…", "type": "RESERVE", "amount": -50, "researchId": "…", "participationId": null, "createdAt": "…" }]
+            "transactions": [
+                { "id": "…", "type": "RESERVE", "amount": -50, "researchId": "…", "participationId": null, "paymentId": null, "createdAt": "…" }
+            ]
         }
     }
 }
@@ -1591,6 +1649,10 @@ Saldo pemanggil beserta mutasi terakhirnya (maksimal 50 baris).
 
 `amount` bertanda: kredit positif (`TOPUP`), debit negatif (`RESERVE`). Akun lama yang belum punya wallet
 dibaca sebagai saldo 0.
+
+`researchId`, `participationId`, dan `paymentId` menyebut apa yang menyebabkan baris itu, dan bernilai
+`null` untuk yang tidak berlaku — baris `TOPUP` mengisi `paymentId`, baris `RESERVE`/`REWARD` mengisi
+`researchId` (dan `participationId` untuk reward).
 
 **Error:** `401`.
 
@@ -1699,8 +1761,8 @@ riwayat satu akun tidak pernah terlihat akun lain.
 **Yang sudah berjalan:** register/login/confirm/logout/me, profil demografi (dengan aturan consent
 UU PDP) + unggah foto profil ke Cloudinary, preferensi Account Settings (umum, notifikasi, privasi &
 keamanan) + sesi aktif, draft riset + detail + update + criteria + kuesioner + publish + close +
-delete, alur responden (ikut riset + screening kriteria + jawab + kirim + dibayar), tiket bantuan
-(pusat bantuan), serta wallet token (top-up, reserve, bayar responden, dan release).
+delete, alur responden (ikut riset + screening kriteria + jawab + kirim + ditinjau admin + dibayar), tiket
+bantuan (pusat bantuan), serta wallet token (top-up, reserve, bayar responden, dan release).
 
 **Yang belum ada:**
 
@@ -1720,9 +1782,9 @@ delete, alur responden (ikut riset + screening kriteria + jawab + kirim + dibaya
   tapi belum ada endpoint verifikasinya karena belum ada penyedia SMS/WhatsApp (baru Resend untuk
   email).
 - **Endpoint untuk mengubah `roles`** (promote ke admin) — masih manual lewat database.
-- **Sisa alur token** — top-up (`TOPUP`), reserve (`RESERVE`), pembayaran responden (`REWARD`), dan
-  pelepasan sisa reservasi (`RELEASE`, lewat `close` maupun archive) sudah jalan. Yang belum: `CONSUME`,
-  `WITHDRAW`, `FEE`, dan `REFUND` — penarikan saldo dan pembalikan kredit belum ada.
+- **Sisa alur token** — top-up (`TOPUP`), reserve (`RESERVE`), pembayaran responden (`REWARD`, saat
+  approval), dan pelepasan sisa reservasi (`RELEASE`, lewat `close` maupun archive) sudah jalan. Yang
+  belum: `CONSUME`, `WITHDRAW`, `FEE`, dan `REFUND` — penarikan saldo dan pembalikan kredit belum ada.
 - **Pembagian reward peneliti vs platform** — `REWARD_SPLIT_RESPONDENT_PERCENT` dan
   `REWARD_SPLIT_PLATFORM_PERCENT` **belum dipakai**: responden menerima `tokenPerRespondent` penuh dan
   `Reward.platformTokenAmount` diisi `0`. Itu pilihan yang menjaga dua hal yang sudah terlanjur rilis —
@@ -1736,9 +1798,10 @@ delete, alur responden (ikut riset + screening kriteria + jawab + kirim + dibaya
   sudah tersimpan, jadi tidak perlu ditulis ke kolom mana pun. Kalau nanti perlu disaring atau
   ditindaklanjuti, `signalFlags` adalah tempatnya. `screeningScore`/`screeningResult` yang terisi berasal
   dari kriteria saat join, bukan dari mutu jawaban.
-- **Penahanan reward dan alur review** — `Reward` selalu `PAID` begitu dikirim; `PENDING`/`HELD`,
-  `QUALITY_HOLD_RELEASE_HOURS`, serta `ParticipationStatus.UNDER_REVIEW`/`APPROVED`/`REJECTED` dengan
-  `adminReviewedBy`/`holdReleaseAt` belum dipakai. Belum ada cara menolak jawaban atau membalik bayaran.
+- **Penahanan reward** — approval membayar **langsung**: `Reward` melompat `PENDING` → `PAID`, dan
+  `HELD`, `QUALITY_HOLD_RELEASE_HOURS`, serta `Participation.holdReleaseAt` belum dipakai. Jadi belum ada
+  jeda tahan-kualitas antara approve dan saldo masuk, dan belum ada cara membalik bayaran yang sudah
+  terjadi (menolak sebelum dibayar sudah bisa, lewat `REJECTED`).
 - **Feed responden belum menyaring kriteria** — `GET /api/research/available` masih menampilkan riset
   yang kriterianya tidak dipenuhi profil; responden baru tahu saat mencoba ikut (`422`). Menyaring di
   feed butuh `age` dan `region` yang belum tersimpan.
@@ -1793,8 +1856,9 @@ delete, alur responden (ikut riset + screening kriteria + jawab + kirim + dibaya
 
 `scripts/api-smoke.sh` menjalankan semua endpoint di atas dengan curl terhadap dev server
 (`bun run dev`) dan mencetak satu baris per request: method, path, status HTTP, dan cuplikan response.
-Alur responden (ikut → jawab → kirim → dibayar) dijalankan dengan **akun kedua**, karena satu akun tidak
-bisa menjadi dua sisi sekaligus.
+Alur responden (ikut → jawab → kirim → ditinjau admin → dibayar) dijalankan dengan **akun kedua**, karena
+satu akun tidak bisa menjadi dua sisi sekaligus; langkah tinjaunya memakai akun pertama yang dinaikkan ke
+role `admin` lewat `scripts/db-peek.ts roles`.
 
 ```sh
 MIDTRANS_SERVER_KEY=local-dev-midtrans-server-key \

@@ -199,7 +199,7 @@ call POST "/api/research/$RID/create-questions" '{"questions":[{"pos":1,"questio
 call PATCH "/api/research/$RID" '{"criteria":[]}'
 call PATCH "/api/research/$RID" '{"title":"Judul setelah publish"}'
 
-step "6a. Participation: a respondent joins, answers, and is paid"
+step "6a. Participation: a respondent joins, answers, and sends it in for review"
 RESPONDENT="curl-respondent-$STAMP@example.com"
 JAR_P=tmp-cookies-respondent.txt
 signin_as "$RESPONDENT" "$JAR_P"
@@ -237,10 +237,11 @@ printf 'timing: actual=%ss estimated=%ss perQuestion=%ss tooFast=%s\n' \
     "$(printf '%s' "$LAST" | json_field '.data.participation.timing.estimatedSeconds')" \
     "$(printf '%s' "$LAST" | json_field '.data.participation.timing.estimatedSecondsPerQuestion')" \
     "$(printf '%s' "$LAST" | json_field '.data.participation.timing.tooFast')"
-# The reward is already credited, so the second send is refused instead of paying twice.
+# The reward is recorded but not paid, so the second send is refused instead of paying twice.
 call_as POST "/api/participation/$PID/submit" "$JAR_P"
 call_as POST "/api/participation/$PID/answers" "$JAR_P" '{"answers":[]}'
 call_as GET  /api/participation "$JAR_P"
+printf 'reward after submit: %s\n' "$(printf '%s' "$LAST" | json_field '.data.participations.0.reward.status')"
 call_as GET  /api/payment/wallet "$JAR_P"
 # Once it is sent in it leaves the feed again.
 call_as GET  "/api/research/available?take=100" "$JAR_P"
@@ -251,7 +252,18 @@ call_as POST "/api/participation/$PID" "$JAR_P"
 call_as POST "/api/research/$RID/participate" "$JAR"
 call GET "/api/research/$RID"
 
-step "6b. Close returns the unused budget, archiving a closed research releases nothing more"
+step "6b. Review: only an admin decides, and approving is what pays"
+# The respondent cannot decide their own submission, and neither can the researcher yet.
+call_as POST "/api/participation/$PID/review" "$JAR_P" '{"decision":"APPROVED"}'
+call POST "/api/participation/$PID/review" '{"decision":"APPROVED"}'
+bun run scripts/db-peek.ts roles "$EMAIL" '["researcher","respondent","admin"]' >/dev/null
+call POST "/api/participation/$PID/review" '{"decision":"APPROVED"}'
+call_as GET  /api/payment/wallet "$JAR_P"
+# A second decision is refused instead of paying twice, and so is a decision nobody knows.
+call POST "/api/participation/$PID/review" '{"decision":"APPROVED"}'
+call POST "/api/participation/$PID/review" '{"decision":"MUNGKIN"}'
+
+step "6c. Close returns the unused budget, archiving a closed research releases nothing more"
 call POST "/api/research/$RID/close"
 call GET  /api/payment/wallet
 call POST "/api/research/$RID/close"
