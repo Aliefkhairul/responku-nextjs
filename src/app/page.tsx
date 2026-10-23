@@ -6,6 +6,7 @@ import FeaturedResearch from "@/components/landing/featured-research"
 import Founders from "@/components/landing/founders"
 import LearnCommunity from "@/components/landing/learn-community"
 import SiteFooter from "@/components/landing/site-footer"
+import AuthNav from "@/components/shared/auth-nav"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/cn"
 
@@ -92,18 +93,7 @@ export default function Page() {
                     </nav>
 
                     <div className="ml-auto flex items-center gap-2">
-                        <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "lg" }), "rounded-full px-4")}>
-                            Masuk
-                        </Link>
-                        <Link
-                            href="/register"
-                            className={cn(
-                                buttonVariants({ variant: "outline", size: "lg" }),
-                                "rounded-full border-transparent bg-foreground px-5 text-background hover:bg-foreground/90 hover:text-background",
-                            )}
-                        >
-                            Daftar
-                        </Link>
+                        <AuthNav />
                     </div>
                 </div>
             </header>

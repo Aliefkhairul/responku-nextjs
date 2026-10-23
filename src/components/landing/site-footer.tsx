@@ -10,9 +10,6 @@ import Link from "next/link"
 /**
  * Ordered so a two-column grid reads Company/Legal on the first row and Product/Resources on
  * the second, matching the reference.
- *
- * `Kebijakan Privasi` and `Syarat & Ketentuan` point at `/privacy` and `/terms`, which do not
- * exist yet — create those pages, or drop the group, before launch.
  */
 const FOOTER_GROUPS = [
     {

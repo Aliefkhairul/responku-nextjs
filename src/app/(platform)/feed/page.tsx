@@ -210,9 +210,11 @@ export default function Page() {
                             </p>
                         ) : (
                             <>
-                                <div className="mt-4 grid gap-5 lg:grid-cols-2">
+                                <div className="mt-4 grid gap-4 lg:grid-cols-2">
                                     {paged.map((research) => (
-                                        <BrowseSurveyCard key={research.id} research={research} respondentId={respondentId} />
+                                        <div key={research.id} className="lg:first:col-span-2">
+                                            <BrowseSurveyCard research={research} respondentId={respondentId} />
+                                        </div>
                                     ))}
                                 </div>
 

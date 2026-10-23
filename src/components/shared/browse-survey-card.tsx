@@ -43,7 +43,7 @@ export default function BrowseSurveyCard({ research, respondentId }: { research:
     const href = participation !== null && respondentId !== null ? `/research/${research.id}/work-on/${respondentId}` : `/research/${research.id}`
 
     return (
-        <div className="flex w-full items-center justify-center">
+        <div className="@container flex w-full items-center justify-center">
             <Card.Card className="w-full h-full">
                 <Card.CardHeader className="flex flex-row items-center justify-between gap-4">
                     <div className="flex flex-wrap items-center gap-2">
@@ -57,8 +57,8 @@ export default function BrowseSurveyCard({ research, respondentId }: { research:
 
                 <Card.CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <h3 className="text-xl font-semibold leading-snug">{research.title}</h3>
-                        <p className="leading-relaxed text-muted-foreground">{research.description}</p>
+                        <h3 className="text-xl font-semibold leading-snug @xl:text-2xl">{research.title}</h3>
+                        <p className="leading-relaxed text-muted-foreground @xl:text-lg @xl:-mt-2">{research.description}</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
