@@ -10,6 +10,7 @@ harus mengirim cookie (`credentials: "include"` pada `fetch`).
 - [Auth](#auth)
 - [User](#user)
 - [Research](#research)
+- [Search](#search)
 - [Payment & wallet](#payment--wallet)
 - [Catatan & yang belum ada](#catatan--yang-belum-ada)
 
@@ -1168,6 +1169,60 @@ berisi jumlah token yang dilepas kembali ke wallet.
 Riset yang sudah di-archive akan terlihat seperti tidak ada (`404`) di semua endpoint.
 
 **Error:** `404` · `401`/`403`.
+
+---
+
+## Search
+
+Pencarian publik untuk **riset** dan **responden**. Tidak butuh login — halaman pencarian terbuka untuk
+siapa saja, dan yang dibaca (riset `PUBLISHED` dan nama akun) memang sudah tampil di tempat lain.
+
+### `GET /api/search`
+
+**Query**
+
+| Param   | Aturan                                      |
+| ------- | ------------------------------------------- |
+| `q`     | wajib, di-trim, minimal 2 karakter          |
+| `page`  | opsional, bilangan bulat ≥ 1 (default 1)    |
+| `limit` | opsional, bilangan bulat 1–100 (default 10) |
+
+`q` di-trim lebih dulu, jadi keyword yang hanya berisi spasi dianggap kosong. Pencocokan bersifat
+**case-insensitive** (mengikuti collation `_ci` MySQL) dan **partial** (`LIKE '%q%'`).
+
+**Response `200`**
+
+```json
+{
+    "ok": true,
+    "statusCode": 200,
+    "message": "Search results",
+    "data": {
+        "q": "riset",
+        "page": 1,
+        "limit": 10,
+        "researches": [
+            {
+                "id": "…",
+                "title": "…",
+                "description": "…",
+                "category": "fintech",
+                "researcherName": "…"
+            }
+        ],
+        "respondents": [{ "id": "…", "name": "…", "image": null }],
+        "totals": { "researches": 15, "respondents": 12 }
+    }
+}
+```
+
+`researches` hanya memuat riset `PUBLISHED` yang belum di-archive; `respondents` hanya akun yang memegang
+role `respondent`. Kedua daftar dipaginasi bersama oleh `page`/`limit` yang sama, dan `totals` memberi
+jumlah keseluruhan tiap jenis. Urutannya konsisten, bukan skor relevansi: riset terbaru dulu
+(`publishedAt desc`), responden menurut nama (`name asc`) — peringkat relevansi butuh full-text search
+yang sengaja tidak dipakai di proyek ini.
+
+**Error:** `400` bila `q` kosong atau kurang dari 2 karakter, atau `page`/`limit` di luar rentang.
 
 ---
 

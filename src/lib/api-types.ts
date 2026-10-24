@@ -500,3 +500,34 @@ export type QualityCheck = {
         }>
     }
 }
+
+/** `GET /api/search` → `data.researches[]`: one published research a keyword matched. */
+export type SearchResearchRow = {
+    id: string
+    title: string
+    description: string
+    category: string | null
+    researcherName: string
+}
+
+/** `GET /api/search` → `data.respondents[]`: one respondent a keyword matched. */
+export type SearchRespondentRow = {
+    id: string
+    name: string
+    image: string | null
+}
+
+/**
+ * `GET /api/search` → `data`.
+ *
+ * Both lists are paged together by the same `page`/`limit`, so `totals` carries the full
+ * count of each kind — what the caller needs to know whether another page exists.
+ */
+export type SearchResults = {
+    q: string
+    page: number
+    limit: number
+    researches: SearchResearchRow[]
+    respondents: SearchRespondentRow[]
+    totals: { researches: number; respondents: number }
+}
