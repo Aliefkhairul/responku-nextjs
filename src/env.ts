@@ -141,6 +141,17 @@ export const env = createEnv({
 
         /** Declared for completeness; nothing reads this yet. */
         APP_ENV: z.string().min(1).default("local"),
+
+        /* --- Domicile (wilayah) --- */
+
+        /**
+         * Base URL of the Indonesian region ("wilayah") API behind the domicile selects.
+         * Defaults to the public emsifa dataset — a fixed set of provinces and their
+         * regencies — so a dev environment needs no setup; point it at a self-hosted mirror
+         * or a stub in tests. The app degrades to the built-in province list when it is
+         * unreachable, so this never has to be correct for the app to boot.
+         */
+        WILAYAH_API_BASE_URL: z.url().default("https://www.emsifa.com/api-wilayah-indonesia/api"),
     },
     // The app has no `NEXT_PUBLIC_` variables — every value the browser needs is
     // passed down from a server component — but the Next adapter still requires

@@ -17,6 +17,8 @@ import { patchJson } from "@/lib/api-client"
 import type { UserProfile } from "@/lib/api-types"
 import { hasFieldError, toFieldErrors } from "@/lib/form-error"
 import { EDUCATIONS, EDUCATION_ITEMS, GENDERS, GENDER_ITEMS, RELIGIONS, RELIGION_ITEMS, type Gender } from "@/lib/profile-vocabulary"
+import { useWilayahProvinces, useWilayahRegencies } from "@/lib/use-wilayah"
+import WilayahSelect from "@/components/profile/wilayah-select"
 
 /* ========== Validasi ========== */
 
@@ -97,6 +99,13 @@ export default function DemographicProfile({
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
     const [locating, setLocating] = useState(false)
     const [locationError, setLocationError] = useState<string | null>(null)
+
+    // The form's province is not readable outside a field's render prop, so it is mirrored here
+    // to drive the regency list. The domicile lists come from the regional API (see `use-wilayah`)
+    // and each field falls back to free text when the list is unavailable.
+    const [provinceValue, setProvinceValue] = useState(initialProfile?.province ?? "")
+    const provinces = useWilayahProvinces()
+    const regencies = useWilayahRegencies(provinceValue)
 
     const form = useForm({
         defaultValues: toFormValues(initialProfile) satisfies DemographicInput as DemographicInput,
@@ -244,14 +253,22 @@ export default function DemographicProfile({
                             <div className="space-y-2">
                                 <Label htmlFor="province">Provinsi Domisili</Label>
 
-                                <Input
+                                <WilayahSelect
                                     id="province"
                                     name={field.name}
                                     value={field.state.value}
+                                    invalid={hasFieldError(messages)}
+                                    state={provinces}
+                                    placeholder="Pilih provinsi"
+                                    loadingLabel="Memuat provinsi…"
+                                    fallbackPlaceholder="Masukkan provinsi"
                                     onBlur={field.handleBlur}
-                                    onChange={(event) => field.handleChange(event.target.value)}
-                                    placeholder="Masukkan provinsi"
-                                    aria-invalid={hasFieldError(messages)}
+                                    onValueChange={(value) => {
+                                        field.handleChange(value)
+                                        setProvinceValue(value)
+                                        // A regency belongs to one province, so a new province starts the city over.
+                                        form.setFieldValue("city", "")
+                                    }}
                                 />
 
                                 <FieldError errors={toFieldErrors(messages)} />
@@ -268,14 +285,18 @@ export default function DemographicProfile({
                             <div className="space-y-2">
                                 <Label htmlFor="city">Kota / Kabupaten</Label>
 
-                                <Input
+                                <WilayahSelect
                                     id="city"
                                     name={field.name}
                                     value={field.state.value}
+                                    invalid={hasFieldError(messages)}
+                                    state={regencies}
+                                    disabled={provinceValue.length === 0}
+                                    placeholder={provinceValue.length === 0 ? "Pilih provinsi dulu" : "Pilih kota atau kabupaten"}
+                                    loadingLabel="Memuat kota/kabupaten…"
+                                    fallbackPlaceholder="Masukkan kota atau kabupaten"
                                     onBlur={field.handleBlur}
-                                    onChange={(event) => field.handleChange(event.target.value)}
-                                    placeholder="Masukkan kota atau kabupaten"
-                                    aria-invalid={hasFieldError(messages)}
+                                    onValueChange={field.handleChange}
                                 />
 
                                 <FieldError errors={toFieldErrors(messages)} />

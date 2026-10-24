@@ -72,6 +72,19 @@ export type AvailableResearch = {
     region: string
 }
 
+/**
+ * One domicile option, as returned by `GET /api/wilayah/provinces` and
+ * `GET /api/wilayah/regencies`: a province or a regency (kota/kabupaten).
+ *
+ * `name` is the value the profile stores — the province names come from the same
+ * vocabulary the research editor's region rule uses, so a domicile rule and a profile
+ * line up.
+ */
+export type WilayahOption = {
+    id: string
+    name: string
+}
+
 /** A screening rule stored on a research. */
 export type ResearchCriterion = { id: string; field: string; operator: string; value: string }
 
