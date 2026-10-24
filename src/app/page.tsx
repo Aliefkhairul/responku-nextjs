@@ -230,7 +230,7 @@ export default function Page() {
             <About />
 
             {/* founders */}
-            <Founders />
+            {/* <Founders /> */}
 
             <SiteFooter />
         </div>
