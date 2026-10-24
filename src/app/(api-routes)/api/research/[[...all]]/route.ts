@@ -14,6 +14,7 @@ import {
     createResearchDraftService,
     deleteResearchService,
     getAvailableResearchService,
+    getHighlightResearchService,
     getResearchService,
     listAvailableResearchService,
     listResearchesService,
@@ -148,6 +149,9 @@ const CLOSE_PATH = "close"
 
 /** The action path that lists research a respondent can take, rather than owning it. */
 const AVAILABLE_PATH = "available"
+
+/** The action path that names the one research the landing page features. */
+const HIGHLIGHT_PATH = "highlight"
 
 /** The action path a respondent takes part through. */
 const PARTICIPATE_PATH = "participate"
@@ -367,8 +371,28 @@ async function availableResearchDetailHandler(_req: NextRequest, id: string) {
     }
 }
 
+/**
+ * The research the landing page features.
+ *
+ * Public, like the feed: it is the same published pool, and the landing page is open to
+ * signed-out visitors.
+ */
+async function highlightResearchHandler() {
+    try {
+        const research = await getHighlightResearchService()
+
+        return successResponse({ message: "Highlight research", data: { research } })
+    } catch (error) {
+        return handleRouteError(error)
+    }
+}
+
 export async function GET(req: NextRequest) {
     const segments = getResearchSegments(req)
+
+    // The landing page's featured research, served before the researcher guard: it is public
+    // and addresses no particular research.
+    if (segments.length === 1 && segments[0] === HIGHLIGHT_PATH) return highlightResearchHandler()
 
     // The respondent's pool, and one item in it, are both served before the researcher
     // guard: browsing other people's published research needs a session, not that role.

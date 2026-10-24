@@ -9,7 +9,16 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronDown, ChevronUp, Copy, Plus, Trash2 } from "lucide-react"
 import { useRef } from "react"
-import { MAX_AGE, MIN_AGE, type QuestionSchema, categoryItems, estimateMinutes, questionTypeItems, timeLimitOptions } from "./research-editor-schema"
+import {
+    MAX_AGE,
+    MIN_AGE,
+    type QuestionSchema,
+    categoryItems,
+    estimateMinutes,
+    questionTypeItems,
+    regionItems,
+    timeLimitOptions,
+} from "./research-editor-schema"
 import type { UseResearchEditorForm } from "./research-editor-schema"
 
 /** CONSTANTS & HELPERS */
@@ -84,12 +93,6 @@ export default function RisetEditorEngine({ researchEditorForm: { form }, disabl
         { value: "all", label: "Semua" },
         { value: "male", label: "Laki-laki" },
         { value: "female", label: "Perempuan" },
-    ]
-    const regionItems: Option[] = [
-        { value: "all", label: "Seluruh Indonesia" },
-        { value: "jabodetabek", label: "Jabodetabek" },
-        { value: "jawa-lainnya", label: "Jawa (selain Jabodetabek)" },
-        { value: "luar-jawa", label: "Luar Jawa" },
     ]
 
     /**

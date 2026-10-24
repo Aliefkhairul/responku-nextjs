@@ -886,6 +886,38 @@ pemanggil.
 
 ---
 
+### `GET /api/research/highlight`
+
+Riset yang ditampilkan di kartu sorotan halaman depan. **Tidak butuh login** — halaman depan terbuka
+untuk siapa saja, dan yang dibaca adalah riset `PUBLISHED` yang sama dengan feed.
+
+**Response `200`**
+
+```json
+{
+    "ok": true,
+    "statusCode": 200,
+    "message": "Highlight research",
+    "data": {
+        "research": {
+            "id": "…",
+            "title": "…",
+            "category": "DISASTER_MANAGEMENT",
+            "researcherName": "…",
+            "daysLeft": 30
+        }
+    }
+}
+```
+
+`research` berisi riset `PUBLISHED` terbaru yang deadline-nya belum lewat, atau `null` bila tidak ada
+yang sedang dibuka — kartunya menyembunyikan diri dalam kasus itu. `daysLeft` dihitung di server, sama
+seperti di feed.
+
+**Error:** `500`.
+
+---
+
 ### `POST /api/research/create`
 
 Membuat draft kosong. **Tidak butuh body** — skeleton-nya ditentukan backend, dan pemiliknya diambil

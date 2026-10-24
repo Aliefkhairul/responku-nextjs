@@ -248,6 +248,19 @@ export type AvailableResearchDetailPayload = {
 }
 
 /**
+ * `GET /api/research/highlight` → `data.research`, or `null` when nothing is open.
+ *
+ * The one research the landing page features: enough for its card, and nothing more.
+ */
+export type HighlightResearch = {
+    id: string
+    title: string
+    category: string | null
+    researcherName: string
+    daysLeft: number
+}
+
+/**
  * One row of the token ledger.
  *
  * `amount` is signed: credits are positive, debits negative. `researchId` and

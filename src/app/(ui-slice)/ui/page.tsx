@@ -34,7 +34,7 @@ const sampleAvailable: AvailableResearchRow = {
     daysLeft: 30,
     respondentCount: 82,
     targetRespondentCount: 100,
-    region: "jabodetabek",
+    region: "DKI Jakarta",
     participation: { id: "sample-participation", status: "IN_PROGRESS" },
 }
 

@@ -2,6 +2,7 @@ import { deleteJson, patchJson, postJson } from "@/lib/api-client"
 import type { ResearchCriterion, ResearchDetail, ResearchQuestion } from "@/lib/api-types"
 import { RESEARCH_CATEGORIES } from "@/lib/research-category"
 import {
+    REGION_VALUES,
     criteriaSchemaDefaultValue,
     estimateMinutes,
     identitySchemaDefaultValue,
@@ -24,8 +25,6 @@ const DAY_MS = 86_400_000
 const AGE_FIELD = "age"
 const GENDER_FIELD = "gender"
 const REGION_FIELD = "region"
-
-const REGION_VALUES = ["jabodetabek", "jawa-lainnya", "luar-jawa"]
 
 const DURATION_DAYS = timeLimitOptions.map((option) => Number(option.value))
 
@@ -55,7 +54,7 @@ function criteriaValues(rules: ResearchCriterion[]): EditorValues["criteria"] {
         ageMin: Number.isFinite(ageMin) ? ageMin : criteriaSchemaDefaultValue.ageMin,
         ageMax: Number.isFinite(ageMax) ? ageMax : criteriaSchemaDefaultValue.ageMax,
         gender: gender === "male" || gender === "female" ? gender : "all",
-        region: REGION_VALUES.includes(region ?? "") ? (region as EditorValues["criteria"]["region"]) : "all",
+        region: (REGION_VALUES as readonly string[]).includes(region ?? "") ? (region as EditorValues["criteria"]["region"]) : "all",
     }
 }
 

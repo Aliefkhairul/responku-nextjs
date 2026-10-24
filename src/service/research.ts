@@ -459,6 +459,40 @@ export async function listAvailableResearchService({
     }))
 }
 
+/** The header the landing page's highlight card reads. */
+const HIGHLIGHT_RESEARCH_SELECT = {
+    id: true,
+    title: true,
+    category: true,
+    deadline: true,
+    researcher: { select: { name: true } },
+} satisfies Prisma.ResearchSelect
+
+/**
+ * The one research the landing page features.
+ *
+ * The most recently published research that is still taking answers, so the card always shows
+ * something current rather than a fixed example. `null` when nothing is open, which the card
+ * renders as nothing at all.
+ */
+export async function getHighlightResearchService() {
+    const research = await prisma.research.findFirst({
+        where: { status: ResearchStatus.PUBLISHED, deletedAt: null, deadline: { gt: new Date() } },
+        orderBy: { publishedAt: "desc" },
+        select: HIGHLIGHT_RESEARCH_SELECT,
+    })
+
+    if (research === null) return null
+
+    return {
+        id: research.id,
+        title: research.title,
+        category: research.category,
+        researcherName: research.researcher.name,
+        daysLeft: daysUntil(research.deadline),
+    }
+}
+
 /**
  * One research from the respondent's pool, for its detail page.
  *

@@ -1,8 +1,17 @@
 import { useForm } from "@tanstack/react-form"
+import { INDONESIA_PROVINCES } from "@/lib/indonesia-provinces"
 import { RESEARCH_CATEGORIES, RESEARCH_CATEGORY_ITEMS } from "@/lib/research-category"
 import { QUESTION_TYPE_LABELS } from "@/lib/research-question"
 import { useState } from "react"
 import z from "zod"
+
+/**
+ * The domicile values the criteria control offers: the whole country, or one province.
+ *
+ * The province names double as the stored values, so a domicile rule reads the same as the
+ * profile's `province` line.
+ */
+export const REGION_VALUES = ["all", ...INDONESIA_PROVINCES] as const
 
 /**
  * How long a questionnaire is expected to take, from how many questions it asks.
@@ -54,7 +63,7 @@ const criteriaSchema = z
         ageMin: ageSchema("Usia minimum"),
         ageMax: ageSchema("Usia maksimum"),
         gender: z.enum(["all", "male", "female"]),
-        region: z.enum(["all", "jabodetabek", "jawa-lainnya", "luar-jawa"]),
+        region: z.enum(REGION_VALUES),
     })
     .refine((data) => data.ageMin <= data.ageMax, {
         message: "Usia maksimum tidak boleh lebih kecil dari usia minimum.",
@@ -232,11 +241,9 @@ export const genderItems = [
     { value: "male", label: "Laki-laki" },
     { value: "female", label: "Perempuan" },
 ]
-export const regionItems = [
-    { value: "all", label: "Seluruh Indonesia" },
-    { value: "jabodetabek", label: "Jabodetabek" },
-    { value: "jawa-lainnya", label: "Jawa (selain Jabodetabek)" },
-    { value: "luar-jawa", label: "Luar Jawa" },
-]
+export const regionItems = REGION_VALUES.map((value) => ({
+    value,
+    label: value === "all" ? "Seluruh Indonesia" : value,
+}))
 /** Nilai = key stabil yang dikirim ke API; label hanya untuk tampilan. */
 export const categoryItems = RESEARCH_CATEGORY_ITEMS

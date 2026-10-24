@@ -15,14 +15,14 @@ import {
 import { updateUserProfileService } from "@/service/user"
 
 /**
- * LOCAL DEVELOPMENT ONLY — seeds fifteen researchers, an admin, ten respondents, and fifteen
+ * LOCAL DEVELOPMENT ONLY — seeds sixteen researchers, an admin, ten respondents, and sixteen
  * published researches (one per researcher).
  *
  *   bun run src/prisma/seed.ts
  *
  * The accounts cover the three sides of the app:
  *
- *   1. Alip Peneliti 1–15  — role `researcher`; each owns one of the seeded researches
+ *   1. Alip Peneliti 1–16  — role `researcher`; each owns one of the seeded researches
  *   2. Alip Admin          — role `admin`, can open `/admin`
  *   3. Alip Responden 1–10 — role `respondent`, spread across the criteria, so several of them
  *                            can take the seeded researches
@@ -98,7 +98,7 @@ type SeedAccount = {
 }
 
 /**
- * Where the fifteen seeded researchers are based, spread well beyond the researches' own
+ * Where the sixteen seeded researchers are based, spread well beyond the researches' own
  * criteria so the researcher list is not all one city.
  */
 const RESEARCHER_PLACES = [
@@ -117,6 +117,7 @@ const RESEARCHER_PLACES = [
     { province: "Kalimantan Timur", city: "Balikpapan", latitude: -1.2379, longitude: 116.8529 },
     { province: "Nusa Tenggara Barat", city: "Mataram", latitude: -8.5833, longitude: 116.1167 },
     { province: "Papua", city: "Jayapura", latitude: -2.5916, longitude: 140.669 },
+    { province: "Kalimantan Tengah", city: "Palangka Raya", latitude: -2.208, longitude: 113.916 },
 ]
 
 const RESEARCHER_OCCUPATIONS = [
@@ -140,7 +141,7 @@ const RESEARCHER_OCCUPATIONS = [
 /** The three education levels the seeded research screens for, used by every seeded profile. */
 const SEED_EDUCATIONS: Education[] = ["bachelor", "master", "doctorate"]
 
-/** Fifteen researchers, each its own account, so the researches each have a distinct owner. */
+/** Sixteen researchers, each its own account, so the researches each have a distinct owner. */
 const RESEARCHERS: SeedAccount[] = RESEARCHER_PLACES.map((place, index) => {
     const n = index + 1
 
@@ -417,12 +418,44 @@ const MINIMAL_QUESTIONS: ResearchQuestionInput[] = [
     },
 ]
 
+/**
+ * The karhutla questionnaire.
+ *
+ * A short, topical set for the disaster-management research, so the seeded feed has one survey
+ * whose questions actually match its title rather than the shared minimal one.
+ */
+const KARHUTLA_QUESTIONS: ResearchQuestionInput[] = [
+    {
+        pos: 1,
+        question: "Seberapa sering Anda melihat atau merasakan dampak kabut asap karhutla di daerah Anda?",
+        questionType: QuestionType.SINGLE_CHOICE,
+        choices: choices(["Tidak pernah", "Jarang", "Beberapa kali setahun", "Hampir setiap tahun"]),
+    },
+    {
+        pos: 2,
+        question: "Menurut Anda, apa penyebab utama kebakaran hutan dan lahan?",
+        questionType: QuestionType.MULTIPLE_CHOICE,
+        choices: choices(["Pembukaan lahan dengan membakar", "Cuaca kering dan panas", "Kelalaian manusia", "Faktor alam lainnya"]),
+    },
+    {
+        pos: 3,
+        question: "Seberapa siap lingkungan tempat Anda tinggal menghadapi karhutla?",
+        questionType: QuestionType.SCALE,
+        choices: choices(LIKERT_LABELS),
+    },
+    {
+        pos: 4,
+        question: "Upaya apa yang menurut Anda paling penting untuk mencegah karhutla?",
+        questionType: QuestionType.TEXT,
+    },
+]
+
 /** One seeded research: its header, and everything the services need to publish it. */
 type SeedResearchDefinition = {
     title: string
     description: string
     category: ResearchCategory
-    /** Domicile region the research targets, as the editor's key. Omitted means everyone. */
+    /** Domicile province the research targets, by name. Omitted means everyone. */
     region?: string
     target: number
     tokens: number
@@ -432,12 +465,13 @@ type SeedResearchDefinition = {
 }
 
 /**
- * The fifteen seeded researches, one per researcher.
+ * The sixteen seeded researches, one per researcher.
  *
  * The first is the full survey — ten questions covering every type the respondent page can
  * render — and keeps the title it was first seeded under, so an existing copy is reused
- * instead of a second one being created. The rest are headers with a single question each,
- * which is all a published research strictly needs.
+ * instead of a second one being created. The karhutla one carries its own short questionnaire;
+ * the rest are headers with a single question each, which is all a published research strictly
+ * needs.
  */
 const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
@@ -453,7 +487,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Preferensi Belanja Online di Marketplace 2026",
         description: "Perilaku belanja daring: alasan memilih marketplace, metode pembayaran, dan pengalaman pengiriman.",
         category: "MARKETING_ADVERTISING",
-        region: "jabodetabek",
+        region: "DKI Jakarta",
         target: 25,
         tokens: 2,
         minutes: 6,
@@ -462,7 +496,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Efektivitas Pembelajaran Daring di Perguruan Tinggi",
         description: "Pengalaman mahasiswa dengan kelas daring: kualitas materi, interaksi, dan kendala teknis.",
         category: "EDUCATION_PEDAGOGY",
-        region: "jawa-lainnya",
+        region: "Jawa Tengah",
         target: 30,
         tokens: 2,
         minutes: 7,
@@ -471,7 +505,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Kebiasaan Olahraga dan Pola Tidur Warga Kota",
         description: "Rutinitas olahraga, durasi tidur, dan keluhan kesehatan ringan pada pekerja perkotaan.",
         category: "PUBLIC_HEALTH",
-        region: "jabodetabek",
+        region: "DKI Jakarta",
         target: 20,
         tokens: 2,
         minutes: 5,
@@ -488,7 +522,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Kepuasan Layanan Transportasi Umum",
         description: "Persepsi penumpang terhadap ketepatan, kenyamanan, dan keterjangkauan transportasi umum.",
         category: "TRANSPORTATION_LOGISTICS",
-        region: "jawa-lainnya",
+        region: "Jawa Tengah",
         target: 20,
         tokens: 2,
         minutes: 6,
@@ -497,7 +531,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Minat Investasi Reksa Dana Generasi Milenial",
         description: "Pemahaman, preferensi produk, dan faktor pendorong keputusan investasi generasi milenial.",
         category: "ECONOMICS_FINANCE",
-        region: "luar-jawa",
+        region: "Riau",
         target: 20,
         tokens: 3,
         minutes: 7,
@@ -506,7 +540,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Pengalaman Belanja Kebutuhan Harian",
         description: "Kebiasaan berbelanja kebutuhan rumah tangga, dari pasar tradisional sampai ritel modern.",
         category: "MARKETING_ADVERTISING",
-        region: "jabodetabek",
+        region: "DKI Jakarta",
         target: 25,
         tokens: 2,
         minutes: 5,
@@ -523,7 +557,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Penggunaan Aplikasi Produktivitas Harian",
         description: "Aplikasi apa yang dipakai untuk mengelola tugas dan waktu, serta seberapa besar manfaatnya.",
         category: "INFORMATION_SYSTEMS",
-        region: "luar-jawa",
+        region: "Riau",
         target: 20,
         tokens: 2,
         minutes: 6,
@@ -532,7 +566,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Persepsi Orang Tua terhadap Pendidikan Karakter",
         description: "Pandangan orang tua tentang penanaman karakter di sekolah dan perannya di rumah.",
         category: "EDUCATION_PEDAGOGY",
-        region: "jawa-lainnya",
+        region: "Jawa Tengah",
         target: 25,
         tokens: 2,
         minutes: 6,
@@ -541,7 +575,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Kebiasaan Menabung dan Perencanaan Keuangan",
         description: "Cara rumah tangga mengatur tabungan, dana darurat, dan tujuan keuangan jangka panjang.",
         category: "ECONOMICS_FINANCE",
-        region: "jabodetabek",
+        region: "DKI Jakarta",
         target: 30,
         tokens: 2,
         minutes: 7,
@@ -558,7 +592,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Kualitas Layanan Kesehatan Primer",
         description: "Pengalaman pasien di puskesmas dan klinik: waktu tunggu, mutu layanan, dan biaya.",
         category: "MEDICINE_CLINICAL_HEALTH",
-        region: "luar-jawa",
+        region: "Riau",
         target: 25,
         tokens: 3,
         minutes: 7,
@@ -567,10 +601,22 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
         title: "Pemilihan Kampus dan Jurusan Kuliah",
         description: "Faktor yang menentukan pilihan kampus dan jurusan pada calon mahasiswa.",
         category: "EDUCATION_PEDAGOGY",
-        region: "jawa-lainnya",
+        region: "Jawa Tengah",
         target: 20,
         tokens: 2,
         minutes: 6,
+    },
+    {
+        title: "Kesiapsiagaan Masyarakat terhadap Kebakaran Hutan dan Lahan (Karhutla) di Indonesia",
+        description:
+            "Riset ini memetakan kesiapsiagaan dan persepsi masyarakat terhadap kebakaran hutan dan lahan (karhutla) di Indonesia: " +
+            "pengalaman terdampak kabut asap, penyebab yang dianggap utama, kesiapan lingkungan, dan upaya pencegahan yang dinilai paling penting.",
+        category: "DISASTER_MANAGEMENT",
+        region: "Riau",
+        target: 25,
+        tokens: 2,
+        minutes: 7,
+        questions: KARHUTLA_QUESTIONS,
     },
 ]
 
@@ -629,7 +675,7 @@ const researchers = await Promise.all(RESEARCHERS.map((account) => seedAccount(a
 await Promise.all([ADMIN, ...RESPONDENTS].map((account) => seedAccount(account)))
 
 console.log("Seeding researches…")
-// One research per researcher, in order — fifteen researches, each with its own owner.
+// One research per researcher, in order — sixteen researches, each with its own owner.
 for (const [index, definition] of SEED_RESEARCHES.entries()) {
     await seedResearch(researchers[index].id, definition)
 }

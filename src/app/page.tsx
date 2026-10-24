@@ -1,10 +1,11 @@
 import Link from "next/link"
-import type { ReactNode } from "react"
+import { Suspense } from "react"
 import About from "@/components/landing/about"
 import BuildYourResearch from "@/components/landing/build-your-research"
 import FeaturedResearch from "@/components/landing/featured-research"
 import Founders from "@/components/landing/founders"
 import HeroTagline from "@/components/landing/hero-tagline"
+import HighlightCard, { HighlightCardSkeleton } from "@/components/landing/highlight-card"
 import LearnCommunity from "@/components/landing/learn-community"
 import SiteFooter from "@/components/landing/site-footer"
 import AuthNav from "@/components/shared/auth-nav"
@@ -57,20 +58,6 @@ const PARTNERS = [
     "Asosiasi Riset Digital",
     "Yayasan Literasi Data",
 ]
-
-/** A small pill, matching the badge look without pulling a client component into the page. */
-function Pill({ children, className }: { children: ReactNode; className?: string }) {
-    return (
-        <span
-            className={cn(
-                "inline-flex h-5 w-fit shrink-0 items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-xs font-medium whitespace-nowrap text-secondary-foreground",
-                className,
-            )}
-        >
-            {children}
-        </span>
-    )
-}
 
 export default function Page() {
     return (
@@ -138,13 +125,12 @@ export default function Page() {
                             />
 
                             {/* floating card, echoing the reference's overlay */}
-                            <div className="absolute right-4 bottom-4 w-60 rounded-xl bg-card p-4 shadow-lg ring-1 ring-foreground/10 sm:right-8 sm:bottom-8 sm:w-72">
-                                <div className="flex items-center justify-between gap-2">
-                                    <Pill>Fintech &amp; Perbankan</Pill>
-                                    <span className="text-xs text-muted-foreground">2 hari lagi</span>
-                                </div>
-                                <p className="mt-3 text-sm leading-snug font-semibold">Survei Preferensi Dompet Digital 2026</p>
-                                <p className="mt-1 text-xs text-muted-foreground">oleh Fakultas Ekonomi UI</p>
+                            <Suspense fallback={<HighlightCardSkeleton />}>
+                                <HighlightCard />
+                            </Suspense>
+
+                            <div className="text-xl text-white absolute bottom-0 left-0 py-8 px-8">
+                                <h3># Pray for Karhutla</h3>
                             </div>
                         </div>
                     </div>
