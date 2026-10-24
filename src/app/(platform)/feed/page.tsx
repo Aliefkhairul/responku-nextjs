@@ -16,6 +16,7 @@ import {
 import { useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { FeedFilterChip } from "@/components/feed/feed-filter-chip"
+import FeedTips from "@/components/feed/feed-tips"
 import BrowseSurveyCard from "@/components/shared/browse-survey-card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -179,71 +180,79 @@ export default function Page() {
             </div>
 
             {/* results */}
-            <div ref={resultsRef} className="mt-8 scroll-mt-20">
-                {state.status === "loading" && (
-                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Loader2 className="size-4 animate-spin" />
-                        Memuat riset…
-                    </p>
-                )}
-
-                {state.status === "error" && (
-                    <div className="space-y-3">
-                        <p role="alert" className="text-sm text-destructive">
-                            {state.message}
+            <div className="grid gap-3 lg:grid-cols-[3fr_1.25fr]">
+                <div ref={resultsRef} className="mt-8 scroll-mt-20">
+                    {state.status === "loading" && (
+                        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Loader2 className="size-4 animate-spin" />
+                            Memuat riset…
                         </p>
+                    )}
 
-                        <Button variant="outline" size="sm" onClick={reload}>
-                            <RefreshCw />
-                            Coba lagi
-                        </Button>
-                    </div>
-                )}
-
-                {state.status === "ready" && (
-                    <>
-                        <p className="text-sm text-muted-foreground">{visible.length} riset ditemukan</p>
-
-                        {visible.length === 0 ? (
-                            <p className="mt-4 text-sm text-muted-foreground">
-                                {query !== "" ? `Tidak ada riset yang cocok dengan “${rawQuery}”.` : "Belum ada riset yang cocok dengan filter ini."}
+                    {state.status === "error" && (
+                        <div className="space-y-3">
+                            <p role="alert" className="text-sm text-destructive">
+                                {state.message}
                             </p>
-                        ) : (
-                            <>
-                                <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                                    {paged.map((research) => (
-                                        <div key={research.id} className="lg:first:col-span-2">
-                                            <BrowseSurveyCard research={research} respondentId={respondentId} />
-                                        </div>
-                                    ))}
-                                </div>
 
-                                {pageCount > 1 && (
-                                    <div className="mt-8 flex items-center justify-between gap-3">
-                                        <Button variant="outline" size="sm" disabled={currentPage <= 1} onClick={() => goToPage(currentPage - 1)}>
-                                            <ChevronLeft />
-                                            Sebelumnya
-                                        </Button>
+                            <Button variant="outline" size="sm" onClick={reload}>
+                                <RefreshCw />
+                                Coba lagi
+                            </Button>
+                        </div>
+                    )}
 
-                                        <span className="text-sm text-muted-foreground">
-                                            Halaman {currentPage} dari {pageCount}
-                                        </span>
+                    {state.status === "ready" && (
+                        <>
+                            <p className="text-sm text-muted-foreground">{visible.length} riset ditemukan</p>
 
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            disabled={currentPage >= pageCount}
-                                            onClick={() => goToPage(currentPage + 1)}
-                                        >
-                                            Berikutnya
-                                            <ChevronRight />
-                                        </Button>
+                            {visible.length === 0 ? (
+                                <p className="mt-4 text-sm text-muted-foreground">
+                                    {query !== ""
+                                        ? `Tidak ada riset yang cocok dengan “${rawQuery}”.`
+                                        : "Belum ada riset yang cocok dengan filter ini."}
+                                </p>
+                            ) : (
+                                <>
+                                    <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                                        {paged.map((research) => (
+                                            <div key={research.id} className="lg:first:col-span-2">
+                                                <BrowseSurveyCard research={research} respondentId={respondentId} />
+                                            </div>
+                                        ))}
                                     </div>
-                                )}
-                            </>
-                        )}
-                    </>
-                )}
+
+                                    {pageCount > 1 && (
+                                        <div className="mt-8 flex items-center justify-between gap-3">
+                                            <Button variant="outline" size="sm" disabled={currentPage <= 1} onClick={() => goToPage(currentPage - 1)}>
+                                                <ChevronLeft />
+                                                Sebelumnya
+                                            </Button>
+
+                                            <span className="text-sm text-muted-foreground">
+                                                Halaman {currentPage} dari {pageCount}
+                                            </span>
+
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                disabled={currentPage >= pageCount}
+                                                onClick={() => goToPage(currentPage + 1)}
+                                            >
+                                                Berikutnya
+                                                <ChevronRight />
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </>
+                    )}
+                </div>
+
+                <aside className="mt-8 self-start lg:sticky lg:top-20">
+                    <FeedTips />
+                </aside>
             </div>
         </main>
     )
