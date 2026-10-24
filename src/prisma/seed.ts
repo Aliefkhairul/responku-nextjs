@@ -443,7 +443,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: SEED_RESEARCH_TITLE,
         description: SEED_RESEARCH_DESCRIPTION,
-        category: "fintech",
+        category: "ECONOMICS_FINANCE",
         target: 20,
         tokens: 2,
         minutes: 8,
@@ -452,7 +452,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Preferensi Belanja Online di Marketplace 2026",
         description: "Perilaku belanja daring: alasan memilih marketplace, metode pembayaran, dan pengalaman pengiriman.",
-        category: "retail",
+        category: "MARKETING_ADVERTISING",
         region: "jabodetabek",
         target: 25,
         tokens: 2,
@@ -461,7 +461,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Efektivitas Pembelajaran Daring di Perguruan Tinggi",
         description: "Pengalaman mahasiswa dengan kelas daring: kualitas materi, interaksi, dan kendala teknis.",
-        category: "education",
+        category: "EDUCATION_PEDAGOGY",
         region: "jawa-lainnya",
         target: 30,
         tokens: 2,
@@ -470,7 +470,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Kebiasaan Olahraga dan Pola Tidur Warga Kota",
         description: "Rutinitas olahraga, durasi tidur, dan keluhan kesehatan ringan pada pekerja perkotaan.",
-        category: "health",
+        category: "PUBLIC_HEALTH",
         region: "jabodetabek",
         target: 20,
         tokens: 2,
@@ -479,7 +479,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Adopsi AI Generatif di Tempat Kerja",
         description: "Bagaimana karyawan memakai alat AI generatif untuk pekerjaan sehari-hari, dan kendalanya.",
-        category: "technology",
+        category: "ARTIFICIAL_INTELLIGENCE",
         target: 25,
         tokens: 3,
         minutes: 8,
@@ -487,7 +487,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Kepuasan Layanan Transportasi Umum",
         description: "Persepsi penumpang terhadap ketepatan, kenyamanan, dan keterjangkauan transportasi umum.",
-        category: "retail",
+        category: "TRANSPORTATION_LOGISTICS",
         region: "jawa-lainnya",
         target: 20,
         tokens: 2,
@@ -496,7 +496,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Minat Investasi Reksa Dana Generasi Milenial",
         description: "Pemahaman, preferensi produk, dan faktor pendorong keputusan investasi generasi milenial.",
-        category: "fintech",
+        category: "ECONOMICS_FINANCE",
         region: "luar-jawa",
         target: 20,
         tokens: 3,
@@ -505,7 +505,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Pengalaman Belanja Kebutuhan Harian",
         description: "Kebiasaan berbelanja kebutuhan rumah tangga, dari pasar tradisional sampai ritel modern.",
-        category: "retail",
+        category: "MARKETING_ADVERTISING",
         region: "jabodetabek",
         target: 25,
         tokens: 2,
@@ -514,7 +514,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Literasi Kesehatan Mental di Kalangan Pekerja",
         description: "Tingkat pemahaman, keterbukaan, dan akses dukungan kesehatan mental di lingkungan kerja.",
-        category: "health",
+        category: "PSYCHOLOGY",
         target: 30,
         tokens: 2,
         minutes: 7,
@@ -522,7 +522,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Penggunaan Aplikasi Produktivitas Harian",
         description: "Aplikasi apa yang dipakai untuk mengelola tugas dan waktu, serta seberapa besar manfaatnya.",
-        category: "technology",
+        category: "INFORMATION_SYSTEMS",
         region: "luar-jawa",
         target: 20,
         tokens: 2,
@@ -531,7 +531,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Persepsi Orang Tua terhadap Pendidikan Karakter",
         description: "Pandangan orang tua tentang penanaman karakter di sekolah dan perannya di rumah.",
-        category: "education",
+        category: "EDUCATION_PEDAGOGY",
         region: "jawa-lainnya",
         target: 25,
         tokens: 2,
@@ -540,7 +540,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Kebiasaan Menabung dan Perencanaan Keuangan",
         description: "Cara rumah tangga mengatur tabungan, dana darurat, dan tujuan keuangan jangka panjang.",
-        category: "fintech",
+        category: "ECONOMICS_FINANCE",
         region: "jabodetabek",
         target: 30,
         tokens: 2,
@@ -549,7 +549,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Preferensi Konten Hiburan Digital",
         description: "Jenis konten yang paling sering ditonton, platform favorit, dan kebiasaan berlangganan.",
-        category: "technology",
+        category: "COMMUNICATION_MEDIA",
         target: 20,
         tokens: 2,
         minutes: 5,
@@ -557,7 +557,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Kualitas Layanan Kesehatan Primer",
         description: "Pengalaman pasien di puskesmas dan klinik: waktu tunggu, mutu layanan, dan biaya.",
-        category: "health",
+        category: "MEDICINE_CLINICAL_HEALTH",
         region: "luar-jawa",
         target: 25,
         tokens: 3,
@@ -566,7 +566,7 @@ const SEED_RESEARCHES: SeedResearchDefinition[] = [
     {
         title: "Pemilihan Kampus dan Jurusan Kuliah",
         description: "Faktor yang menentukan pilihan kampus dan jurusan pada calon mahasiswa.",
-        category: "education",
+        category: "EDUCATION_PEDAGOGY",
         region: "jawa-lainnya",
         target: 20,
         tokens: 2,

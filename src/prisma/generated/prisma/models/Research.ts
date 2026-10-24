@@ -47,7 +47,7 @@ export type ResearchMinAggregateOutputType = {
   researcherId: string | null
   title: string | null
   description: string | null
-  category: string | null
+  category: $Enums.ResearchCategory | null
   externalSurveyUrl: string | null
   targetRespondentCount: number | null
   tokenPerRespondent: number | null
@@ -67,7 +67,7 @@ export type ResearchMaxAggregateOutputType = {
   researcherId: string | null
   title: string | null
   description: string | null
-  category: string | null
+  category: $Enums.ResearchCategory | null
   externalSurveyUrl: string | null
   targetRespondentCount: number | null
   tokenPerRespondent: number | null
@@ -272,7 +272,7 @@ export type ResearchGroupByOutputType = {
   researcherId: string
   title: string
   description: string
-  category: string | null
+  category: $Enums.ResearchCategory | null
   externalSurveyUrl: string | null
   targetRespondentCount: number
   tokenPerRespondent: number
@@ -315,7 +315,7 @@ export type ResearchWhereInput = {
   researcherId?: Prisma.StringFilter<"Research"> | string
   title?: Prisma.StringFilter<"Research"> | string
   description?: Prisma.StringFilter<"Research"> | string
-  category?: Prisma.StringNullableFilter<"Research"> | string | null
+  category?: Prisma.EnumResearchCategoryNullableFilter<"Research"> | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.StringNullableFilter<"Research"> | string | null
   targetRespondentCount?: Prisma.IntFilter<"Research"> | number
   tokenPerRespondent?: Prisma.IntFilter<"Research"> | number
@@ -371,7 +371,7 @@ export type ResearchWhereUniqueInput = Prisma.AtLeast<{
   researcherId?: Prisma.StringFilter<"Research"> | string
   title?: Prisma.StringFilter<"Research"> | string
   description?: Prisma.StringFilter<"Research"> | string
-  category?: Prisma.StringNullableFilter<"Research"> | string | null
+  category?: Prisma.EnumResearchCategoryNullableFilter<"Research"> | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.StringNullableFilter<"Research"> | string | null
   targetRespondentCount?: Prisma.IntFilter<"Research"> | number
   tokenPerRespondent?: Prisma.IntFilter<"Research"> | number
@@ -425,7 +425,7 @@ export type ResearchScalarWhereWithAggregatesInput = {
   researcherId?: Prisma.StringWithAggregatesFilter<"Research"> | string
   title?: Prisma.StringWithAggregatesFilter<"Research"> | string
   description?: Prisma.StringWithAggregatesFilter<"Research"> | string
-  category?: Prisma.StringNullableWithAggregatesFilter<"Research"> | string | null
+  category?: Prisma.EnumResearchCategoryNullableWithAggregatesFilter<"Research"> | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.StringNullableWithAggregatesFilter<"Research"> | string | null
   targetRespondentCount?: Prisma.IntWithAggregatesFilter<"Research"> | number
   tokenPerRespondent?: Prisma.IntWithAggregatesFilter<"Research"> | number
@@ -444,7 +444,7 @@ export type ResearchCreateInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -470,7 +470,7 @@ export type ResearchUncheckedCreateInput = {
   researcherId: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -494,7 +494,7 @@ export type ResearchUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -520,7 +520,7 @@ export type ResearchUncheckedUpdateInput = {
   researcherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -545,7 +545,7 @@ export type ResearchCreateManyInput = {
   researcherId: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -564,7 +564,7 @@ export type ResearchUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -584,7 +584,7 @@ export type ResearchUncheckedUpdateManyInput = {
   researcherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -771,6 +771,10 @@ export type ResearchUpdateOneRequiredWithoutParticipationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResearchUpdateToOneWithWhereWithoutParticipationsInput, Prisma.ResearchUpdateWithoutParticipationsInput>, Prisma.ResearchUncheckedUpdateWithoutParticipationsInput>
 }
 
+export type NullableEnumResearchCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.ResearchCategory | null
+}
+
 export type EnumResearchStatusFieldUpdateOperationsInput = {
   set?: $Enums.ResearchStatus
 }
@@ -823,7 +827,7 @@ export type ResearchCreateWithoutResearcherInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -847,7 +851,7 @@ export type ResearchUncheckedCreateWithoutResearcherInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -901,7 +905,7 @@ export type ResearchScalarWhereInput = {
   researcherId?: Prisma.StringFilter<"Research"> | string
   title?: Prisma.StringFilter<"Research"> | string
   description?: Prisma.StringFilter<"Research"> | string
-  category?: Prisma.StringNullableFilter<"Research"> | string | null
+  category?: Prisma.EnumResearchCategoryNullableFilter<"Research"> | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.StringNullableFilter<"Research"> | string | null
   targetRespondentCount?: Prisma.IntFilter<"Research"> | number
   tokenPerRespondent?: Prisma.IntFilter<"Research"> | number
@@ -920,7 +924,7 @@ export type ResearchCreateWithoutReportsInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -945,7 +949,7 @@ export type ResearchUncheckedCreateWithoutReportsInput = {
   researcherId: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -984,7 +988,7 @@ export type ResearchUpdateWithoutReportsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1009,7 +1013,7 @@ export type ResearchUncheckedUpdateWithoutReportsInput = {
   researcherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1032,7 +1036,7 @@ export type ResearchCreateWithoutParticipationsInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1057,7 +1061,7 @@ export type ResearchUncheckedCreateWithoutParticipationsInput = {
   researcherId: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1096,7 +1100,7 @@ export type ResearchUpdateWithoutParticipationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1121,7 +1125,7 @@ export type ResearchUncheckedUpdateWithoutParticipationsInput = {
   researcherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1144,7 +1148,7 @@ export type ResearchCreateWithoutCriteriaInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1169,7 +1173,7 @@ export type ResearchUncheckedCreateWithoutCriteriaInput = {
   researcherId: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1208,7 +1212,7 @@ export type ResearchUpdateWithoutCriteriaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1233,7 +1237,7 @@ export type ResearchUncheckedUpdateWithoutCriteriaInput = {
   researcherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1256,7 +1260,7 @@ export type ResearchCreateWithoutQuestionsInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1281,7 +1285,7 @@ export type ResearchUncheckedCreateWithoutQuestionsInput = {
   researcherId: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1320,7 +1324,7 @@ export type ResearchUpdateWithoutQuestionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1345,7 +1349,7 @@ export type ResearchUncheckedUpdateWithoutQuestionsInput = {
   researcherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1368,7 +1372,7 @@ export type ResearchCreateWithoutTransactionsInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1393,7 +1397,7 @@ export type ResearchUncheckedCreateWithoutTransactionsInput = {
   researcherId: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1432,7 +1436,7 @@ export type ResearchUpdateWithoutTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1457,7 +1461,7 @@ export type ResearchUncheckedUpdateWithoutTransactionsInput = {
   researcherId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1480,7 +1484,7 @@ export type ResearchCreateManyResearcherInput = {
   id?: string
   title: string
   description: string
-  category?: string | null
+  category?: $Enums.ResearchCategory | null
   externalSurveyUrl?: string | null
   targetRespondentCount: number
   tokenPerRespondent?: number
@@ -1499,7 +1503,7 @@ export type ResearchUpdateWithoutResearcherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1523,7 +1527,7 @@ export type ResearchUncheckedUpdateWithoutResearcherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1547,7 +1551,7 @@ export type ResearchUncheckedUpdateManyWithoutResearcherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableEnumResearchCategoryFieldUpdateOperationsInput | $Enums.ResearchCategory | null
   externalSurveyUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   targetRespondentCount?: Prisma.IntFieldUpdateOperationsInput | number
   tokenPerRespondent?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1704,7 +1708,7 @@ export type $ResearchPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     researcherId: string
     title: string
     description: string
-    category: string | null
+    category: $Enums.ResearchCategory | null
     externalSurveyUrl: string | null
     targetRespondentCount: number
     tokenPerRespondent: number
@@ -2096,7 +2100,7 @@ export interface ResearchFieldRefs {
   readonly researcherId: Prisma.FieldRef<"Research", 'String'>
   readonly title: Prisma.FieldRef<"Research", 'String'>
   readonly description: Prisma.FieldRef<"Research", 'String'>
-  readonly category: Prisma.FieldRef<"Research", 'String'>
+  readonly category: Prisma.FieldRef<"Research", 'ResearchCategory'>
   readonly externalSurveyUrl: Prisma.FieldRef<"Research", 'String'>
   readonly targetRespondentCount: Prisma.FieldRef<"Research", 'Int'>
   readonly tokenPerRespondent: Prisma.FieldRef<"Research", 'Int'>

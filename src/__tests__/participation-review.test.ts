@@ -120,7 +120,7 @@ beforeAll(async () => {
             researcherId,
             title: `Review fixture ${suffix}`,
             description: "Fixture for the decision tests.",
-            category: "fintech",
+            category: "ECONOMICS_FINANCE",
             targetRespondentCount: 10,
             tokenPerRespondent: 2,
             estimatedDurationMinutes: 5,

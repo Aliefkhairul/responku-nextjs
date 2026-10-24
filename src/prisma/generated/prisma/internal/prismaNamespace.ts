@@ -2208,7 +2208,6 @@ export const ResearchOrderByRelevanceFieldEnum = {
   researcherId: 'researcherId',
   title: 'title',
   description: 'description',
-  category: 'category',
   externalSurveyUrl: 'externalSurveyUrl'
 } as const
 
@@ -2395,6 +2394,13 @@ export type EnumPaymentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'PaymentStatus'
  */
 export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ResearchCategory'
+ */
+export type EnumResearchCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResearchCategory'>
     
 
 

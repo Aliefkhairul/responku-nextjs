@@ -1,20 +1,7 @@
 "use client"
 
-import {
-    ChevronLeft,
-    ChevronRight,
-    Cpu,
-    GraduationCap,
-    Heart,
-    LayoutGrid,
-    Loader2,
-    RefreshCw,
-    ShoppingCart,
-    Wallet,
-    type LucideIcon,
-} from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2, RefreshCw } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { FeedFilterChip } from "@/components/feed/feed-filter-chip"
 import FeedTips from "@/components/feed/feed-tips"
 import BrowseSurveyCard from "@/components/shared/browse-survey-card"
 import { Button } from "@/components/ui/button"
@@ -29,15 +16,6 @@ const LIST_LIMIT = 100
 
 /** How many cards a page shows. */
 const PAGE_SIZE = 8
-
-/** A chip icon per research category, with a generic fallback for anything unmapped. */
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-    fintech: Wallet,
-    retail: ShoppingCart,
-    education: GraduationCap,
-    health: Heart,
-    technology: Cpu,
-}
 
 /** The whole feed, read in one go and filtered in the browser so badges and rows agree. */
 type FeedState =
@@ -96,9 +74,14 @@ export default function Page() {
     const respondentId = state.status === "ready" ? state.respondentId : null
 
     // Every category and region is always offered — even when nothing matches right now —
-    // so the chips and the select never shift or shrink as the feed changes.
+    // so the selects never shift or shrink as the feed changes.
     const categories = RESEARCH_CATEGORY_ITEMS
     const regions = regionItems
+
+    // The option lists the selects use to render a chosen value as its label rather than its
+    // raw key; the "all" entry is included so the default reads as text too.
+    const categoryOptions = [{ value: "ALL", label: "Semua kategori" }, ...categories]
+    const regionOptions = [{ value: "ALL", label: "Semua domisili" }, ...regions]
 
     const visible = researches.filter((research) => {
         if (category !== "ALL" && research.category !== category) return false
@@ -128,32 +111,29 @@ export default function Page() {
             </div>
 
             {/* filters */}
-            <div className="mt-8 flex items-start">
-                <div className="flex flex-wrap w-3xl items-center gap-2">
-                    <FeedFilterChip
-                        icon={LayoutGrid}
-                        label="Semua"
-                        count={researches.length}
-                        active={category === "ALL"}
-                        onClick={() => setCategory("ALL")}
-                    />
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-2">
+                    <span className="hidden text-sm font-medium text-muted-foreground sm:inline">Kategori</span>
 
-                    {categories.map((item) => (
-                        <FeedFilterChip
-                            key={item.value}
-                            icon={CATEGORY_ICONS[item.value] ?? LayoutGrid}
-                            label={item.label}
-                            count={researches.filter((research) => research.category === item.value).length}
-                            active={category === item.value}
-                            onClick={() => setCategory(item.value)}
-                        />
-                    ))}
+                    <Select items={categoryOptions} value={category} onValueChange={(value) => value !== null && setCategory(value)}>
+                        <SelectTrigger className="rounded-full" aria-label="Saring berdasarkan kategori">
+                            <SelectValue placeholder="Semua kategori" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-2xl w-fit bg-background">
+                            <SelectItem value="ALL">Semua kategori</SelectItem>
+                            {categories.map((item) => (
+                                <SelectItem className="rounded-full" key={item.value} value={item.value}>
+                                    {item.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
-                <div className="ml-auto flex items-center gap-2">
+                <div className="flex items-center gap-2 sm:ml-auto">
                     <span className="hidden text-sm font-medium text-muted-foreground sm:inline">Domisili</span>
 
-                    <Select value={region} onValueChange={(value) => value !== null && setRegion(value)}>
+                    <Select items={regionOptions} value={region} onValueChange={(value) => value !== null && setRegion(value)}>
                         <SelectTrigger className="rounded-full" aria-label="Saring berdasarkan domisili">
                             <SelectValue placeholder="Semua domisili" />
                         </SelectTrigger>

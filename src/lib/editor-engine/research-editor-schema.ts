@@ -34,7 +34,7 @@ const identitySchema = z.object({
 const identitySchemaDefaultValue: z.infer<typeof identitySchema> = {
     title: "",
     description: "",
-    category: "fintech",
+    category: "OTHER",
     // Derived from the one question a fresh draft starts with, so the fallback agrees with the
     // rule the editor applies as questions are added.
     estimatedMinutes: estimateMinutes(1),

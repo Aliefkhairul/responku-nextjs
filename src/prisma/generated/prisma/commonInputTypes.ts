@@ -481,11 +481,28 @@ export type EnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumPaymentStatusFilter<$PrismaModel>
 }
 
+export type EnumResearchCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResearchCategory | Prisma.EnumResearchCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResearchCategory[] | null
+  notIn?: $Enums.ResearchCategory[] | null
+  not?: Prisma.NestedEnumResearchCategoryNullableFilter<$PrismaModel> | $Enums.ResearchCategory | null
+}
+
 export type EnumResearchStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ResearchStatus | Prisma.EnumResearchStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ResearchStatus[]
   notIn?: $Enums.ResearchStatus[]
   not?: Prisma.NestedEnumResearchStatusFilter<$PrismaModel> | $Enums.ResearchStatus
+}
+
+export type EnumResearchCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResearchCategory | Prisma.EnumResearchCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResearchCategory[] | null
+  notIn?: $Enums.ResearchCategory[] | null
+  not?: Prisma.NestedEnumResearchCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.ResearchCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResearchCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResearchCategoryNullableFilter<$PrismaModel>
 }
 
 export type EnumResearchStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -1043,11 +1060,28 @@ export type NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = 
   _max?: Prisma.NestedEnumPaymentStatusFilter<$PrismaModel>
 }
 
+export type NestedEnumResearchCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResearchCategory | Prisma.EnumResearchCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResearchCategory[] | null
+  notIn?: $Enums.ResearchCategory[] | null
+  not?: Prisma.NestedEnumResearchCategoryNullableFilter<$PrismaModel> | $Enums.ResearchCategory | null
+}
+
 export type NestedEnumResearchStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ResearchStatus | Prisma.EnumResearchStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ResearchStatus[]
   notIn?: $Enums.ResearchStatus[]
   not?: Prisma.NestedEnumResearchStatusFilter<$PrismaModel> | $Enums.ResearchStatus
+}
+
+export type NestedEnumResearchCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResearchCategory | Prisma.EnumResearchCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ResearchCategory[] | null
+  notIn?: $Enums.ResearchCategory[] | null
+  not?: Prisma.NestedEnumResearchCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.ResearchCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResearchCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResearchCategoryNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumResearchStatusWithAggregatesFilter<$PrismaModel = never> = {

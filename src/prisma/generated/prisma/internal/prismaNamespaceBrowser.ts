@@ -568,7 +568,6 @@ export const ResearchOrderByRelevanceFieldEnum = {
   researcherId: 'researcherId',
   title: 'title',
   description: 'description',
-  category: 'category',
   externalSurveyUrl: 'externalSurveyUrl'
 } as const
 

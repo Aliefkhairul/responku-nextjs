@@ -173,7 +173,7 @@ RID=$(printf '%s' "$LAST" | json_field '.data.research.id')
 printf 'research id: %s\n' "$RID"
 call GET   "/api/research/$RID"
 call PATCH "/api/research/$RID" '{"category":"Fintech & Perbankan"}'
-call PATCH "/api/research/$RID" '{"title":"QRIS dan perilaku belanja","category":"fintech","targetRespondentCount":25,"tokenPerRespondent":2,"description":"Studi pendahuluan."}'
+call PATCH "/api/research/$RID" '{"title":"QRIS dan perilaku belanja","category":"ECONOMICS_FINANCE","targetRespondentCount":25,"tokenPerRespondent":2,"description":"Studi pendahuluan."}'
 
 step "5. Research: criteria and questionnaire"
 call POST "/api/research/$RID/create-criteria" '{"criteria":[{"field":"occupation","operator":"EQ","value":"Guru"}]}'

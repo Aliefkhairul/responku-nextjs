@@ -809,7 +809,7 @@ Kartunya yang membedakan: badge status plus tombol "Lanjutkan Kuesioner".
                 "id": "…",
                 "title": "…",
                 "description": "…",
-                "category": "fintech",
+                "category": "ECONOMICS_FINANCE",
                 "researcherName": "…",
                 "tokenPerRespondent": 2,
                 "rewardIdr": 2000,
@@ -861,7 +861,7 @@ bocor ke orang yang bukan sasarannya.
             "id": "…",
             "title": "QRIS dan perilaku belanja",
             "description": "…",
-            "category": "fintech",
+            "category": "ECONOMICS_FINANCE",
             "researcherName": "…",
             "tokenPerRespondent": 2,
             "rewardIdr": 2000,
@@ -969,7 +969,7 @@ Memperbarui sebagian field editor. Semua field opsional; yang tidak dikirim tida
 ```json
 {
     "title": "QRIS dan perilaku belanja",
-    "category": "fintech",
+    "category": "ECONOMICS_FINANCE",
     "targetRespondentCount": 100,
     "criteria": [{ "field": "occupation", "operator": "EQ", "value": "Guru" }]
 }
@@ -1206,7 +1206,7 @@ siapa saja, dan yang dibaca (riset `PUBLISHED` dan nama akun) memang sudah tampi
                 "id": "…",
                 "title": "…",
                 "description": "…",
-                "category": "fintech",
+                "category": "ECONOMICS_FINANCE",
                 "researcherName": "…"
             }
         ],
@@ -1338,7 +1338,7 @@ Daftar partisipasi milik pemanggil, terbaru dulu (default 50 baris).
                     "id": "…",
                     "title": "Kebiasaan kardio",
                     "description": "Studi pendahuluan.",
-                    "category": "health",
+                    "category": "PUBLIC_HEALTH",
                     "externalSurveyUrl": null,
                     "researcherName": "Curl Tester",
                     "estimatedDurationMinutes": 5,
@@ -1384,7 +1384,7 @@ supaya keberadaannya tidak bocor.
                 "id": "…",
                 "title": "Kebiasaan kardio",
                 "description": "Studi pendahuluan.",
-                "category": "health",
+                "category": "PUBLIC_HEALTH",
                 "externalSurveyUrl": null,
                 "researcherName": "Curl Tester",
                 "estimatedDurationMinutes": 5,
