@@ -10,6 +10,7 @@ import SiteFooter from "@/components/landing/site-footer"
 import AuthNav from "@/components/shared/auth-nav"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/cn"
+import Image from "next/image"
 
 /**
  * The public landing page.
@@ -128,44 +129,13 @@ export default function Page() {
                 {/* hero visual */}
                 <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 sm:pb-24 lg:px-8">
                     <div className="relative overflow-hidden rounded-2xl ring-1 ring-foreground/10">
-                        <div className="relative aspect-[16/10] w-full sm:aspect-[16/7]">
-                            <svg
-                                viewBox="0 0 1200 420"
-                                preserveAspectRatio="xMidYMid slice"
-                                className="absolute inset-0 h-full w-full"
-                                aria-hidden="true"
-                            >
-                                <defs>
-                                    <linearGradient id="hero-sky" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.05" />
-                                        <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.22" />
-                                    </linearGradient>
-                                    <linearGradient id="hero-peak" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.55" />
-                                        <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.22" />
-                                    </linearGradient>
-                                </defs>
-
-                                <rect width="1200" height="420" fill="url(#hero-sky)" />
-
-                                {/* back range */}
-                                <path
-                                    d="M0 300 L180 190 L320 262 L470 150 L640 282 L820 172 L980 262 L1200 182 L1200 420 L0 420 Z"
-                                    fill="var(--primary)"
-                                    fillOpacity="0.16"
-                                />
-
-                                {/* main peak */}
-                                <path d="M300 420 L600 118 L900 420 Z" fill="url(#hero-peak)" />
-                                <path d="M600 118 L692 214 L642 206 L600 238 L558 206 L508 214 Z" fill="white" fillOpacity="0.85" />
-
-                                {/* front range */}
-                                <path
-                                    d="M0 420 L220 300 L420 382 L640 292 L860 382 L1080 300 L1200 362 L1200 420 Z"
-                                    fill="var(--primary)"
-                                    fillOpacity="0.3"
-                                />
-                            </svg>
+                        <div className="relative aspect-16/10 w-full sm:aspect-16/7">
+                            <Image
+                                alt="happen"
+                                className="object-cover"
+                                fill
+                                src="https://res.cloudinary.com/x0kwukhs/image/upload/v1792825281/forest-burn.jpg"
+                            />
 
                             {/* floating card, echoing the reference's overlay */}
                             <div className="absolute right-4 bottom-4 w-60 rounded-xl bg-card p-4 shadow-lg ring-1 ring-foreground/10 sm:right-8 sm:bottom-8 sm:w-72">

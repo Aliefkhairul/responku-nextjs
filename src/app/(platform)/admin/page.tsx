@@ -14,9 +14,9 @@ import { cn } from "@/lib/cn"
  * The admin area, as one screen with tabs.
  *
  * A tab per queue rather than a route per queue: the panels are independent reads with no
- * shared state, so switching is instant and the whole back office stays in one place. Each
- * panel guards itself — a non-admin gets a "no access" note from whichever tab they open,
- * because the API answers 403.
+ * shared state, so switching is instant and the whole back office stays in one place. The
+ * layout already turns non-admins away before this renders; each panel still handles a `403`
+ * from the API as a backstop.
  */
 const TABS = [
     { value: "overview", label: "Ringkasan" },
