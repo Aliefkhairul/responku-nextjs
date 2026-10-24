@@ -13,7 +13,6 @@ import {
     Wallet,
     type LucideIcon,
 } from "lucide-react"
-import { useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { FeedFilterChip } from "@/components/feed/feed-filter-chip"
 import FeedTips from "@/components/feed/feed-tips"
@@ -63,10 +62,6 @@ async function readFeed(): Promise<FeedState> {
 }
 
 export default function Page() {
-    const searchParams = useSearchParams()
-    const rawQuery = searchParams.get("q") ?? ""
-    const query = rawQuery.trim().toLowerCase()
-
     const [state, setState] = useState<FeedState>({ status: "loading" })
     const [category, setCategory] = useState("ALL")
     const [region, setRegion] = useState("ALL")
@@ -74,11 +69,11 @@ export default function Page() {
 
     const resultsRef = useRef<HTMLDivElement>(null)
 
-    // Any change to the filters or the search starts the list over at page one.
+    // Any change to the filters starts the list over at page one.
     // biome-ignore lint/correctness/useExhaustiveDependencies: the filters are triggers for the reset, not values the effect reads.
     useEffect(() => {
         setPage(1)
-    }, [category, region, query])
+    }, [category, region])
 
     useEffect(() => {
         let cancelled = false
@@ -108,11 +103,6 @@ export default function Page() {
     const visible = researches.filter((research) => {
         if (category !== "ALL" && research.category !== category) return false
         if (region !== "ALL" && research.region !== region) return false
-
-        if (query !== "") {
-            const haystack = `${research.title} ${research.researcherName} ${research.description}`.toLowerCase()
-            if (!haystack.includes(query)) return false
-        }
 
         return true
     })
@@ -207,11 +197,7 @@ export default function Page() {
                             <p className="text-sm text-muted-foreground">{visible.length} riset ditemukan</p>
 
                             {visible.length === 0 ? (
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    {query !== ""
-                                        ? `Tidak ada riset yang cocok dengan “${rawQuery}”.`
-                                        : "Belum ada riset yang cocok dengan filter ini."}
-                                </p>
+                                <p className="mt-4 text-sm text-muted-foreground">Belum ada riset yang cocok dengan filter ini.</p>
                             ) : (
                                 <>
                                     <div className="mt-4 grid gap-3 lg:grid-cols-2">

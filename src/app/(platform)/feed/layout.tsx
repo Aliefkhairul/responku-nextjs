@@ -6,8 +6,8 @@ import { Separator } from "@/components/ui/separator"
 
 /**
  * The feed shell: the same fixed header the other platform pages use, with the search box
- * added. The search reads and writes the URL, so it needs its own Suspense boundary — the
- * page below has one too, for its own `useSearchParams`.
+ * added. The box reads the URL, so it needs its own Suspense boundary; submitting it sends the
+ * visitor to `/search`, where the results are filtered.
  */
 export default function Layout({ children }: { children: ReactNode }) {
     return (
@@ -32,7 +32,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 </nav>
             </header>
 
-            <Suspense>{children}</Suspense>
+            {children}
         </div>
     )
 }
