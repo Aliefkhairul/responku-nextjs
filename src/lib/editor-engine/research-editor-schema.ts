@@ -1,0 +1,249 @@
+import { useForm } from "@tanstack/react-form"
+import { INDONESIA_PROVINCES } from "@/lib/indonesia-provinces"
+import { RESEARCH_CATEGORIES, RESEARCH_CATEGORY_ITEMS } from "@/lib/research-category"
+import { QUESTION_TYPE_LABELS } from "@/lib/research-question"
+import { useState } from "react"
+import z from "zod"
+
+/**
+ * The domicile values the criteria control offers: the whole country, or one province.
+ *
+ * The province names double as the stored values, so a domicile rule reads the same as the
+ * profile's `province` line.
+ */
+export const REGION_VALUES = ["all", ...INDONESIA_PROVINCES] as const
+
+/**
+ * How long a questionnaire is expected to take, from how many questions it asks.
+ *
+ * Thirty seconds a question: ten questions is five minutes, fifty is twenty-five. Deriving it
+ * keeps the number honest — a fixed default says the same thing about a two-question survey as
+ * a fifty-question one — and the same figure is what the respondent-side timing measures a
+ * submission against (`estimatedSecondsPerQuestion`), so the two can never disagree.
+ *
+ * Clamped to the range the schema and the API accept.
+ */
+const SECONDS_PER_QUESTION = 30
+
+export function estimateMinutes(questionCount: number): number {
+    return Math.min(180, Math.max(1, Math.ceil((questionCount * SECONDS_PER_QUESTION) / 60)))
+}
+
+/** IDENTITY SCHEMA */
+const identitySchema = z.object({
+    title: z.string().min(1, "Judul kuesioner wajib diisi.").max(120, "Judul maksimal 120 karakter."),
+    description: z.string().max(1000, "Deskripsi maksimal 1000 karakter."),
+    category: z.enum(RESEARCH_CATEGORIES, "Pilih kategori topik."),
+    estimatedMinutes: z
+        .number("Durasi harus berupa angka.")
+        .int("Durasi harus bilangan bulat.")
+        .min(1, "Minimal 1 menit.")
+        .max(180, "Maksimal 180 menit."),
+})
+const identitySchemaDefaultValue: z.infer<typeof identitySchema> = {
+    title: "",
+    description: "",
+    category: "OTHER",
+    // Derived from the one question a fresh draft starts with, so the fallback agrees with the
+    // rule the editor applies as questions are added.
+    estimatedMinutes: estimateMinutes(1),
+}
+
+/** CRITERIA SCHEMA */
+const MIN_AGE = 18
+const MAX_AGE = 80
+const ageSchema = (label: string) =>
+    z
+        .number(`${label} harus berupa angka.`)
+        .int(`${label} harus bilangan bulat.`)
+        .min(MIN_AGE, `${label} minimal ${MIN_AGE} tahun.`)
+        .max(MAX_AGE, `${label} maksimal ${MAX_AGE} tahun.`)
+const criteriaSchema = z
+    .object({
+        ageMin: ageSchema("Usia minimum"),
+        ageMax: ageSchema("Usia maksimum"),
+        gender: z.enum(["all", "male", "female"]),
+        region: z.enum(REGION_VALUES),
+    })
+    .refine((data) => data.ageMin <= data.ageMax, {
+        message: "Usia maksimum tidak boleh lebih kecil dari usia minimum.",
+        path: ["ageMax"],
+    })
+const criteriaSchemaDefaultValue: z.infer<typeof criteriaSchema> = {
+    ageMin: MIN_AGE,
+    ageMax: 30,
+    gender: "all",
+    region: "all",
+}
+
+/** QUESTION SCHEMA */
+const choiceSchema = z.object({
+    id: z.string().min(1),
+    pos: z.number().min(1),
+    n: z.string().min(1),
+    choiceText: z.string().min(1, "Jawaban wajib diisi"),
+})
+const baseQuestionSchema = z.object({
+    id: z.string().min(1),
+    pos: z.number().min(1),
+    question: z.string().min(1, "Pertanyaan wajib diisi"),
+    mustFill: z.boolean(),
+})
+/**
+ * Tipe yang bisa dibuat editor saat ini. Schema juga punya `NUMBER`, tapi belum
+ * ada UI-nya. Nilainya sama persis dengan yang diterima API.
+ */
+const editorQuestionTypes = ["SINGLE_CHOICE", "MULTIPLE_CHOICE", "TEXT", "SCALE"] as const
+const questionTypeItems = [
+    { label: "Pilih Tipe Pertanyaan", value: null },
+    ...editorQuestionTypes.map((value) => ({ label: QUESTION_TYPE_LABELS[value], value })),
+]
+const questionSchema = z
+    .array(
+        z.discriminatedUnion("questionType", [
+            baseQuestionSchema.extend({
+                questionType: z.literal("SINGLE_CHOICE"),
+                choices: z.array(choiceSchema).min(2, "Pilihan ganda minimal 2 item"),
+            }),
+            baseQuestionSchema.extend({
+                questionType: z.literal("MULTIPLE_CHOICE"),
+                choices: z.array(choiceSchema).min(2, "Pilihan ganda minimal 2 item"),
+            }),
+            baseQuestionSchema.extend({
+                questionType: z.literal("SCALE"),
+                choices: z.array(choiceSchema).min(2, "Skala minimal 2 item"),
+            }),
+            baseQuestionSchema.extend({
+                questionType: z.literal("TEXT"),
+                choices: z.array(choiceSchema).max(1, "Essay maksimal 1 jawaban"),
+            }),
+        ]),
+    )
+    .min(1, "Pertanyaan minimal 1 item")
+const questionSchemaDefaultValue: z.infer<typeof questionSchema> = [
+    {
+        id: crypto.randomUUID(),
+        pos: 1,
+        question: "seberapa sering anda berolahraga kardio, di hari libur?",
+        mustFill: true,
+        questionType: "TEXT",
+        choices: [],
+    },
+]
+
+/** TOKEN ALLOCATION SCHEMA */
+const alocationTokenSchema = z
+    .object({
+        targetResponden: z
+            .number("Target responden harus berupa angka.")
+            .int("Target responden harus bilangan bulat.")
+            .min(1, "Minimal 1 responden.")
+            .max(10000, "Maksimal 10000 responden."),
+        batasWaktu: z.enum(["1", "3", "7", "14", "30"]),
+        tokenPerResponden: z
+            .number("Token per responden harus berupa angka.")
+            .int("Token per responden harus bilangan bulat.")
+            .min(1, "Minimal 1 token."),
+    })
+    .refine((d) => d.targetResponden * d.tokenPerResponden <= 1_000_000, {
+        message: "Total token melebihi batas maksimum (1.000.000).",
+        path: ["tokenPerResponden"],
+    })
+const timeLimitOptions = [
+    { value: "1", label: "1 Hari (Kilat)" },
+    { value: "3", label: "3 Hari (Cepat)" },
+    { value: "7", label: "7 Hari (Standar Rekomendasi)" },
+    { value: "14", label: "14 Hari (Santai)" },
+    { value: "30", label: "30 Hari (Maksimal)" },
+]
+const allocationTokenSchemaDefaultValue: z.infer<typeof alocationTokenSchema> = {
+    targetResponden: 50,
+    batasWaktu: "30",
+    tokenPerResponden: 1,
+}
+
+/** TYPES */
+type QuestionSchema = z.infer<typeof questionSchema>
+type IdentitySchema = z.infer<typeof identitySchema>
+type CriteriaSchema = z.infer<typeof criteriaSchema>
+type AlocationTokenSchema = z.infer<typeof alocationTokenSchema>
+
+/** HOOKS */
+
+/** Everything the editor holds, validated as one object on every change. */
+const editorFormSchema = z.object({
+    allocationToken: alocationTokenSchema,
+    identity: identitySchema,
+    criteria: criteriaSchema,
+    questions: questionSchema,
+})
+
+type EditorValues = z.infer<typeof editorFormSchema>
+
+/** The editor's two actions: keep it as a draft, or save it and publish. */
+type EditorAction = "draft" | "publish"
+
+/**
+ * The editor's form.
+ *
+ * `onSubmit` is handed the values and which button was pressed, and is expected to
+ * do the talking — the form knows nothing about the API. Both buttons submit
+ * through here, so the saving state it drives covers publishing too.
+ *
+ * `initial` is read once, at mount: a stored research cannot be poured into a form
+ * that already exists, so the caller mounts a fresh one instead.
+ */
+function useResearchEditorForm(onSubmit: (values: EditorValues, action: EditorAction) => Promise<void>, initial?: EditorValues) {
+    const [defaultValues] = useState(
+        () =>
+            initial ?? {
+                allocationToken: allocationTokenSchemaDefaultValue,
+                identity: identitySchemaDefaultValue,
+                criteria: criteriaSchemaDefaultValue,
+                questions: questionSchemaDefaultValue,
+            },
+    )
+
+    const form = useForm({
+        defaultValues,
+        validators: { onChange: editorFormSchema },
+        onSubmit: async ({ value, meta }) => {
+            // `handleSubmit({ action })` hands the object back as `meta`.
+            const { action } = (meta ?? {}) as { action?: EditorAction }
+
+            await onSubmit(value, action ?? "draft")
+        },
+    })
+
+    return { form }
+}
+
+type UseResearchEditorForm = ReturnType<typeof useResearchEditorForm>
+
+export {
+    alocationTokenSchema,
+    criteriaSchema,
+    criteriaSchemaDefaultValue,
+    identitySchema,
+    identitySchemaDefaultValue,
+    MAX_AGE,
+    MIN_AGE,
+    questionSchema,
+    questionTypeItems,
+    timeLimitOptions,
+    useResearchEditorForm,
+    questionSchemaDefaultValue,
+}
+export type { AlocationTokenSchema, CriteriaSchema, EditorAction, EditorValues, IdentitySchema, QuestionSchema, UseResearchEditorForm }
+
+export const genderItems = [
+    { value: "all", label: "Semua" },
+    { value: "male", label: "Laki-laki" },
+    { value: "female", label: "Perempuan" },
+]
+export const regionItems = REGION_VALUES.map((value) => ({
+    value,
+    label: value === "all" ? "Seluruh Indonesia" : value,
+}))
+/** Nilai = key stabil yang dikirim ke API; label hanya untuk tampilan. */
+export const categoryItems = RESEARCH_CATEGORY_ITEMS

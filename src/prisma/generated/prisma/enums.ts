@@ -9,7 +9,228 @@
 * 🟢 You can import this file directly.
 */
 
+export const VerificationType = {
+  EMAIL_VERIFICATION: 'EMAIL_VERIFICATION',
+  PASSWORD_RESET: 'PASSWORD_RESET',
+  EMAIL_CHANGE: 'EMAIL_CHANGE',
+  PHONE_VERIFICATION: 'PHONE_VERIFICATION'
+} as const
+
+export type VerificationType = (typeof VerificationType)[keyof typeof VerificationType]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const QualityDecision = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type QualityDecision = (typeof QualityDecision)[keyof typeof QualityDecision]
+
+
+export const ReportStatus = {
+  OPEN: 'OPEN',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const ReportAction = {
+  NONE: 'NONE',
+  WARNING: 'WARNING',
+  CONTENT_REMOVED: 'CONTENT_REMOVED',
+  RESEARCH_SUSPENDED: 'RESEARCH_SUSPENDED',
+  USER_BANNED: 'USER_BANNED'
+} as const
+
+export type ReportAction = (typeof ReportAction)[keyof typeof ReportAction]
+
+
+export const ParticipationStatus = {
+  JOINED: 'JOINED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUBMITTED: 'SUBMITTED',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type ParticipationStatus = (typeof ParticipationStatus)[keyof typeof ParticipationStatus]
+
+
+export const AutoScreeningResult = {
+  CLEAN: 'CLEAN',
+  FLAGGED: 'FLAGGED'
+} as const
+
+export type AutoScreeningResult = (typeof AutoScreeningResult)[keyof typeof AutoScreeningResult]
+
+
+export const PaymentType = {
+  TOKEN_TOPUP: 'TOKEN_TOPUP',
+  WITHDRAWAL: 'WITHDRAWAL'
+} as const
+
+export type PaymentType = (typeof PaymentType)[keyof typeof PaymentType]
+
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const ResearchStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  PUBLISHED: 'PUBLISHED',
+  CLOSED: 'CLOSED',
+  COMPLETED: 'COMPLETED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ResearchStatus = (typeof ResearchStatus)[keyof typeof ResearchStatus]
+
+
+export const CriteriaOperator = {
+  EQ: 'EQ',
+  NEQ: 'NEQ',
+  IN: 'IN',
+  NOT_IN: 'NOT_IN',
+  GT: 'GT',
+  GTE: 'GTE',
+  LT: 'LT',
+  LTE: 'LTE',
+  BETWEEN: 'BETWEEN'
+} as const
+
+export type CriteriaOperator = (typeof CriteriaOperator)[keyof typeof CriteriaOperator]
+
+
+export const QuestionType = {
+  SINGLE_CHOICE: 'SINGLE_CHOICE',
+  MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
+  TEXT: 'TEXT',
+  NUMBER: 'NUMBER',
+  SCALE: 'SCALE'
+} as const
+
+export type QuestionType = (typeof QuestionType)[keyof typeof QuestionType]
+
+
+export const ResearchCategory = {
+  ENVIRONMENT_ECOLOGY: 'ENVIRONMENT_ECOLOGY',
+  DISASTER_MANAGEMENT: 'DISASTER_MANAGEMENT',
+  PUBLIC_HEALTH: 'PUBLIC_HEALTH',
+  SOCIO_ECONOMICS: 'SOCIO_ECONOMICS',
+  PUBLIC_POLICY_LAW: 'PUBLIC_POLICY_LAW',
+  ATMOSPHERIC_CLIMATE_SCIENCE: 'ATMOSPHERIC_CLIMATE_SCIENCE',
+  COMPUTER_SCIENCE_IT: 'COMPUTER_SCIENCE_IT',
+  ARTIFICIAL_INTELLIGENCE: 'ARTIFICIAL_INTELLIGENCE',
+  DATA_SCIENCE_STATISTICS: 'DATA_SCIENCE_STATISTICS',
+  INFORMATION_SYSTEMS: 'INFORMATION_SYSTEMS',
+  ENGINEERING_TECHNOLOGY: 'ENGINEERING_TECHNOLOGY',
+  ELECTRICAL_ELECTRONICS: 'ELECTRICAL_ELECTRONICS',
+  CIVIL_ARCHITECTURE: 'CIVIL_ARCHITECTURE',
+  INDUSTRIAL_MANUFACTURING: 'INDUSTRIAL_MANUFACTURING',
+  BUSINESS_MANAGEMENT: 'BUSINESS_MANAGEMENT',
+  ECONOMICS_FINANCE: 'ECONOMICS_FINANCE',
+  ACCOUNTING_TAXATION: 'ACCOUNTING_TAXATION',
+  MARKETING_ADVERTISING: 'MARKETING_ADVERTISING',
+  ENTREPRENEURSHIP: 'ENTREPRENEURSHIP',
+  HUMAN_RESOURCES: 'HUMAN_RESOURCES',
+  EDUCATION_PEDAGOGY: 'EDUCATION_PEDAGOGY',
+  PSYCHOLOGY: 'PSYCHOLOGY',
+  SOCIOLOGY_ANTHROPOLOGY: 'SOCIOLOGY_ANTHROPOLOGY',
+  COMMUNICATION_MEDIA: 'COMMUNICATION_MEDIA',
+  POLITICAL_SCIENCE: 'POLITICAL_SCIENCE',
+  INTERNATIONAL_RELATIONS: 'INTERNATIONAL_RELATIONS',
+  LAW_LEGAL_STUDIES: 'LAW_LEGAL_STUDIES',
+  PUBLIC_ADMINISTRATION: 'PUBLIC_ADMINISTRATION',
+  AGRICULTURE_AGRONOMY: 'AGRICULTURE_AGRONOMY',
+  FORESTRY: 'FORESTRY',
+  FISHERIES_MARINE: 'FISHERIES_MARINE',
+  ANIMAL_HUSBANDRY: 'ANIMAL_HUSBANDRY',
+  FOOD_NUTRITION: 'FOOD_NUTRITION',
+  MEDICINE_CLINICAL_HEALTH: 'MEDICINE_CLINICAL_HEALTH',
+  PHARMACY_PHARMACEUTICAL: 'PHARMACY_PHARMACEUTICAL',
+  NURSING_MIDWIFERY: 'NURSING_MIDWIFERY',
+  EPIDEMIOLOGY: 'EPIDEMIOLOGY',
+  BIOTECHNOLOGY: 'BIOTECHNOLOGY',
+  BIOLOGY_LIFE_SCIENCES: 'BIOLOGY_LIFE_SCIENCES',
+  CHEMISTRY: 'CHEMISTRY',
+  PHYSICS: 'PHYSICS',
+  MATHEMATICS: 'MATHEMATICS',
+  ASTRONOMY_SPACE_SCIENCE: 'ASTRONOMY_SPACE_SCIENCE',
+  ENERGY_RENEWABLE_RESOURCES: 'ENERGY_RENEWABLE_RESOURCES',
+  TRANSPORTATION_LOGISTICS: 'TRANSPORTATION_LOGISTICS',
+  URBAN_REGIONAL_PLANNING: 'URBAN_REGIONAL_PLANNING',
+  GEOGRAPHY_GEOSPATIAL: 'GEOGRAPHY_GEOSPATIAL',
+  TOURISM_HOSPITALITY: 'TOURISM_HOSPITALITY',
+  DESIGN_CREATIVE_INDUSTRIES: 'DESIGN_CREATIVE_INDUSTRIES',
+  ARTS_CULTURE: 'ARTS_CULTURE',
+  LANGUAGE_LITERATURE: 'LANGUAGE_LITERATURE',
+  HISTORY_ARCHAEOLOGY: 'HISTORY_ARCHAEOLOGY',
+  PHILOSOPHY_ETHICS: 'PHILOSOPHY_ETHICS',
+  RELIGION_THEOLOGY: 'RELIGION_THEOLOGY',
+  GENDER_DEVELOPMENT_STUDIES: 'GENDER_DEVELOPMENT_STUDIES',
+  SOCIAL_WELFARE: 'SOCIAL_WELFARE',
+  CRIMINOLOGY_SECURITY: 'CRIMINOLOGY_SECURITY',
+  SPORTS_EXERCISE_SCIENCE: 'SPORTS_EXERCISE_SCIENCE',
+  OTHER: 'OTHER'
+} as const
+
+export type ResearchCategory = (typeof ResearchCategory)[keyof typeof ResearchCategory]
+
+
+export const RewardStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type RewardStatus = (typeof RewardStatus)[keyof typeof RewardStatus]
+
+
+export const TicketStatus = {
+  REVIEW: 'REVIEW',
+  RESOLVED: 'RESOLVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketCategory = {
+  DISPUTE: 'DISPUTE',
+  RESEARCH: 'RESEARCH',
+  TRANSACTION: 'TRANSACTION',
+  ACCOUNT: 'ACCOUNT',
+  OTHER: 'OTHER'
+} as const
+
+export type TicketCategory = (typeof TicketCategory)[keyof typeof TicketCategory]
+
+
+export const TokenTransactionType = {
+  TOPUP: 'TOPUP',
+  RESERVE: 'RESERVE',
+  RELEASE: 'RELEASE',
+  CONSUME: 'CONSUME',
+  REWARD: 'REWARD',
+  WITHDRAW: 'WITHDRAW',
+  FEE: 'FEE',
+  REFUND: 'REFUND'
+} as const
+
+export type TokenTransactionType = (typeof TokenTransactionType)[keyof typeof TokenTransactionType]

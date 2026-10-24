@@ -1,0 +1,83 @@
+// ============================================================
+// PARTICIPATION: respondentParticipations, participationAnswers
+// ============================================================
+
+enum ParticipationStatus {
+  JOINED
+  IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+// Hasil screening otomatis atas kualitas kiriman, dihitung sekali saat submit dari nilai
+// yang sama dengan `QualityCheck.signalFlags`/`autoScore` (SPEEDING, STRAIGHT_LINING).
+// `CLEAN` = tidak ada sinyal, `FLAGGED` = minimal satu sinyal. Ini penanda, bukan keputusan:
+// admin tetap yang memutuskan lewat quality check.
+enum AutoScreeningResult {
+  CLEAN
+  FLAGGED
+}
+
+model RespondentParticipation {
+  id           String @id @default(cuid()) @db.VarChar(36)
+  researchId   String @db.VarChar(36)
+  respondentId String @db.VarChar(36)
+
+  status              ParticipationStatus  @default(JOINED)
+  screeningScore      Int?
+  autoScreeningResult AutoScreeningResult?
+  // Kapan responden pertama kali membuka kuesionernya — jam mulai pengerjaan, bukan jam
+  // join. Tidak ada kolom durasi: durasinya dihitung dari startedAt dan submittedAt
+  // saat dibaca, jadi tidak mungkin berbeda dari kedua timestamp itu.
+  startedAt           DateTime?            @db.DateTime(3)
+  submittedAt         DateTime?            @db.DateTime(3)
+
+  adminReviewedBy String?   @db.VarChar(36)
+  adminReviewedAt DateTime? @db.DateTime(3)
+  rewardedAt      DateTime? @db.DateTime(3)
+
+  createdAt DateTime  @default(now()) @db.DateTime(3)
+  updatedAt DateTime  @updatedAt @db.DateTime(3)
+  deletedAt DateTime? @db.DateTime(3)
+
+  research   Research @relation(fields: [researchId], references: [id])
+  respondent User     @relation("RespondentParticipations", fields: [respondentId], references: [id])
+  adminReviewer User? @relation("ParticipationAdminReviewer", fields: [adminReviewedBy], references: [id])
+
+  answers      ParticipationAnswer[]
+  transactions TokenTransaction[]
+  reward       Reward?
+  qualityChecks QualityCheck[]
+
+  // satu responden hanya boleh ikut satu kali per riset
+  @@unique([researchId, respondentId])
+  @@index([respondentId])
+  @@index([status])
+  @@map("respondent_participations")
+}
+
+model ParticipationAnswer {
+  id                       String @id @default(cuid()) @db.VarChar(36)
+  respondentParticipationId String @db.VarChar(36)
+  researchQuestionId       String @db.VarChar(36)
+
+  // Array id pilihan, mis. ["id1","id2"]; null untuk jawaban non-pilihan
+  choiceIds  Json?
+  // Jawaban bebas untuk soal yang tidak memakai pilihan (TEXT/NUMBER/SCALE);
+  // null untuk jawaban pilihan, jadi salah satu dari choiceIds/answerText yang terisi
+  answerText String? @db.Text
+
+  createdAt DateTime  @default(now()) @db.DateTime(3)
+  updatedAt DateTime  @updatedAt @db.DateTime(3)
+  deletedAt DateTime? @db.DateTime(3)
+
+  participation RespondentParticipation @relation(fields: [respondentParticipationId], references: [id], onDelete: Cascade)
+  question      ResearchQuestion        @relation(fields: [researchQuestionId], references: [id])
+
+  @@unique([respondentParticipationId, researchQuestionId])
+  @@index([researchQuestionId])
+  @@map("participation_answers")
+}

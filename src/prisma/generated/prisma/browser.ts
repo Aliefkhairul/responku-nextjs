@@ -23,7 +23,92 @@ export * from './enums';
  */
 export type User = Prisma.UserModel
 /**
- * Model Post
+ * Model UserProfile
  * 
  */
-export type Post = Prisma.PostModel
+export type UserProfile = Prisma.UserProfileModel
+/**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model Verification
+ * 
+ */
+export type Verification = Prisma.VerificationModel
+/**
+ * Model QualityCheck
+ * 
+ */
+export type QualityCheck = Prisma.QualityCheckModel
+/**
+ * Model ContentReport
+ * 
+ */
+export type ContentReport = Prisma.ContentReportModel
+/**
+ * Model RespondentParticipation
+ * 
+ */
+export type RespondentParticipation = Prisma.RespondentParticipationModel
+/**
+ * Model ParticipationAnswer
+ * 
+ */
+export type ParticipationAnswer = Prisma.ParticipationAnswerModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model Research
+ * 
+ */
+export type Research = Prisma.ResearchModel
+/**
+ * Model ResearchCriteria
+ * 
+ */
+export type ResearchCriteria = Prisma.ResearchCriteriaModel
+/**
+ * Model ResearchQuestion
+ * 
+ */
+export type ResearchQuestion = Prisma.ResearchQuestionModel
+/**
+ * Model ResearchQuestionChoice
+ * 
+ */
+export type ResearchQuestionChoice = Prisma.ResearchQuestionChoiceModel
+/**
+ * Model Reward
+ * 
+ */
+export type Reward = Prisma.RewardModel
+/**
+ * Model UserSetting
+ * 
+ */
+export type UserSetting = Prisma.UserSettingModel
+/**
+ * Model SupportTicket
+ * 
+ */
+export type SupportTicket = Prisma.SupportTicketModel
+/**
+ * Model TokenWallet
+ * 
+ */
+export type TokenWallet = Prisma.TokenWalletModel
+/**
+ * Model TokenTransaction
+ * 
+ */
+export type TokenTransaction = Prisma.TokenTransactionModel
