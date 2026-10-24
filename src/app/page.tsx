@@ -51,11 +51,11 @@ const STEPS = [
 
 /** Placeholder partner wordmarks — swap these for the real partners before launch. */
 const PARTNERS = [
-    "Universitas Nusantara",
-    "Pusat Riset Pasar",
-    "DataLab Indonesia",
-    "Klinik Survei",
+    "Universitas Amikom Yogyakarta",
     "Asosiasi Riset Digital",
+    "Universitas Garut",
+    "SMK Negeri 2 Garut",
+    "Klinik Survei",
     "Yayasan Literasi Data",
 ]
 
